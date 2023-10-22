@@ -33,7 +33,6 @@ public class CommentResponse {
     private final String writerProfile;
     private final String content;
     private final int depth;
-    private final boolean isDeleted;
     private final long createdAt;
 
     public commentDTO(Comment comment, String writerName, String writerProfile) {
@@ -43,13 +42,9 @@ public class CommentResponse {
       this.writerProfile = writerProfile;
       this.content = comment.getContent();
       this.depth = comment.getDepth();
-      this.isDeleted = comment.isDeleted();
       this.createdAt = comment.getEpochSecond();
     }
 
-    public boolean getIsDeleted() {
-      return isDeleted;
-    }
 
     public static commentDTO fromEntity(Comment comment, String nickname, String profileImage) {
       return new commentDTO(comment, nickname, profileImage);

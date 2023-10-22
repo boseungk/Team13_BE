@@ -79,6 +79,8 @@ public class CommentService {
 
     validateMemberAndPost(memberId, postId);
 
+    validateCommentExistence(commentId);
+
     final String content = request.getContent();
 
     final Comment newComment = buildBaseComment(memberId, postId, content);
@@ -176,6 +178,8 @@ public class CommentService {
 
     validatePostExistence(postId);
 
+    validateCommentExistence(commentId);
+
     String parentCommentOrder = findParentCommentOrder(commentId);
 
     List<Comment> comments;
@@ -199,6 +203,14 @@ public class CommentService {
     }
 
     return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
+  }
+
+  // 대댓글 삭제 여부, 존재 여부 판별
+  private void validateCommentExistence(final long commentId) {
+    final Comment parentComment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
+
+    if(parentComment.isDeleted()==true) throw new Exception400("삭제된 댓글입니다.");
   }
 
   /** (기능) 댓글 삭제 */
