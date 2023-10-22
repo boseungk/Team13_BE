@@ -11,6 +11,6 @@ public class CommentRequest {
     @NotBlank(message = "댓글 내용은 필수입니다.")
     private final String content;
 
-    private final String parentCommentOrder; // null이면 원댓글
+
   }
 }
