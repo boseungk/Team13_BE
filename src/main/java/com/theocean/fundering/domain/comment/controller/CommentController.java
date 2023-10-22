@@ -36,10 +36,10 @@ public class CommentController {
   // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @PostMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> createSubComment(
-          @AuthenticationPrincipal CustomUserDetails userDetails,
-          @RequestBody @Valid CommentRequest.saveDTO commentRequest,
-          @PathVariable long postId,
-          @PathVariable long commentId) {
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      @RequestBody @Valid CommentRequest.saveDTO commentRequest,
+      @PathVariable long postId,
+      @PathVariable long commentId) {
 
     Long memberId = 1L; // Long memberId = userDetails.getMember().getUserId();
     commentService.createSubComment(memberId, postId, commentId, commentRequest);
@@ -66,15 +66,17 @@ public class CommentController {
   // (기능) 대댓글 목록 조회
   @GetMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> getSubComments(
-          @PathVariable long postId, @PathVariable long commentId,
-          @RequestParam(required = false, defaultValue = "0") long cursor,
-          @RequestParam(required = false, defaultValue = "10") int pageSize) {
+      @PathVariable long postId,
+      @PathVariable long commentId,
+      @RequestParam(required = false, defaultValue = "0") long cursor,
+      @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
     if (pageSize <= 0) {
       throw new Exception400("pageSize는 0보다 커야합니다.");
     }
 
-    CommentResponse.findAllDTO response = commentService.getSubComments(postId, commentId, cursor, pageSize);
+    CommentResponse.findAllDTO response =
+        commentService.getSubComments(postId, commentId, cursor, pageSize);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }

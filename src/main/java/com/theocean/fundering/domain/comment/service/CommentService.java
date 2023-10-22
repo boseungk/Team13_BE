@@ -75,7 +75,10 @@ public class CommentService {
   /** (기능) 대댓글 작성 */
   @Transactional
   public void createSubComment(
-          final Long memberId, final Long postId, final Long commentId, final CommentRequest.saveDTO request) {
+      final Long memberId,
+      final Long postId,
+      final Long commentId,
+      final CommentRequest.saveDTO request) {
 
     validateMemberAndPost(memberId, postId);
 
@@ -92,7 +95,9 @@ public class CommentService {
 
   // 원댓글의 commentOrder 반환
   private String findParentCommentOrder(Long commentId) {
-    final Comment parentComment = commentRepository.findById(commentId)
+    final Comment parentComment =
+        commentRepository
+            .findById(commentId)
             .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
     return parentComment.getCommentOrder();
@@ -174,7 +179,7 @@ public class CommentService {
 
   /** (기능) 대댓글 목록 조회 */
   public CommentResponse.findAllDTO getSubComments(
-          final long postId, final long commentId, final long cursor, final int pageSize) {
+      final long postId, final long commentId, final long cursor, final int pageSize) {
 
     validatePostExistence(postId);
 
@@ -184,7 +189,9 @@ public class CommentService {
 
     List<Comment> comments;
     try {
-      comments = customCommentRepository.getSubCommentList(postId, parentCommentOrder, cursor, pageSize + 1);
+      comments =
+          customCommentRepository.getSubCommentList(
+              postId, parentCommentOrder, cursor, pageSize + 1);
     } catch (RuntimeException e) {
       throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
     }
@@ -207,10 +214,12 @@ public class CommentService {
 
   // 대댓글 삭제 여부, 존재 여부 판별
   private void validateCommentExistence(final long commentId) {
-    final Comment parentComment = commentRepository.findById(commentId)
+    final Comment parentComment =
+        commentRepository
+            .findById(commentId)
             .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-    if(parentComment.isDeleted()==true) throw new Exception400("삭제된 댓글입니다.");
+    if (parentComment.isDeleted() == true) throw new Exception400("삭제된 댓글입니다.");
   }
 
   /** (기능) 댓글 삭제 */

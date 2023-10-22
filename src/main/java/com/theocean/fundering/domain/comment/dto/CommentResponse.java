@@ -45,7 +45,6 @@ public class CommentResponse {
       this.createdAt = comment.getEpochSecond();
     }
 
-
     public static commentDTO fromEntity(Comment comment, String nickname, String profileImage) {
       return new commentDTO(comment, nickname, profileImage);
     }
