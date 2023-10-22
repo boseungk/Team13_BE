@@ -18,9 +18,19 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
   public List<Comment> getCommentList(Long postId, String cursor, int pageSize) {
     return queryFactory
         .selectFrom(comment)
-        .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)))
+        .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)).and(comment.commentOrder.notLike("%.%")))
         .orderBy(comment.commentOrder.asc())
         .limit(pageSize)
         .fetch();
+  }
+
+  @Override
+  public List<Comment> getSubCommentList(Long postId, String parentCommentOrder, String cursor, int pageSize) {
+    return queryFactory
+            .selectFrom(comment)
+            .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)).and(comment.commentOrder.like(parentCommentOrder + "%.%")))
+            .orderBy(comment.commentOrder.asc())
+            .limit(pageSize)
+            .fetch();
   }
 }

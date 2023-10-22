@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface CustomCommentRepository {
   List<Comment> getCommentList(Long postId, String cursor, int pageSize);
+
+  List<Comment> getSubCommentList(Long postId, String parentCommentOrder, String cursor, int pageSize);
 }
