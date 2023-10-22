@@ -21,13 +21,28 @@ public class CommentController {
   // (기능) 댓글 작성
   // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @PostMapping("/posts/{postId}/comments")
-  public ResponseEntity<?> createComment(
+  public ResponseEntity<?> createParentComment(
       @AuthenticationPrincipal CustomUserDetails userDetails,
       @RequestBody @Valid CommentRequest.saveDTO commentRequest,
       @PathVariable long postId) {
 
     Long memberId = 1L; // Long memberId = userDetails.getMember().getUserId();
     commentService.createComment(memberId, postId, commentRequest);
+
+    return ResponseEntity.ok(ApiUtils.success(null));
+  }
+
+  // (기능) 대댓글 작성
+  // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
+  @PostMapping("/posts/{postId}/comments/{commentId}")
+  public ResponseEntity<?> createChildComment(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @RequestBody @Valid CommentRequest.saveDTO commentRequest,
+          @PathVariable long postId,
+          @PathVariable long commentId) {
+
+    Long memberId = 1L; // Long memberId = userDetails.getMember().getUserId();
+    commentService.createComment2(memberId, postId, commentId, commentRequest);
 
     return ResponseEntity.ok(ApiUtils.success(null));
   }

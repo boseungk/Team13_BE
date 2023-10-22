@@ -13,6 +13,7 @@ import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,11 @@ public class CommentService {
 
     validateMemberAndPost(memberId, postId);
 
-    final String parentCommentOrder = request.getParentCommentOrder();
     final String content = request.getContent();
 
     final Comment newComment = buildBaseComment(memberId, postId, content);
 
-    if (null == parentCommentOrder) createParentComment(postId, newComment);
-    else createChildComment(postId, parentCommentOrder, newComment);
+    createParentComment(postId, newComment);
   }
 
   // 작성자와 게시글 존재 유무 체크
@@ -72,6 +71,30 @@ public class CommentService {
 
     newComment.updateCommentOrder(String.valueOf(newCommentOrder));
     commentRepository.save(newComment);
+  }
+
+  /** (기능) 대댓글 작성 */
+  @Transactional
+  public void createComment2(
+          final Long memberId, final Long postId, final Long commentId, final CommentRequest.saveDTO request) {
+
+    validateMemberAndPost(memberId, postId);
+
+    final String content = request.getContent();
+
+    final Comment newComment = buildBaseComment(memberId, postId, content);
+
+    final String parentCommentOrder = findParentCommentOrder(commentId);
+
+    createChildComment(postId, parentCommentOrder, newComment);
+  }
+
+  // 원댓글의 commentOrder 반환
+  private String findParentCommentOrder(Long commentId) {
+    final Comment parentComment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
+
+    return parentComment.getCommentOrder();
   }
 
   // 대댓글 생성
