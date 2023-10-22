@@ -13,7 +13,6 @@ import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -75,7 +74,7 @@ public class CommentService {
 
   /** (기능) 대댓글 작성 */
   @Transactional
-  public void createComment2(
+  public void createSubComment(
           final Long memberId, final Long postId, final Long commentId, final CommentRequest.saveDTO request) {
 
     validateMemberAndPost(memberId, postId);
@@ -110,7 +109,7 @@ public class CommentService {
             .getComment(postId, parentCommentOrder)
             .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
 
-    final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%") - 1;
+    final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%.%");
     if (REPLY_LIMIT <= replyCount) throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
 
     final String newCommentOrder = parentCommentOrder + "." + (replyCount + 1);
@@ -169,6 +168,37 @@ public class CommentService {
 
     return CommentResponse.commentDTO.fromEntity(
         comment, writer.getNickname(), writer.getProfileImage());
+  }
+
+  /** (기능) 대댓글 목록 조회 */
+  public CommentResponse.findAllDTO getSubComments(
+          final long postId, final long commentId, final String cursor, final int pageSize) {
+
+    validatePostExistence(postId);
+
+    String parentCommentOrder = findParentCommentOrder(commentId);
+
+    List<Comment> comments;
+    try {
+      comments = customCommentRepository.getSubCommentList(postId, parentCommentOrder, cursor, pageSize + 1);
+    } catch (RuntimeException e) {
+      throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
+    }
+
+    final boolean isLastPage = comments.size() <= pageSize;
+
+    if (!isLastPage) comments = comments.subList(0, pageSize);
+
+    final var commentsDTOs = convertToCommentDTOs(comments);
+
+    String lastCursor = null;
+
+    if (!comments.isEmpty()) {
+      final Comment lastComment = comments.get(comments.size() - 1);
+      lastCursor = lastComment.getCommentOrder();
+    }
+
+    return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
   }
 
   /** (기능) 댓글 삭제 */

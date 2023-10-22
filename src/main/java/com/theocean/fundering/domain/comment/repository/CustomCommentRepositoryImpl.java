@@ -19,7 +19,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     return queryFactory
         .selectFrom(comment)
         .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)).and(comment.commentOrder.notLike("%.%")))
-        .orderBy(comment.commentOrder.asc())
+        .orderBy(comment.commentId.asc())
         .limit(pageSize)
         .fetch();
   }
@@ -29,7 +29,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     return queryFactory
             .selectFrom(comment)
             .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)).and(comment.commentOrder.like(parentCommentOrder + "%.%")))
-            .orderBy(comment.commentOrder.asc())
+            .orderBy(comment.commentId.asc())
             .limit(pageSize)
             .fetch();
   }
