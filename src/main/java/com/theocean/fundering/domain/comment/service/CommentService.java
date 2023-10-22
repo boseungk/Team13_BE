@@ -120,7 +120,7 @@ public class CommentService {
 
   /** (기능) 댓글 목록 조회 */
   public CommentResponse.findAllDTO getComments(
-      final long postId, final String cursor, final int pageSize) {
+      final long postId, final Long cursor, final int pageSize) {
 
     validatePostExistence(postId);
 
@@ -137,11 +137,11 @@ public class CommentService {
 
     final var commentsDTOs = convertToCommentDTOs(comments);
 
-    String lastCursor = null;
+    Long lastCursor = null;
 
     if (!comments.isEmpty()) {
       final Comment lastComment = comments.get(comments.size() - 1);
-      lastCursor = lastComment.getCommentOrder();
+      lastCursor = lastComment.getCommentId();
     }
 
     return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
@@ -172,7 +172,7 @@ public class CommentService {
 
   /** (기능) 대댓글 목록 조회 */
   public CommentResponse.findAllDTO getSubComments(
-          final long postId, final long commentId, final String cursor, final int pageSize) {
+          final long postId, final long commentId, final long cursor, final int pageSize) {
 
     validatePostExistence(postId);
 
@@ -191,11 +191,11 @@ public class CommentService {
 
     final var commentsDTOs = convertToCommentDTOs(comments);
 
-    String lastCursor = null;
+    Long lastCursor = null;
 
     if (!comments.isEmpty()) {
       final Comment lastComment = comments.get(comments.size() - 1);
-      lastCursor = lastComment.getCommentOrder();
+      lastCursor = lastComment.getCommentId();
     }
 
     return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);

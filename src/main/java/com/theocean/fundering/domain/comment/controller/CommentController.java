@@ -51,7 +51,7 @@ public class CommentController {
   @GetMapping("/posts/{postId}/comments")
   public ResponseEntity<?> getComments(
       @PathVariable long postId,
-      @RequestParam(required = false, defaultValue = "0") String cursor,
+      @RequestParam(required = false, defaultValue = "0") long cursor,
       @RequestParam(required = false, defaultValue = "6") int pageSize) {
 
     if (pageSize <= 0) {
@@ -67,7 +67,7 @@ public class CommentController {
   @GetMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> getSubComments(
           @PathVariable long postId, @PathVariable long commentId,
-          @RequestParam(required = false, defaultValue = "0") String cursor,
+          @RequestParam(required = false, defaultValue = "0") long cursor,
           @RequestParam(required = false, defaultValue = "10") int pageSize) {
 
     if (pageSize <= 0) {
