@@ -36,9 +36,7 @@ public class CommentService {
 
     validateMemberAndPost(memberId, postId);
 
-    final String content = request.getContent();
-
-    final Comment newComment = buildBaseComment(memberId, postId, content);
+    final Comment newComment = buildBaseComment(memberId, postId, request.getContent());
 
     createParentComment(postId, newComment);
   }
@@ -59,17 +57,19 @@ public class CommentService {
   // 원댓글 생성
   private void createParentComment(final Long postId, final Comment newComment) {
     final String maxCommentOrder = commentRepository.findMaxCommentOrder(postId);
-    final int newCommentOrder;
-
-    if (null != maxCommentOrder) {
-      final String[] parts = maxCommentOrder.split("\\.");
-      newCommentOrder = Integer.parseInt(parts[0]) + 1;
-    } else {
-      newCommentOrder = 1;
-    }
+    final int newCommentOrder = calculateCommentOrder(maxCommentOrder);
 
     newComment.updateCommentOrder(String.valueOf(newCommentOrder));
     commentRepository.save(newComment);
+  }
+
+  // 생성 댓글의 commentOrder 계산
+  private int calculateCommentOrder(final String maxCommentOrder) {
+    if (null != maxCommentOrder) {
+      final String[] parts = maxCommentOrder.split("\\.");
+      return Integer.parseInt(parts[0]) + 1;
+    }
+    return 1;
   }
 
   /** (기능) 대댓글 작성 */
@@ -94,7 +94,7 @@ public class CommentService {
   }
 
   // 원댓글의 commentOrder 반환
-  private String findParentCommentOrder(Long commentId) {
+  private String findParentCommentOrder(final Long commentId) {
     final Comment parentComment =
         commentRepository
             .findById(commentId)
@@ -185,7 +185,7 @@ public class CommentService {
 
     validateCommentExistence(commentId);
 
-    String parentCommentOrder = findParentCommentOrder(commentId);
+    final String parentCommentOrder = findParentCommentOrder(commentId);
 
     List<Comment> comments;
     try {
@@ -219,13 +219,12 @@ public class CommentService {
             .findById(commentId)
             .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-    if (parentComment.isDeleted() == true) throw new Exception400("삭제된 댓글입니다.");
+    if (parentComment.isDeleted()) throw new Exception400("삭제된 댓글입니다.");
   }
 
   /** (기능) 댓글 삭제 */
   @Transactional
-  public void deleteComment(final Long memberId, final Long postId, final Long commentId)
-      throws RuntimeException {
+  public void deleteComment(final Long memberId, final Long postId, final Long commentId) {
     final Comment comment =
         commentRepository
             .findById(commentId)
