@@ -19,7 +19,7 @@ public class CelebRequestDTO {
     private String celebGroup;
     private String profileImage;
 
-    public Celebrity getEntity(){
+    public Celebrity mapToEntity(){
         return Celebrity.builder()
                 .celebName(celebName)
                 .celebGender(celebGender)

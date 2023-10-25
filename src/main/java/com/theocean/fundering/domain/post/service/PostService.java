@@ -29,11 +29,11 @@ public class PostService {
     private final CelebRepository celebRepository;
 
     @Transactional
-    public void writePost(PostRequest.PostWriteDTO postWriteDTO, MultipartFile thumbnail){
-        postWriteDTO.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Member writer = memberRepository.findByNickname(postWriteDTO.getWriter()).orElseThrow();
-        Celebrity celebrity = celebRepository.findById(postWriteDTO.getCelebId()).orElseThrow();
-        postRepository.save(postWriteDTO.toEntity(writer, celebrity));
+    public void writePost(PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+        dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+        Member writer = memberRepository.findByNickname(dto.getWriter()).orElseThrow();
+        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow();
+        postRepository.save(dto.toEntity(writer, celebrity));
     }
 
     public PostResponse.FindByPostIdDTO findByPostId(Long postId){
@@ -42,9 +42,9 @@ public class PostService {
 
     }
 
-    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId){
-        var postList = postRepository.findAll(postId);
-        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1);
+    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId, String condition){
+        var postList = postRepository.findAll(postId, condition);
+        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1, condition);
         if (checkForNext == null)
             postList.get(postList.size() - 1).setLast(true);
         return postList;
@@ -58,11 +58,11 @@ public class PostService {
         return postList;
     }
     @Transactional
-    public Long editPost(Long postId, PostRequest.PostEditDTO postEditDTO, @Nullable MultipartFile thumbnail){
+    public Long editPost(Long postId, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
         if (thumbnail != null)
-            postEditDTO.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+            dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
         Post postPS = postRepository.findById(postId).orElseThrow();
-        postPS.update(postEditDTO);
+        postPS.update(dto.getTitle(), dto.getContent(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 
@@ -77,6 +77,10 @@ public class PostService {
             postList.get(postList.size() - 1).setLast(true);
         return postList;
 
+    }
+
+    public String uploadImage(MultipartFile img){
+        return awss3Uploader.uploadToS3(img);
     }
 
 }

@@ -7,7 +7,6 @@ import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +17,8 @@ public class CelebService {
     @Transactional
     public void register(CelebRequestDTO celebRequestDTO) {
         try{
-            celebRepository.save(celebRequestDTO.getEntity());
-        }catch (Exception e){
+            celebRepository.save(celebRequestDTO.mapToEntity());
+        }catch (RuntimeException e){
             throw new Exception500("셀럽 등록 실패");
         }
     }
@@ -32,7 +31,7 @@ public class CelebService {
     public CelebDetailsResponseDTO findByCelebId(Long celebId) {
         Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
-        return CelebDetailsResponseDTO.of(celebrity);
+        return CelebDetailsResponseDTO.from(celebrity);
     }
 
     public PageResponse<CelebListResponseDTO> findAllCeleb(Long celebId, Pageable pageable) {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CelebController {
     private final CelebService celebService;
-    @PostMapping("/celebs/register")
+    @PostMapping("/celebs")
     public ResponseEntity<?> registerCeleb(@RequestBody @Valid CelebRequestDTO celebRequestDTO, Error error){
         celebService.register(celebRequestDTO);
         return ResponseEntity.ok(ApiUtils.success(null));

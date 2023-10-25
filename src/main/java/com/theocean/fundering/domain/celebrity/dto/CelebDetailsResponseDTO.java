@@ -21,7 +21,7 @@ public class CelebDetailsResponseDTO {
         this.celebGroup = celebrity.getCelebGroup();
         this.profileImage = celebrity.getProfileImage();
     }
-    public static CelebDetailsResponseDTO of(Celebrity celebrity){
+    public static CelebDetailsResponseDTO from(Celebrity celebrity){
         return new CelebDetailsResponseDTO(celebrity);
     }
 }

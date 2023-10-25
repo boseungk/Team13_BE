@@ -42,5 +42,4 @@ cloud:
     stack:
       auto: false
     credentials:
-      access-key: "{발급받은 access key}"
-      secret-key: "{발급받은 secret key}"
+      profile-name: default

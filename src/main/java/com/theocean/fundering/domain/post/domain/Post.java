@@ -83,12 +83,12 @@ public class Post extends AuditingFields {
         return Objects.hash(postId);
     }
 
-    public void update(PostRequest.PostEditDTO dto){
-        this.title = dto.getTitle();
-        this.content = dto.getContent();
-        this.thumbnail = dto.getThumbnail();
-        this.targetPrice = dto.getTargetPrice();
-        this.deadline = dto.getDeadline();
-        this.modifiedAt = dto.getModifiedAt();
+    public void update(String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline, LocalDateTime modifiedAt){
+        this.title = title;
+        this.content = content;
+        this.thumbnail = thumbnail;
+        this.targetPrice = targetPrice;
+        this.deadline = deadline;
+        this.modifiedAt = modifiedAt;
     }
 }

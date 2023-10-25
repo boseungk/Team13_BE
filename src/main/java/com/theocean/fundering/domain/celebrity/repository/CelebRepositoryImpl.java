@@ -12,8 +12,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.*;
+import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.celebrity;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
 
 @RequiredArgsConstructor
@@ -22,8 +23,9 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<CelebFundingResponseDTO> findAllPosting(Long celebId, Long postId, Pageable pageable) {
-        List<CelebFundingResponseDTO> contents = queryFactory
+    public Slice<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
+        Objects.requireNonNull(celebId, "celebId must not be null");
+        final List<CelebFundingResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebFundingResponseDTO.class,
                         post.postId,
                         post.writer.userId,
@@ -39,16 +41,14 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-        boolean hasNext = false;
-        if(contents.size() > pageable.getPageSize()){
-            hasNext = true;
-        }
+        final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
     @Override
-    public Slice<CelebListResponseDTO> findAllCeleb(Long celebId, Pageable pageable) {
-        List<CelebListResponseDTO> contents = queryFactory
+    public Slice<CelebListResponseDTO> findAllCeleb(final Long celebId, final Pageable pageable) {
+        Objects.requireNonNull(celebId, "celebId must not be null");
+        final List<CelebListResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebListResponseDTO.class,
                         celebrity.celebId,
                         celebrity.celebName,
@@ -61,27 +61,24 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-        boolean hasNext = false;
-        if(contents.size() > pageable.getPageSize()){
-            hasNext = true;
-        }
+        final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
 
-    private BooleanExpression eqPostCelebId(Long celebId){
+    private BooleanExpression eqPostCelebId(final Long celebId){
         return post.celebrity.celebId.eq(celebId);
     }
 
-    private BooleanExpression ltPostId(Long cursorId){
-        if (cursorId == null){
+    private BooleanExpression ltPostId(final Long cursorId){
+        if (null == cursorId){
             return null;
         }
         return post.postId.lt(cursorId);
     }
 
-    private BooleanExpression ltCelebId(Long cursorId){
-        if (cursorId == null){
+    private BooleanExpression ltCelebId(final Long cursorId){
+        if (null == cursorId){
             return null;
         }
         return celebrity.celebId.lt(cursorId);
