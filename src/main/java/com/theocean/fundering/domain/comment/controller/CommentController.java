@@ -3,7 +3,6 @@ package com.theocean.fundering.domain.comment.controller;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.service.CommentService;
-import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
@@ -52,8 +51,7 @@ public class CommentController {
   // (기능) 댓글 목록 조회
   @GetMapping("/posts/{postId}/comments")
   public ResponseEntity<?> getComments(
-          @PathVariable long postId,
-          @PageableDefault(size = 10) Pageable pageable) {
+      @PathVariable long postId, @PageableDefault(size = 10) Pageable pageable) {
 
     CommentResponse.findAllDTO response = commentService.getComments(postId, pageable);
 
@@ -63,12 +61,12 @@ public class CommentController {
   // (기능) 대댓글 목록 조회
   @GetMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> getSubComments(
-          @PathVariable long postId,
-          @PathVariable long commentId,
-          @PageableDefault(size = 10) Pageable pageable) {
+      @PathVariable long postId,
+      @PathVariable long commentId,
+      @PageableDefault(size = 10) Pageable pageable) {
 
     CommentResponse.findAllDTO response =
-            commentService.getSubComments(postId, commentId, pageable);
+        commentService.getSubComments(postId, commentId, pageable);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }

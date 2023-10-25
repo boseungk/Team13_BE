@@ -7,7 +7,6 @@ import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.comment.repository.CustomCommentRepositoryImpl;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +37,6 @@ public class CommentService {
 
     createParentComment(postId, newComment);
   }
-
 
   // 기본 댓글 객체 생성
   private Comment buildBaseComment(final Long memberId, final Long postId, final String content) {
@@ -109,8 +107,7 @@ public class CommentService {
   }
 
   /** (기능) 댓글 목록 조회 */
-  public CommentResponse.findAllDTO getComments(
-          final long postId, final Pageable pageable) {
+  public CommentResponse.findAllDTO getComments(final long postId, final Pageable pageable) {
 
     commentValidator.validatePostExistence(postId);
 
@@ -125,7 +122,6 @@ public class CommentService {
 
     return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
   }
-
 
   // 댓글 DTO 변환
   private List<CommentResponse.commentDTO> convertToCommentDTOs(final List<Comment> comments) {
@@ -145,13 +141,15 @@ public class CommentService {
 
   /** (기능) 대댓글 목록 조회 */
   public CommentResponse.findAllDTO getSubComments(
-          final long postId, final long parentCommentId, final Pageable pageable) {
+      final long postId, final long parentCommentId, final Pageable pageable) {
 
     commentValidator.validatePostExistence(postId);
 
     commentValidator.validateCommentExistence(parentCommentId);
 
-    final Page<Comment> commentPage = customCommentRepository.getSubCommentsPage(postId, findCommentOrder(parentCommentId), pageable);
+    final Page<Comment> commentPage =
+        customCommentRepository.getSubCommentsPage(
+            postId, findCommentOrder(parentCommentId), pageable);
     final List<Comment> comments = commentPage.getContent();
 
     final List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
@@ -161,8 +159,6 @@ public class CommentService {
 
     return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
   }
-
-
 
   /** (기능) 댓글 삭제 */
   @Transactional

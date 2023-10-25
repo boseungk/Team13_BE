@@ -13,7 +13,8 @@ public class CommentResponse {
     private final int currentPage;
     private final boolean isLastPage;
 
-    public findAllDTO(final List<commentDTO> comments, final int currentPage, final boolean isLastPage) {
+    public findAllDTO(
+        final List<commentDTO> comments, final int currentPage, final boolean isLastPage) {
       this.comments = comments;
       this.currentPage = currentPage;
       this.isLastPage = isLastPage;
@@ -45,7 +46,8 @@ public class CommentResponse {
       createdAt = comment.getEpochSecond();
     }
 
-    public static commentDTO fromEntity(final Comment comment, final String nickname, final String profileImage) {
+    public static commentDTO fromEntity(
+        final Comment comment, final String nickname, final String profileImage) {
       return new commentDTO(comment, nickname, profileImage);
     }
   }
