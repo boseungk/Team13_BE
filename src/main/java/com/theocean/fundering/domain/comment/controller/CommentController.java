@@ -8,6 +8,8 @@ import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -50,15 +52,10 @@ public class CommentController {
   // (기능) 댓글 목록 조회
   @GetMapping("/posts/{postId}/comments")
   public ResponseEntity<?> getComments(
-      @PathVariable long postId,
-      @RequestParam(required = false, defaultValue = "0") long cursor,
-      @RequestParam(required = false, defaultValue = "6") int pageSize) {
+          @PathVariable long postId,
+          @PageableDefault(size = 10) Pageable pageable) {
 
-    if (pageSize <= 0) {
-      throw new Exception400("pageSize는 0보다 커야합니다.");
-    }
-
-    CommentResponse.findAllDTO response = commentService.getComments(postId, cursor, pageSize);
+    CommentResponse.findAllDTO response = commentService.getComments(postId, pageable);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }
@@ -66,17 +63,12 @@ public class CommentController {
   // (기능) 대댓글 목록 조회
   @GetMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> getSubComments(
-      @PathVariable long postId,
-      @PathVariable long commentId,
-      @RequestParam(required = false, defaultValue = "0") long cursor,
-      @RequestParam(required = false, defaultValue = "10") int pageSize) {
-
-    if (pageSize <= 0) {
-      throw new Exception400("pageSize는 0보다 커야합니다.");
-    }
+          @PathVariable long postId,
+          @PathVariable long commentId,
+          @PageableDefault(size = 10) Pageable pageable) {
 
     CommentResponse.findAllDTO response =
-        commentService.getSubComments(postId, commentId, cursor, pageSize);
+            commentService.getSubComments(postId, commentId, pageable);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }
