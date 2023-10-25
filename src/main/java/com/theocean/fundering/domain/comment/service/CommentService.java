@@ -7,14 +7,13 @@ import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.comment.repository.CustomCommentRepositoryImpl;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
-import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
-import com.theocean.fundering.global.errors.exception.Exception500;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,28 +25,20 @@ public class CommentService {
   private final CustomCommentRepositoryImpl customCommentRepository;
   private final CommentRepository commentRepository;
   private final MemberRepository memberRepository;
-  private final PostRepository postRepository;
-  private static final int REPLY_LIMIT = 30;
+  private final CommentValidator commentValidator;
 
   /** (기능) 댓글 작성 */
   @Transactional
   public void createComment(
       final Long memberId, final Long postId, final CommentRequest.saveDTO request) {
 
-    validateMemberAndPost(memberId, postId);
+    commentValidator.validateMemberAndPost(memberId, postId);
 
     final Comment newComment = buildBaseComment(memberId, postId, request.getContent());
 
     createParentComment(postId, newComment);
   }
 
-  // 작성자와 게시글 존재 유무 체크
-  private void validateMemberAndPost(final Long memberId, final Long postId) {
-    if (!memberRepository.existsById(memberId))
-      throw new Exception404("존재하지 않는 회원입니다: " + memberId);
-
-    validatePostExistence(postId);
-  }
 
   // 기본 댓글 객체 생성
   private Comment buildBaseComment(final Long memberId, final Long postId, final String content) {
@@ -77,47 +68,39 @@ public class CommentService {
   public void createSubComment(
       final Long memberId,
       final Long postId,
-      final Long commentId,
+      final Long parentCommentId,
       final CommentRequest.saveDTO request) {
 
-    validateMemberAndPost(memberId, postId);
+    commentValidator.validateMemberAndPost(memberId, postId);
 
-    validateCommentExistence(commentId);
+    commentValidator.validateCommentExistence(parentCommentId);
 
     final String content = request.getContent();
 
     final Comment newComment = buildBaseComment(memberId, postId, content);
 
-    final String parentCommentOrder = findParentCommentOrder(commentId);
+    final String parentCommentOrder = findCommentOrder(parentCommentId);
+
+    commentValidator.validateDepthLimit(parentCommentOrder);
 
     createChildComment(postId, parentCommentOrder, newComment);
   }
 
   // 원댓글의 commentOrder 반환
-  private String findParentCommentOrder(final Long commentId) {
-    final Comment parentComment =
+  private String findCommentOrder(final Long commentId) {
+    final Comment comment =
         commentRepository
             .findById(commentId)
             .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-    return parentComment.getCommentOrder();
+    return comment.getCommentOrder();
   }
 
   // 대댓글 생성
   private void createChildComment(
       final Long postId, final String parentCommentOrder, final Comment newComment) {
 
-    if (parentCommentOrder.contains(".")) {
-      throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
-    }
-
-    final Comment parentComment =
-        commentRepository
-            .getComment(postId, parentCommentOrder)
-            .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
-
-    final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%.%");
-    if (REPLY_LIMIT <= replyCount) throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
+    final int replyCount = commentValidator.validateReplyLimit(postId, parentCommentOrder);
 
     final String newCommentOrder = parentCommentOrder + "." + (replyCount + 1);
 
@@ -127,39 +110,22 @@ public class CommentService {
 
   /** (기능) 댓글 목록 조회 */
   public CommentResponse.findAllDTO getComments(
-      final long postId, final Long cursor, final int pageSize) {
+          final long postId, final Pageable pageable) {
 
-    validatePostExistence(postId);
+    commentValidator.validatePostExistence(postId);
 
-    List<Comment> comments;
-    try {
-      comments = customCommentRepository.getCommentList(postId, cursor, pageSize + 1);
-    } catch (RuntimeException e) {
-      throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
-    }
+    final Page<Comment> commentPage = customCommentRepository.getCommentsPage(postId, pageable);
+    final List<Comment> comments = commentPage.getContent();
 
-    final boolean isLastPage = comments.size() <= pageSize;
+    final List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
 
-    if (!isLastPage) comments = comments.subList(0, pageSize);
+    final boolean isLastPage = commentPage.isLast();
 
-    final var commentsDTOs = convertToCommentDTOs(comments);
+    final int currentPage = pageable.getPageNumber();
 
-    Long lastCursor = null;
-
-    if (!comments.isEmpty()) {
-      final Comment lastComment = comments.get(comments.size() - 1);
-      lastCursor = lastComment.getCommentId();
-    }
-
-    return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
+    return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
   }
 
-  // 게시글 존재 유무 체크
-  private void validatePostExistence(final long postId) {
-    if (!postRepository.existsById(postId)) {
-      throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
-    }
-  }
 
   // 댓글 DTO 변환
   private List<CommentResponse.commentDTO> convertToCommentDTOs(final List<Comment> comments) {
@@ -179,48 +145,24 @@ public class CommentService {
 
   /** (기능) 대댓글 목록 조회 */
   public CommentResponse.findAllDTO getSubComments(
-      final long postId, final long commentId, final long cursor, final int pageSize) {
+          final long postId, final long parentCommentId, final Pageable pageable) {
 
-    validatePostExistence(postId);
+    commentValidator.validatePostExistence(postId);
 
-    validateCommentExistence(commentId);
+    commentValidator.validateCommentExistence(parentCommentId);
 
-    final String parentCommentOrder = findParentCommentOrder(commentId);
+    final Page<Comment> commentPage = customCommentRepository.getSubCommentsPage(postId, findCommentOrder(parentCommentId), pageable);
+    final List<Comment> comments = commentPage.getContent();
 
-    List<Comment> comments;
-    try {
-      comments =
-          customCommentRepository.getSubCommentList(
-              postId, parentCommentOrder, cursor, pageSize + 1);
-    } catch (RuntimeException e) {
-      throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
-    }
+    final List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
 
-    final boolean isLastPage = comments.size() <= pageSize;
+    final boolean isLastPage = commentPage.isLast();
+    final int currentPage = pageable.getPageNumber();
 
-    if (!isLastPage) comments = comments.subList(0, pageSize);
-
-    final var commentsDTOs = convertToCommentDTOs(comments);
-
-    Long lastCursor = null;
-
-    if (!comments.isEmpty()) {
-      final Comment lastComment = comments.get(comments.size() - 1);
-      lastCursor = lastComment.getCommentId();
-    }
-
-    return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
+    return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
   }
 
-  // 대댓글 삭제 여부, 존재 여부 판별
-  private void validateCommentExistence(final long commentId) {
-    final Comment parentComment =
-        commentRepository
-            .findById(commentId)
-            .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-    if (parentComment.isDeleted()) throw new Exception400("삭제된 댓글입니다.");
-  }
 
   /** (기능) 댓글 삭제 */
   @Transactional
@@ -230,9 +172,8 @@ public class CommentService {
             .findById(commentId)
             .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-    if (!postRepository.existsById(postId)) throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
-
-    if (!memberId.equals(comment.getWriterId())) throw new Exception403("댓글 삭제 권한이 없습니다.");
+    commentValidator.validatePostExistence(postId);
+    commentValidator.validateCommentOwner(memberId, comment);
 
     commentRepository.delete(comment);
   }
