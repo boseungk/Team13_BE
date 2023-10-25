@@ -1,16 +1,17 @@
 package com.theocean.fundering.domain.post.controller;
 
 
+import com.theocean.fundering.domain.celebrity.dto.PageResponse;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.service.PostService;
 import com.theocean.fundering.global.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 
@@ -21,8 +22,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> findAll(@RequestParam(value = "postId", required = false) Long postId, @RequestParam(value = "condition", defaultValue = "DEFAULT") String condition){
-        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, condition);
+    public ResponseEntity<?> findAll(@RequestParam(value = "postId", required = false) Long postId, Pageable pageable){
+        PageResponse<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
@@ -55,8 +56,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/search")
-    public ResponseEntity<?> searchPost(@RequestParam(value = "postId", required = false) Long postId, @RequestParam(value = "keyword") String keyword){
-        var result = postService.searchPost(postId, keyword);
+    public ResponseEntity<?> searchPost(@RequestParam(value = "postId", required = false) Long postId, @RequestParam(value = "keyword") String keyword, Pageable pageable){
+        var result = postService.searchPost(postId, keyword, pageable);
         return ResponseEntity.ok(ApiUtils.success(result));
     }
 

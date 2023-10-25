@@ -8,6 +8,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 
 
 import static  com.theocean.fundering.domain.post.domain.QPost.post;
@@ -22,10 +26,10 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId, String condition) {
-        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(condition);
+    public Slice<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable) {
+        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
-        return jpaQueryFactory
+        List<PostResponse.FindAllDTO> contents =  jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
                         post.thumbnail,
@@ -38,13 +42,19 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
-                .limit(12)
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        boolean hasNext = false;
+        if(contents.size() > pageable.getPageSize()){
+            hasNext = true;
+        }
+        return new SliceImpl<>(contents, pageable, hasNext);
     }
 
     @Override
-    public List<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId) {
-        return jpaQueryFactory
+    public Slice<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId, Pageable pageable) {
+        List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
                         post.thumbnail,
@@ -57,12 +67,17 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .from(post)
                 .where(ltPostId(postId), eqWriter(writerId))
                 .orderBy(post.postId.desc())
-                .limit(12)
+                .limit(pageable.getPageSize())
                 .fetch();
+        boolean hasNext = false;
+        if(contents.size() > pageable.getPageSize()){
+            hasNext = true;
+        }
+        return new SliceImpl<>(contents, pageable, hasNext);
     }
     @Override
-    public List<PostResponse.FindAllDTO> findAllByKeyword(@Nullable Long postId, String keyword){
-        return jpaQueryFactory
+    public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable Long postId, String keyword, Pageable pageable){
+        List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
                         post.thumbnail,
@@ -75,22 +90,27 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .from(post)
                 .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())
-                .limit(12)
+                .limit(pageable.getPageSize())
                 .fetch();
+        boolean hasNext = false;
+        if(contents.size() > pageable.getPageSize()){
+            hasNext = true;
+        }
+        return new SliceImpl<>(contents, pageable, hasNext);
     }
 
-    private OrderSpecifier[] createOrderSpecifier(String condition){
+    private OrderSpecifier[] createOrderSpecifier(Sort sort){
         List<OrderSpecifier> specifiers = new ArrayList<>();
 
         /* 정렬 조건 추가 시 추가 작성
         * */
-        if(Objects.equals(condition, "DEFAULT"))
-            specifiers.add(new OrderSpecifier(Order.DESC, post.postId));
-        else if(Objects.equals(condition, "DEADLINE"))
+        if (sort.toString().equals("recent")) {
+            specifiers.add(new OrderSpecifier(Order.DESC, post.createdAt));
+        } else if(sort.toString().equals("deadline")) {
             specifiers.add(new OrderSpecifier(Order.DESC, post.deadline));
-        else if(Objects.equals(condition, "AMOUNT"))
+        } else if(sort.toString().equals("amount")){
             specifiers.add(new OrderSpecifier(Order.DESC, post.account.fundingAmount));
-
+        }
         return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
     }
 

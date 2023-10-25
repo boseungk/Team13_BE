@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.post.service;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
@@ -13,10 +14,10 @@ import com.theocean.fundering.global.utils.AWSS3Uploader;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 @Transactional
@@ -42,20 +43,15 @@ public class PostService {
 
     }
 
-    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId, String condition){
-        var postList = postRepository.findAll(postId, condition);
-        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1, condition);
-        if (checkForNext == null)
-            postList.get(postList.size() - 1).setLast(true);
-        return postList;
+    public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable){
+        var postList = postRepository.findAll(postId, pageable);
+        return new PageResponse<>(postList);
+
     }
 
-    public List<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId){
-        var postList = postRepository.findAllByWriterId(postId, writerId);
-        var checkForNext = postRepository.findAllByWriterId(postList.get(postList.size() - 1).getPostId() + 1, writerId);
-        if (checkForNext == null)
-            postList.get(postList.size() - 1).setLast(true);
-        return postList;
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId, Pageable pageable){
+        var postList = postRepository.findAllByWriterId(postId, writerId, pageable);
+        return new PageResponse<>(postList);
     }
     @Transactional
     public Long editPost(Long postId, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
@@ -70,12 +66,9 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    public List<PostResponse.FindAllDTO> searchPost(@Nullable Long postId, String keyword){
-        var postList = postRepository.findAllByKeyword(postId, keyword);
-        var checkForNext = postRepository.findAllByKeyword(postList.get(postList.size() - 1).getPostId() + 1, keyword);
-        if (checkForNext == null)
-            postList.get(postList.size() - 1).setLast(true);
-        return postList;
+    public PageResponse<PostResponse.FindAllDTO> searchPost(@Nullable Long postId, String keyword, Pageable pageable){
+        var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
+        return new PageResponse<>(postList);
 
     }
 
