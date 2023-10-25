@@ -6,15 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 public class CommentRequest {
-  @Getter
-  @Builder
-  public static class saveDTO {
-    @NotBlank(message = "댓글 내용은 필수입니다.")
-    private final String content;
+    @Getter
+    @Builder
+    public static class saveDTO {
+        @NotBlank(message = "댓글 내용은 필수입니다.")
+        private final String content;
 
-    @JsonCreator
-    public saveDTO(@JsonProperty("content") String content) {
-      this.content = content;
+        @JsonCreator
+        public saveDTO(@JsonProperty("content") String content) {
+            this.content = content;
+        }
     }
-  }
 }
