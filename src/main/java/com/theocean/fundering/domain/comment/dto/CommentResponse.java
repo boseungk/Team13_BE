@@ -10,10 +10,10 @@ public class CommentResponse {
   @Getter
   public static class findAllDTO {
     private final List<commentDTO> comments;
-    private final String lastCursor;
+    private final Long lastCursor;
     private final boolean isLastPage;
 
-    public findAllDTO(List<commentDTO> comments, String lastCursor, boolean isLastPage) {
+    public findAllDTO(List<commentDTO> comments, Long lastCursor, boolean isLastPage) {
       this.comments = comments;
       this.lastCursor = lastCursor;
       this.isLastPage = isLastPage;
@@ -32,9 +32,7 @@ public class CommentResponse {
     private final String writerName;
     private final String writerProfile;
     private final String content;
-    private final String cursor;
     private final int depth;
-    private final boolean isDeleted;
     private final long createdAt;
 
     public commentDTO(Comment comment, String writerName, String writerProfile) {
@@ -43,14 +41,8 @@ public class CommentResponse {
       this.writerName = writerName;
       this.writerProfile = writerProfile;
       this.content = comment.getContent();
-      this.cursor = comment.getCommentOrder();
       this.depth = comment.getDepth();
-      this.isDeleted = comment.isDeleted();
       this.createdAt = comment.getEpochSecond();
-    }
-
-    public boolean getIsDeleted() {
-      return isDeleted;
     }
 
     public static commentDTO fromEntity(Comment comment, String nickname, String profileImage) {

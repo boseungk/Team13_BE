@@ -36,13 +36,9 @@ public class CommentService {
 
     validateMemberAndPost(memberId, postId);
 
-    final String parentCommentOrder = request.getParentCommentOrder();
-    final String content = request.getContent();
+    final Comment newComment = buildBaseComment(memberId, postId, request.getContent());
 
-    final Comment newComment = buildBaseComment(memberId, postId, content);
-
-    if (null == parentCommentOrder) createParentComment(postId, newComment);
-    else createChildComment(postId, parentCommentOrder, newComment);
+    createParentComment(postId, newComment);
   }
 
   // 작성자와 게시글 존재 유무 체크
@@ -61,17 +57,50 @@ public class CommentService {
   // 원댓글 생성
   private void createParentComment(final Long postId, final Comment newComment) {
     final String maxCommentOrder = commentRepository.findMaxCommentOrder(postId);
-    final int newCommentOrder;
-
-    if (null != maxCommentOrder) {
-      final String[] parts = maxCommentOrder.split("\\.");
-      newCommentOrder = Integer.parseInt(parts[0]) + 1;
-    } else {
-      newCommentOrder = 1;
-    }
+    final int newCommentOrder = calculateCommentOrder(maxCommentOrder);
 
     newComment.updateCommentOrder(String.valueOf(newCommentOrder));
     commentRepository.save(newComment);
+  }
+
+  // 생성 댓글의 commentOrder 계산
+  private int calculateCommentOrder(final String maxCommentOrder) {
+    if (null != maxCommentOrder) {
+      final String[] parts = maxCommentOrder.split("\\.");
+      return Integer.parseInt(parts[0]) + 1;
+    }
+    return 1;
+  }
+
+  /** (기능) 대댓글 작성 */
+  @Transactional
+  public void createSubComment(
+      final Long memberId,
+      final Long postId,
+      final Long commentId,
+      final CommentRequest.saveDTO request) {
+
+    validateMemberAndPost(memberId, postId);
+
+    validateCommentExistence(commentId);
+
+    final String content = request.getContent();
+
+    final Comment newComment = buildBaseComment(memberId, postId, content);
+
+    final String parentCommentOrder = findParentCommentOrder(commentId);
+
+    createChildComment(postId, parentCommentOrder, newComment);
+  }
+
+  // 원댓글의 commentOrder 반환
+  private String findParentCommentOrder(final Long commentId) {
+    final Comment parentComment =
+        commentRepository
+            .findById(commentId)
+            .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
+
+    return parentComment.getCommentOrder();
   }
 
   // 대댓글 생성
@@ -87,7 +116,7 @@ public class CommentService {
             .getComment(postId, parentCommentOrder)
             .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
 
-    final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%") - 1;
+    final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%.%");
     if (REPLY_LIMIT <= replyCount) throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
 
     final String newCommentOrder = parentCommentOrder + "." + (replyCount + 1);
@@ -98,7 +127,7 @@ public class CommentService {
 
   /** (기능) 댓글 목록 조회 */
   public CommentResponse.findAllDTO getComments(
-      final long postId, final String cursor, final int pageSize) {
+      final long postId, final Long cursor, final int pageSize) {
 
     validatePostExistence(postId);
 
@@ -115,11 +144,11 @@ public class CommentService {
 
     final var commentsDTOs = convertToCommentDTOs(comments);
 
-    String lastCursor = null;
+    Long lastCursor = null;
 
     if (!comments.isEmpty()) {
       final Comment lastComment = comments.get(comments.size() - 1);
-      lastCursor = lastComment.getCommentOrder();
+      lastCursor = lastComment.getCommentId();
     }
 
     return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
@@ -148,10 +177,54 @@ public class CommentService {
         comment, writer.getNickname(), writer.getProfileImage());
   }
 
+  /** (기능) 대댓글 목록 조회 */
+  public CommentResponse.findAllDTO getSubComments(
+      final long postId, final long commentId, final long cursor, final int pageSize) {
+
+    validatePostExistence(postId);
+
+    validateCommentExistence(commentId);
+
+    final String parentCommentOrder = findParentCommentOrder(commentId);
+
+    List<Comment> comments;
+    try {
+      comments =
+          customCommentRepository.getSubCommentList(
+              postId, parentCommentOrder, cursor, pageSize + 1);
+    } catch (RuntimeException e) {
+      throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
+    }
+
+    final boolean isLastPage = comments.size() <= pageSize;
+
+    if (!isLastPage) comments = comments.subList(0, pageSize);
+
+    final var commentsDTOs = convertToCommentDTOs(comments);
+
+    Long lastCursor = null;
+
+    if (!comments.isEmpty()) {
+      final Comment lastComment = comments.get(comments.size() - 1);
+      lastCursor = lastComment.getCommentId();
+    }
+
+    return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
+  }
+
+  // 대댓글 삭제 여부, 존재 여부 판별
+  private void validateCommentExistence(final long commentId) {
+    final Comment parentComment =
+        commentRepository
+            .findById(commentId)
+            .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
+
+    if (parentComment.isDeleted()) throw new Exception400("삭제된 댓글입니다.");
+  }
+
   /** (기능) 댓글 삭제 */
   @Transactional
-  public void deleteComment(final Long memberId, final Long postId, final Long commentId)
-      throws RuntimeException {
+  public void deleteComment(final Long memberId, final Long postId, final Long commentId) {
     final Comment comment =
         commentRepository
             .findById(commentId)
