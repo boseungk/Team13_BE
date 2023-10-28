@@ -24,7 +24,7 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> createComment(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody @Valid CommentRequest.saveDTO commentRequest,
+            @RequestBody @Valid CommentRequest.SaveDTO commentRequest,
             @PathVariable long postId) {
 
         Long memberId = 1L; // Long memberId = userDetails.getMember().getUserId();
@@ -38,7 +38,7 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> createSubComment(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody @Valid CommentRequest.saveDTO commentRequest,
+            @RequestBody @Valid CommentRequest.SaveDTO commentRequest,
             @PathVariable long postId,
             @PathVariable long commentId) {
 
@@ -53,7 +53,7 @@ public class CommentController {
     public ResponseEntity<?> getComments(
             @PathVariable long postId, @PageableDefault(size = 10) Pageable pageable) {
 
-        CommentResponse.findAllDTO response = commentService.getComments(postId, pageable);
+        CommentResponse.FindAllDTO response = commentService.getComments(postId, pageable);
 
         return ResponseEntity.ok(ApiUtils.success(response));
     }
@@ -65,7 +65,7 @@ public class CommentController {
             @PathVariable long commentId,
             @PageableDefault(size = 10) Pageable pageable) {
 
-        CommentResponse.findAllDTO response =
+        CommentResponse.FindAllDTO response =
                 commentService.getSubComments(postId, commentId, pageable);
 
         return ResponseEntity.ok(ApiUtils.success(response));
