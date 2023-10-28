@@ -17,16 +17,16 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
-    public static final Long ACCESS_EXP = 1000L * 60 * 60; // 1시간
-    public static final Long REFRESH_EXP = 1000L * 60 * 60 * 24 * 14; // 2주
+    private static final Long ACCESS_EXP = 1000L * 60 * 60; // 1시간
+    private static final Long REFRESH_EXP = 1000L * 60 * 60 * 24 * 14; // 2주
 
     private static final String EMAIL_CLAIM = "email";
-    public static final String TOKEN_PREFIX = "Bearer ";
+    private static final String TOKEN_PREFIX = "Bearer ";
     public static final String ACCESS_HEADER = "Authorization";
     public static final String REFRESH_HEADER = "Authorization-refresh";
 
-    public static final String ACCESS_SECRET = "MyAccessSecretKey1234";
-    public static final String REFRESH_SECRET = "MyRefreshSecretKey1234";
+    private static final String ACCESS_SECRET = "MyAccessSecretKey1234";
+    private static final String REFRESH_SECRET = "MyRefreshSecretKey1234";
 
     private final MemberRepository memberRepository;
 
