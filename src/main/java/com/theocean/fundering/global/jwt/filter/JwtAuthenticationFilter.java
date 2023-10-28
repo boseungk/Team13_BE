@@ -94,6 +94,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getEmail())
                 .password(password)
+                .roles(myUser.getUserRole().getType())
                 .build();
 
         Authentication authentication =
