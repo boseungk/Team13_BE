@@ -101,8 +101,7 @@ public class CommentService {
     }
 
     // 대댓글 생성
-    // @CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")// , key =
-    // "#postId + '_' + #parentCommentOrder"
+    //@CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")
     private void createChildComment(
             final Long postId, final String parentCommentOrder, final Comment newComment) {
 
