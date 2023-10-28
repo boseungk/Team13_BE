@@ -35,6 +35,13 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/posts/{postId}/introduction")
+    public ResponseEntity<?> postIntroduction(@PathVariable Long postId){
+        String introduction = postService.findByPostId(postId).getContent();
+        return ResponseEntity.ok(ApiUtils.success(introduction));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/write")
     public ResponseEntity<?> writePost(@RequestBody PostRequest.PostWriteDTO postWriteDTO, @RequestPart(value = "thumbnail") MultipartFile thumbnail){
         postService.writePost(postWriteDTO, thumbnail);
