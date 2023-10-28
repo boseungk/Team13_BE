@@ -57,7 +57,7 @@ public class PostService {
         if (thumbnail != null)
             dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
         Post postPS = postRepository.findById(postId).orElseThrow();
-        postPS.update(dto.getTitle(), dto.getContent(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
+        postPS.update(dto.getTitle(), dto.getIntroduction(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 

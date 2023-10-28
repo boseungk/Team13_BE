@@ -44,7 +44,7 @@ public class Post extends AuditingFields {
     private Account account;
 
     @Column
-    private String thumbnail; // 현재 임시로 String 클래스로 할당, 추후 s3와 연동할 때 리팩토링
+    private String thumbnail;
 
     @Column @Min(1000)
     private int targetPrice;
