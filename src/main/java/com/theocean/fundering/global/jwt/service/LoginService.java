@@ -1,5 +1,6 @@
 package com.theocean.fundering.global.jwt.service;
 
+import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class LoginService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(member.getEmail())
                 .password(member.getPassword())
-                .roles(member.getUserRole().name())
+                .roles(member.getUserRole().getType())
                 .build();
     }
 }
