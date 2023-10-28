@@ -33,7 +33,7 @@ public class CommentService {
      */
     @Transactional
     public void createComment(
-            final Long memberId, final Long postId, final CommentRequest.saveDTO request) {
+            final Long memberId, final Long postId, final CommentRequest.SaveDTO request) {
 
         commentValidator.validateMemberAndPost(memberId, postId);
 
@@ -73,7 +73,7 @@ public class CommentService {
             final Long memberId,
             final Long postId,
             final Long parentCommentId,
-            final CommentRequest.saveDTO request) {
+            final CommentRequest.SaveDTO request) {
 
         commentValidator.validateMemberAndPost(memberId, postId);
 
@@ -101,6 +101,7 @@ public class CommentService {
     }
 
     // 대댓글 생성
+    //@CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")// , key = "#postId + '_' + #parentCommentOrder"
     private void createChildComment(
             final Long postId, final String parentCommentOrder, final Comment newComment) {
 
@@ -115,42 +116,44 @@ public class CommentService {
     /**
      * (기능) 댓글 목록 조회
      */
-    public CommentResponse.findAllDTO getComments(final long postId, final Pageable pageable) {
+    public CommentResponse.FindAllDTO getComments(final long postId, final Pageable pageable) {
 
         commentValidator.validatePostExistence(postId);
 
         final Page<Comment> commentPage = customCommentRepository.getCommentsPage(postId, pageable);
         final List<Comment> comments = commentPage.getContent();
 
-        final List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
+        final List<CommentResponse.CommentDTO> commentsDTOs = convertToCommentDTOs(comments);
 
         final boolean isLastPage = commentPage.isLast();
 
         final int currentPage = pageable.getPageNumber();
 
-        return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
+        return new CommentResponse.FindAllDTO(commentsDTOs, currentPage, isLastPage);
     }
 
     // 댓글 DTO 변환
-    private List<CommentResponse.commentDTO> convertToCommentDTOs(final List<Comment> comments) {
+    private List<CommentResponse.CommentDTO> convertToCommentDTOs(final List<Comment> comments) {
 
         return comments.stream().map(this::createCommentDTO).collect(Collectors.toList());
     }
 
-    private CommentResponse.commentDTO createCommentDTO(final Comment comment) {
+    private CommentResponse.CommentDTO createCommentDTO(final Comment comment) {
         final Member writer =
                 memberRepository
                         .findById(comment.getWriterId())
                         .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
 
-        return CommentResponse.commentDTO.fromEntity(
-                comment, writer.getNickname(), writer.getProfileImage());
+        final int replyCount = commentValidator.getReplyCount(comment.getPostId(), comment.getCommentOrder());
+
+        return CommentResponse.CommentDTO.fromEntity(
+                comment, replyCount, writer.getNickname(), writer.getProfileImage());
     }
 
     /**
      * (기능) 대댓글 목록 조회
      */
-    public CommentResponse.findAllDTO getSubComments(
+    public CommentResponse.FindAllDTO getSubComments(
             final long postId, final long parentCommentId, final Pageable pageable) {
 
         commentValidator.validatePostExistence(postId);
@@ -162,12 +165,12 @@ public class CommentService {
                         postId, findCommentOrder(parentCommentId), pageable);
         final List<Comment> comments = commentPage.getContent();
 
-        final List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
+        final List<CommentResponse.CommentDTO> commentsDTOs = convertToCommentDTOs(comments);
 
         final boolean isLastPage = commentPage.isLast();
         final int currentPage = pageable.getPageNumber();
 
-        return new CommentResponse.findAllDTO(commentsDTOs, currentPage, isLastPage);
+        return new CommentResponse.FindAllDTO(commentsDTOs, currentPage, isLastPage);
     }
 
     /**
