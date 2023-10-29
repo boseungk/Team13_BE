@@ -1,8 +1,12 @@
 package com.theocean.fundering.domain.comment.repository;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CustomCommentRepository {
-  List<Comment> getCommentList(Long postId, String cursor, int pageSize);
+
+    Page<Comment> getCommentsPage(Long postId, Pageable pageable);
+
+    Page<Comment> getSubCommentsPage(Long postId, String parentCommentOrder, Pageable pageable);
 }
