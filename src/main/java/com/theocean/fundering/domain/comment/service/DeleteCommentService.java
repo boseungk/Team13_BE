@@ -15,7 +15,6 @@ public class DeleteCommentService {
     private final CommentRepository commentRepository;
     private final CommentValidator commentValidator;
 
-
     /**
      * (기능) 댓글 삭제
      */

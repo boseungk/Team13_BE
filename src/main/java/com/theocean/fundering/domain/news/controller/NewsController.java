@@ -2,8 +2,8 @@ package com.theocean.fundering.domain.news.controller;
 
 import com.theocean.fundering.domain.news.dto.NewsRequest;
 import com.theocean.fundering.domain.news.dto.NewsResponse;
-import com.theocean.fundering.domain.news.service.ReadNewsService;
 import com.theocean.fundering.domain.news.service.CreateNewsService;
+import com.theocean.fundering.domain.news.service.ReadNewsService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;

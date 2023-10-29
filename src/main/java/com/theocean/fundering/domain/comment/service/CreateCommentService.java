@@ -3,8 +3,6 @@ package com.theocean.fundering.domain.comment.service;
 import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
-import com.theocean.fundering.global.errors.exception.Exception404;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,85 +12,77 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CreateCommentService {
 
-    private final CommentRepository commentRepository;
-    private final CommentValidator commentValidator;
+  private final CommentRepository commentRepository;
+  private final CommentValidator commentValidator;
 
-    /**
-     * (기능) 댓글 작성
-     */
-    @Transactional
-    public void createComment(
-            final Long memberId, final Long postId, final CommentRequest.SaveDTO request) {
+  /** (기능) 댓글 작성 */
+  @Transactional
+  public void createComment(
+      final Long memberId, final Long postId, final CommentRequest.SaveDTO request) {
 
-        commentValidator.validateMemberAndPost(memberId, postId);
+    commentValidator.validateMemberAndPost(memberId, postId);
 
-        final Comment newComment = buildBaseComment(memberId, postId, request.getContent());
+    final Comment newComment = buildBaseComment(memberId, postId, request.getContent());
 
-        createParentComment(postId, newComment);
+    createParentComment(postId, newComment);
+  }
+
+  // 기본 댓글 객체 생성
+  private Comment buildBaseComment(final Long memberId, final Long postId, final String content) {
+    return Comment.builder().writerId(memberId).postId(postId).content(content).build();
+  }
+
+  // 원댓글 생성
+  private void createParentComment(final Long postId, final Comment newComment) {
+    final String maxCommentOrder = commentRepository.findMaxCommentOrder(postId);
+    final int newCommentOrder = calculateCommentOrder(maxCommentOrder);
+
+    newComment.updateCommentOrder(String.valueOf(newCommentOrder));
+    commentRepository.save(newComment);
+  }
+
+  // 생성 댓글의 commentOrder 계산
+  private int calculateCommentOrder(final String maxCommentOrder) {
+    if (null != maxCommentOrder) {
+      final String[] parts = maxCommentOrder.split("\\.");
+      return Integer.parseInt(parts[0]) + 1;
     }
+    return 1;
+  }
 
-    // 기본 댓글 객체 생성
-    private Comment buildBaseComment(final Long memberId, final Long postId, final String content) {
-        return Comment.builder().writerId(memberId).postId(postId).content(content).build();
-    }
+  /** (기능) 대댓글 작성 */
+  @Transactional
+  public void createSubComment(
+      final Long memberId,
+      final Long postId,
+      final Long parentCommentId,
+      final CommentRequest.SaveDTO request) {
 
-    // 원댓글 생성
-    private void createParentComment(final Long postId, final Comment newComment) {
-        final String maxCommentOrder = commentRepository.findMaxCommentOrder(postId);
-        final int newCommentOrder = calculateCommentOrder(maxCommentOrder);
+    commentValidator.validateMemberAndPost(memberId, postId);
 
-        newComment.updateCommentOrder(String.valueOf(newCommentOrder));
-        commentRepository.save(newComment);
-    }
+    commentValidator.validateCommentExistence(parentCommentId);
 
-    // 생성 댓글의 commentOrder 계산
-    private int calculateCommentOrder(final String maxCommentOrder) {
-        if (null != maxCommentOrder) {
-            final String[] parts = maxCommentOrder.split("\\.");
-            return Integer.parseInt(parts[0]) + 1;
-        }
-        return 1;
-    }
+    final String content = request.getContent();
 
-    /**
-     * (기능) 대댓글 작성
-     */
-    @Transactional
-    public void createSubComment(
-            final Long memberId,
-            final Long postId,
-            final Long parentCommentId,
-            final CommentRequest.SaveDTO request) {
+    final Comment newComment = buildBaseComment(memberId, postId, content);
 
-        commentValidator.validateMemberAndPost(memberId, postId);
+    final String parentCommentOrder = commentValidator.findCommentOrder(parentCommentId);
 
-        commentValidator.validateCommentExistence(parentCommentId);
+    commentValidator.validateDepthLimit(parentCommentOrder);
 
-        final String content = request.getContent();
+    createChildComment(postId, parentCommentOrder, newComment);
+  }
 
-        final Comment newComment = buildBaseComment(memberId, postId, content);
+  // 대댓글 생성
+  // @CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")
+  private void createChildComment(
+          final Long postId, final String parentCommentOrder, final Comment newComment) {
 
-        final String parentCommentOrder = commentValidator.findCommentOrder(parentCommentId);
+    final int replyCount = commentValidator.validateReplyLimit(postId, parentCommentOrder);
 
-        commentValidator.validateDepthLimit(parentCommentOrder);
+    final String newCommentOrder = parentCommentOrder + "." + (replyCount + 1);
 
-        createChildComment(postId, parentCommentOrder, newComment);
-    }
-
-
-    // 대댓글 생성
-    //@CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")
-    private void createChildComment(
-            final Long postId, final String parentCommentOrder, final Comment newComment) {
-
-        final int replyCount = commentValidator.validateReplyLimit(postId, parentCommentOrder);
-
-        final String newCommentOrder = parentCommentOrder + "." + (replyCount + 1);
-
-        newComment.updateCommentOrder(newCommentOrder);
-        commentRepository.save(newComment);
-    }
-
-
-
+    newComment.updateCommentOrder(newCommentOrder);
+    commentRepository.save(newComment);
+  }
 }

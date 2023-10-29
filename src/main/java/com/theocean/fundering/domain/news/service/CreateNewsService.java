@@ -7,7 +7,6 @@ import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,8 @@ public class CreateNewsService {
 
     // (기능) 업데이트 글 작성
     @Transactional
-    public void createNews(final Long writerId, final Long postId, final NewsRequest.saveDTO request) {
+    public void createNews(
+            final Long writerId, final Long postId, final NewsRequest.saveDTO request) {
         // DTO에서 필요한 정보를 추출합니다.
         final String title = request.getTitle();
         final String content = request.getContent();
@@ -33,10 +33,12 @@ public class CreateNewsService {
                         .findById(postId)
                         .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다: " + postId));
 
-        if (!post.getWriter().getUserId().equals(writerId)) throw new Exception403("주최자만 업데이트 글을 작성할 수 있습니다.");
+        if (!post.getWriter().getUserId().equals(writerId))
+            throw new Exception403("주최자만 업데이트 글을 작성할 수 있습니다.");
 
         // News 엔터티를 생성합니다.
-        final News news = News.builder().postId(postId).writerId(writerId).title(title).content(content).build();
+        final News news =
+                News.builder().postId(postId).writerId(writerId).title(title).content(content).build();
 
         // 저장소에 News 엔터티를 저장합니다.
         newsRepository.save(news);
