@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class GetNewsService {
+public class ReadNewsService {
 
     private final CustomNewsRepositoryImpl customNewsRepository;
     private final PostRepository postRepository;
