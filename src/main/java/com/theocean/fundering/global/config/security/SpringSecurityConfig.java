@@ -12,7 +12,6 @@ import com.theocean.fundering.global.jwt.userInfo.CustomJsonUsernamePasswordAuth
 import com.theocean.fundering.global.oauth2.handler.OAuth2LoginFailureHandler;
 import com.theocean.fundering.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.theocean.fundering.global.oauth2.service.CustomOAuth2UserService;
-import com.theocean.fundering.global.utils.FilterResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,15 +53,15 @@ public class SpringSecurityConfig {
 
     public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
-        public void configure(HttpSecurity builder) throws Exception {
-            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+        public void configure(final HttpSecurity builder) throws Exception {
+            final AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtProvider));
             super.configure(builder);
         }
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         //csrf disable
         http.csrf(AbstractHttpConfigurer::disable);
 
