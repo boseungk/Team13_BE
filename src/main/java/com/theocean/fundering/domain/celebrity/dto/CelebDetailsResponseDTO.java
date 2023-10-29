@@ -14,14 +14,14 @@ public class CelebDetailsResponseDTO {
     private final String celebGroup;
     private final String profileImage;
 
-    private CelebDetailsResponseDTO(Celebrity celebrity) {
-        this.celebName = celebrity.getCelebName();
-        this.celebGender = celebrity.getCelebGender();
-        this.celebType = celebrity.getCelebType();
-        this.celebGroup = celebrity.getCelebGroup();
-        this.profileImage = celebrity.getProfileImage();
+    private CelebDetailsResponseDTO(final Celebrity celebrity) {
+        celebName = celebrity.getCelebName();
+        celebGender = celebrity.getCelebGender();
+        celebType = celebrity.getCelebType();
+        celebGroup = celebrity.getCelebGroup();
+        profileImage = celebrity.getProfileImage();
     }
-    public static CelebDetailsResponseDTO from(Celebrity celebrity){
+    public static CelebDetailsResponseDTO from(final Celebrity celebrity){
         return new CelebDetailsResponseDTO(celebrity);
     }
 }
