@@ -29,16 +29,16 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, JwtProvider jwtProvider) {
+    public JwtAuthenticationFilter(final AuthenticationManager authenticationManager, final MemberRepository memberRepository, final JwtProvider jwtProvider) {
         super(authenticationManager);
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws IOException, ServletException {
         // "/login" 요청은 토큰 확인 x
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
             chain.doFilter(request, response);
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         try{
             // 원래 리소스 접근 시 refreshToken 없고 accessToken만 존재
             // accessToken 으로 이메일 비교 후 성공하면 인증 성공, 실패하면 다음 필터에서 인증 오류
-            if (refreshToken == null) {
+            if (null == refreshToken) {
                 checkAccessTokenAndAuthentication(request, response, chain);
             }
             // refreshToken 있으면 AccessToken 재발급 하기 위한 것!
@@ -58,13 +58,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             }
             // 두 토큰 다 실패하면 다음 필터에서 403 에러
-        }catch(Exception e){
+        }catch(final Exception e){
             forbidden(response, new Exception403("권한이 없습니다."));
         }
     }
 
-    private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                   FilterChain filterChain) throws ServletException, IOException {
+    private void checkAccessTokenAndAuthentication(final HttpServletRequest request, final HttpServletResponse response,
+                                                   final FilterChain filterChain) throws ServletException, IOException {
         jwtProvider.extractAccessToken(request)
                 .filter(jwtProvider::isAccessTokenValid)
                 .ifPresent(accessToken -> jwtProvider.verifyAccessTokenAndExtractEmail(accessToken)
@@ -74,10 +74,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
+    private void checkRefreshTokenAndReIssueAccessToken(final HttpServletResponse response, final String refreshToken) {
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(member -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(member);
+                    final String reIssuedRefreshToken = reIssueRefreshToken(member);
                     jwtProvider.sendAccessAndRefreshToken(
                             response,
                             jwtProvider.createAccessToken(member.getEmail()),
@@ -86,7 +86,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private String reIssueRefreshToken(final Member member) {
-        String reIssuedRefreshToken = jwtProvider.createRefreshToken(member.getEmail());
+        final String reIssuedRefreshToken = jwtProvider.createRefreshToken(member.getEmail());
         member.updateRefreshToken(reIssuedRefreshToken);
         memberRepository.saveAndFlush(member);
         return reIssuedRefreshToken;
@@ -94,28 +94,28 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private void saveAuthentication(final Member myUser) {
         String password = myUser.getPassword();
-        if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
+        if (null == password) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
             password = PasswordUtil.generateRandomPassword();
         }
 
-        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+        final UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getEmail())
                 .password(password)
                 .roles(myUser.getUserRole().getType())
                 .build();
 
-        Authentication authentication =
+        final Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,
                         authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    public void forbidden(HttpServletResponse resp, Exception403 e) throws IOException {
+    private void forbidden(final HttpServletResponse resp, final Exception403 e) throws IOException {
         resp.setStatus(e.status().value());
         resp.setContentType("application/json; charset=utf-8");
-        ObjectMapper om = new ObjectMapper();
-        String responseBody = om.writeValueAsString(e.body());
+        final ObjectMapper om = new ObjectMapper();
+        final String responseBody = om.writeValueAsString(e.body());
         resp.getWriter().println(responseBody);
     }
 }
