@@ -63,4 +63,14 @@ public class CommentValidator {
 
         return commentRepository.countReplies(postId, commentOrder + "%.%");
     }
+
+    // 원댓글의 commentOrder 반환
+    public String findCommentOrder(final Long commentId) {
+        final Comment comment =
+                commentRepository
+                        .findById(commentId)
+                        .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
+
+        return comment.getCommentOrder();
+    }
 }
