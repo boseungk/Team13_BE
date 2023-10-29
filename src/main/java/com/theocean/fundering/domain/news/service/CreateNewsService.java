@@ -22,23 +22,21 @@ public class CreateNewsService {
 
     // (기능) 업데이트 글 작성
     @Transactional
-    public void createNews(Long writerId, Long postId, NewsRequest.saveDTO request) {
+    public void createNews(final Long writerId, final Long postId, final NewsRequest.saveDTO request) {
         // DTO에서 필요한 정보를 추출합니다.
-        String title = request.getTitle();
-        String content = request.getContent();
+        final String title = request.getTitle();
+        final String content = request.getContent();
 
         // 게시글 존재 여부와 작성자 확인
-        Post post =
+        final Post post =
                 postRepository
                         .findById(postId)
                         .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다: " + postId));
 
-        if (!post.getWriter().getUserId().equals(writerId)) {
-            throw new Exception403("주최자만 업데이트 글을 작성할 수 있습니다.");
-        }
+        if (!post.getWriter().getUserId().equals(writerId)) throw new Exception403("주최자만 업데이트 글을 작성할 수 있습니다.");
 
         // News 엔터티를 생성합니다.
-        News news = News.builder().postId(postId).writerId(writerId).title(title).content(content).build();
+        final News news = News.builder().postId(postId).writerId(writerId).title(title).content(content).build();
 
         // 저장소에 News 엔터티를 저장합니다.
         newsRepository.save(news);
