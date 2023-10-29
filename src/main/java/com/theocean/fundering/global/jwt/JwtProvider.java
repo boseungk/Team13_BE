@@ -31,8 +31,8 @@ public class JwtProvider {
     private final MemberRepository memberRepository;
 
 
-    public String createAccessToken(String email) {
-        String jwt = JWT.create()
+    public String createAccessToken(final String email) {
+        final String jwt = JWT.create()
                 .withSubject("AccessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_EXP))
                 .withClaim(EMAIL_CLAIM, email)
@@ -40,8 +40,8 @@ public class JwtProvider {
         return TOKEN_PREFIX + jwt;
     }
 
-    public String createRefreshToken(String email) {
-        String jwt = JWT.create()
+    public String createRefreshToken(final String email) {
+        final String jwt = JWT.create()
                 .withSubject("AccessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_EXP))
                 .withClaim(EMAIL_CLAIM, email)
@@ -49,19 +49,19 @@ public class JwtProvider {
         return TOKEN_PREFIX + jwt;
     }
 
-    public Optional<String> extractAccessToken(HttpServletRequest request) {
+    public Optional<String> extractAccessToken(final HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(ACCESS_HEADER))
                 .filter(accessToken -> accessToken.startsWith(TOKEN_PREFIX))
                 .map(accessToken -> accessToken.replace(TOKEN_PREFIX, ""));
     }
 
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+    public Optional<String> extractRefreshToken(final HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(REFRESH_HEADER))
                 .filter(refreshToken -> refreshToken.startsWith(TOKEN_PREFIX))
                 .map(refreshToken -> refreshToken.replace(TOKEN_PREFIX, ""));
     }
 
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void sendAccessAndRefreshToken(final HttpServletResponse response, final String accessToken, final String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setHeader(ACCESS_HEADER, accessToken);
@@ -69,33 +69,26 @@ public class JwtProvider {
     }
 
 
-    public boolean isAccessTokenValid(String token) {
+    public boolean isAccessTokenValid(final String token) {
         try {
             JWT.require(Algorithm.HMAC512(ACCESS_SECRET)).build().verify(token);
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("유효하지 않은 토큰입니다. {}", new String[]{e.getMessage()});
             return false;
         }
     }
 
-    public Optional<String> verifyAccessTokenAndExtractEmail(String accessToken) {
+    public Optional<String> verifyAccessTokenAndExtractEmail(final String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(ACCESS_SECRET))
                     .build()
                     .verify(accessToken) // accessToken 검증
                     .getClaim(EMAIL_CLAIM) // claim(Email) 가져오기
                     .asString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
-    }
-    public void updateRefreshToken(String email, String refreshToken) {
-        memberRepository.findByEmail(email)
-                .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
-                );
     }
 }
