@@ -15,27 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class CelebService {
     private final CelebRepository celebRepository;
     @Transactional
-    public void register(CelebRequestDTO celebRequestDTO) {
+    public void register(final CelebRequestDTO celebRequestDTO) {
         try{
             celebRepository.save(celebRequestDTO.mapToEntity());
-        }catch (RuntimeException e){
+        }catch (final RuntimeException e){
             throw new Exception500("셀럽 등록 실패");
         }
     }
 
-    public PageResponse<CelebFundingResponseDTO> findAllPosting(Long celebId, Long postId, Pageable pageable) {
-        var page = celebRepository.findAllPosting(celebId, postId, pageable);
+    public PageResponse<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
+        final var page = celebRepository.findAllPosting(celebId, postId, pageable);
         return new PageResponse<>(page);
     }
 
-    public CelebDetailsResponseDTO findByCelebId(Long celebId) {
-        Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
+    public CelebDetailsResponseDTO findByCelebId(final Long celebId) {
+        final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
         return CelebDetailsResponseDTO.from(celebrity);
     }
 
-    public PageResponse<CelebListResponseDTO> findAllCeleb(Long celebId, Pageable pageable) {
-        var page = celebRepository.findAllCeleb(celebId, pageable);
+    public PageResponse<CelebListResponseDTO> findAllCeleb(final Long celebId, final Pageable pageable) {
+        final var page = celebRepository.findAllCeleb(celebId, pageable);
         return new PageResponse<>(page);
     }
 }

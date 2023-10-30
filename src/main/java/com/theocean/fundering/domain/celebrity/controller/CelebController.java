@@ -16,26 +16,28 @@ import org.springframework.web.bind.annotation.*;
 public class CelebController {
     private final CelebService celebService;
     @PostMapping("/celebs")
-    public ResponseEntity<?> registerCeleb(@RequestBody @Valid CelebRequestDTO celebRequestDTO, Error error){
+    public ResponseEntity<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
         celebService.register(celebRequestDTO);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
     @GetMapping("/celebs/{celebId}/posts")
-    public ResponseEntity<?> findAllPosting(@PathVariable Long celebId,
-                                            @RequestParam Long postId,
-                                            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable){
-        PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
+    public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
+                                            @RequestParam final Long postId,
+                                            @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable){
+        final PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
+
     @GetMapping("/celebs/{celebId}")
-    public ResponseEntity<?> findByCelebId(@PathVariable Long celebId){
-        CelebDetailsResponseDTO responseDTO = celebService.findByCelebId(celebId);
+    public ResponseEntity<?> findByCelebId(@PathVariable final Long celebId){
+        final CelebDetailsResponseDTO responseDTO = celebService.findByCelebId(celebId);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
+
     @GetMapping("/celebs")
-    public ResponseEntity<?> findAllPosting(@RequestParam Long celebId,
-                                            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable){
-        PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, pageable);
+    public ResponseEntity<?> findAllCelebs(@RequestParam final Long celebId,
+                                            @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable){
+        final PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 }
