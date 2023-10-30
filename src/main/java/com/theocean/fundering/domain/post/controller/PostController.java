@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -32,6 +31,13 @@ public class PostController {
         PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(postId);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
 
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/posts/{postId}/introduction")
+    public ResponseEntity<?> postIntroduction(@PathVariable Long postId){
+        String introduction = postService.findByPostId(postId).getContent();
+        return ResponseEntity.ok(ApiUtils.success(introduction));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
