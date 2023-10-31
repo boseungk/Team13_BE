@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class CommentController {
     private final DeleteCommentService deleteCommentService;
 
     // (기능) 댓글 작성
-    // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> createComment(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -38,7 +39,7 @@ public class CommentController {
     }
 
     // (기능) 대댓글 작성
-    // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> createSubComment(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -76,7 +77,7 @@ public class CommentController {
     }
 
     // (기능) 댓글 삭제
-    // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(
             @AuthenticationPrincipal CustomUserDetails userDetails,
