@@ -5,6 +5,7 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
@@ -26,22 +27,26 @@ public class PostService {
     private final PostRepository postRepository;
     private final AWSS3Uploader awss3Uploader;
     private final CelebRepository celebRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public void writePost(Member writer, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+    public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
         dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+        Member writer =  memberRepository.findByEmail(email).orElseThrow(
+                () -> new Exception500("No matched member found")
+        );
         Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
         postRepository.save(dto.toEntity(writer, celebrity));
     }
 
-    public PostResponse.FindByPostIdDTO findByPostId(Member member, Long postId){
+    public PostResponse.FindByPostIdDTO findByPostId(String email, Long postId){
         Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
         PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
-        if (member.getEmail().equals(postPS.getWriter().getEmail()))
+        if (postPS.getWriter().getEmail().equals(email))
             result.setWriter(true);
         return result;
     }

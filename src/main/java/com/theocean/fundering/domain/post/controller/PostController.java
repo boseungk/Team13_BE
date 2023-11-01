@@ -31,10 +31,10 @@ public class PostController {
 
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> findByPostId(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long postId){
-        Member member = null;
+        String memberEmail = null;
         if (userDetails != null)
-            member = userDetails.getMember();
-        PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(member, postId);
+            memberEmail = userDetails.getEmail();
+        PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(memberEmail, postId);
 
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
 
@@ -52,8 +52,8 @@ public class PostController {
     public ResponseEntity<?> writePost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                        @RequestBody PostRequest.PostWriteDTO postWriteDTO,
                                        @RequestPart(value = "thumbnail") MultipartFile thumbnail){
-        Member writer = userDetails.getMember();
-        postService.writePost(writer, postWriteDTO, thumbnail);
+        String writerEmail = userDetails.getEmail();
+        postService.writePost(writerEmail, postWriteDTO, thumbnail);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
