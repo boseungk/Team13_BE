@@ -33,7 +33,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         post.celebrity.celebId,
                         post.celebrity.celebName,
                         post.title,
-                        post.content,
+                        post.introduction,
                         post.participants,
                         post.targetPrice))
                 .from(post)

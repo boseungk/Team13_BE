@@ -35,7 +35,7 @@ public class PostResponse {
             this.celebrity = post.getCelebrity().getCelebName();
             this.celebImg = post.getCelebrity().getProfileImage();
             this.title = post.getTitle();
-            this.content = post.getContent();
+            this.content = post.getIntroduction();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
             this.currentAmount = post.getAccount().getFundingAmount();

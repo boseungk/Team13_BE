@@ -15,7 +15,6 @@ import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +57,7 @@ public class PostService {
         if (thumbnail != null)
             dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
         Post postPS = postRepository.findById(postId).orElseThrow();
-        postPS.update(dto.getTitle(), dto.getContent(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
+        postPS.update(dto.getTitle(), dto.getIntroduction(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 
