@@ -23,7 +23,7 @@ public class CelebController {
     @GetMapping("/celebs/{celebId}/posts")
     public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
                                             @RequestParam final Long postId,
-                                            @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable){
+                                            @PageableDefault final Pageable pageable){
         final PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
@@ -36,8 +36,9 @@ public class CelebController {
 
     @GetMapping("/celebs")
     public ResponseEntity<?> findAllCelebs(@RequestParam final Long celebId,
-                                            @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable){
-        final PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, pageable);
+                                            @RequestParam final String keyword,
+                                            @PageableDefault final Pageable pageable){
+        final PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, keyword, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 }
