@@ -5,11 +5,11 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
@@ -24,22 +24,26 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
     private final AWSS3Uploader awss3Uploader;
     private final CelebRepository celebRepository;
 
     @Transactional
-    public void writePost(PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+    public void writePost(Member writer, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
         dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Member writer = memberRepository.findByNickname(dto.getWriter()).orElseThrow();
-        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow();
+        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
+                () -> new Exception500("No matched celebrity found")
+        );
         postRepository.save(dto.toEntity(writer, celebrity));
     }
 
-    public PostResponse.FindByPostIdDTO findByPostId(Long postId){
-        Post postPS = postRepository.findById(postId).orElseThrow();
-        return new PostResponse.FindByPostIdDTO(postPS);
-
+    public PostResponse.FindByPostIdDTO findByPostId(Member member, Long postId){
+        Post postPS = postRepository.findById(postId).orElseThrow(
+                () -> new Exception500("No matched post found")
+        );
+        PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
+        if (member.getEmail().equals(postPS.getWriter().getEmail()))
+            result.setWriter(true);
+        return result;
     }
 
     public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable){
@@ -48,15 +52,18 @@ public class PostService {
 
     }
 
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId, Pageable pageable){
-        var postList = postRepository.findAllByWriterId(postId, writerId, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, String email, Pageable pageable){
+        var postList = postRepository.findAllByWriterEmail(postId, email, pageable);
         return new PageResponse<>(postList);
     }
+
     @Transactional
     public Long editPost(Long postId, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
         if (thumbnail != null)
             dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Post postPS = postRepository.findById(postId).orElseThrow();
+        Post postPS = postRepository.findById(postId).orElseThrow(
+                () -> new Exception500("No matched post found")
+        );
         postPS.update(dto.getTitle(), dto.getIntroduction(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
@@ -73,6 +80,12 @@ public class PostService {
 
     public String uploadImage(MultipartFile img){
         return awss3Uploader.uploadToS3(img);
+    }
+
+    public String getIntroduction(Long postId){
+        return postRepository.findById(postId).orElseThrow(
+                () -> new Exception500("No mathced post found")
+        ).getIntroduction();
     }
 
 }
