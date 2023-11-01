@@ -34,8 +34,8 @@ public class CelebService {
         return CelebDetailsResponseDTO.from(celebrity);
     }
 
-    public PageResponse<CelebListResponseDTO> findAllCeleb(final Long celebId, final Pageable pageable) {
-        final var page = celebRepository.findAllCeleb(celebId, pageable);
+    public PageResponse<CelebListResponseDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
+        final var page = celebRepository.findAllCeleb(celebId, keyword, pageable);
         return new PageResponse<>(page);
     }
 }
