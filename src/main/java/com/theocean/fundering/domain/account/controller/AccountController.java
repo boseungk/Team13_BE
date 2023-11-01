@@ -1,5 +1,6 @@
 package com.theocean.fundering.domain.account.controller;
 
+import com.theocean.fundering.domain.account.dto.BalanceResponse;
 import com.theocean.fundering.domain.account.service.AccountService;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -22,7 +23,8 @@ public class AccountController {
     public ResponseEntity<?> getFundingBalance(@PathVariable long postId) {
 
         final int balance = accountService.getBalance(postId);
+        BalanceResponse balanceResponse = new BalanceResponse(balance);
 
-       return ResponseEntity.ok(ApiUtils.success(balance));
+       return ResponseEntity.ok(ApiUtils.success(balanceResponse));
     }
 }
