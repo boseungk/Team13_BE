@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.myfunding.controller;
 
-import com.theocean.fundering.domain.myfunding.dto.MyFundingResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.myfunding.service.MyFundingService;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
@@ -26,8 +27,18 @@ public class MyFundingController {
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId,
             @PageableDefault final Pageable pageable){
-        final PageResponse<MyFundingResponseDTO> page = myFundingService.findAllPostingByHost(userDetails.getId(), postId, pageable);
+        final PageResponse<MyFundingHostResponseDTO> page = myFundingService.findAllPostingByHost(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/support")
+    public ResponseEntity<?> findAllPostingBySupport(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @PageableDefault final Pageable pageable
+    ){
+        final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 }
