@@ -2,11 +2,11 @@ package com.theocean.fundering.domain.celebrity.controller;
 
 import com.theocean.fundering.domain.celebrity.dto.*;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
+import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

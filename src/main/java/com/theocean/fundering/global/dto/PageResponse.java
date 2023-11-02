@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.celebrity.dto;
+package com.theocean.fundering.global.dto;
 
 import lombok.Builder;
 import lombok.Getter;
