@@ -36,8 +36,4 @@ public class MemberController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody @Valid MemberRequestDTO requestDTO, Error error){
-//        memberService.login(requestDTO);
-//    }
 }
