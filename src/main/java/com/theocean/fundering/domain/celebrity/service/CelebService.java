@@ -32,6 +32,14 @@ public class CelebService {
                 .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
     }
 
+    @Transactional
+    public void deleteCelebrity(Long celebId) {
+        celebRepository.delete(
+                celebRepository.findById(celebId).orElseThrow(
+                        () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
+                )
+        );
+    }
 
     public PageResponse<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
         final var page = celebRepository.findAllPosting(celebId, postId, pageable);
