@@ -71,6 +71,11 @@ public class Celebrity extends AuditingFields {
         this.profileImage = profileImage;
     }
 
+    public Celebrity approvalCelebrity(){
+        status = ApprovalStatus.APPROVED;
+        return this;
+    }
+
     @Builder
     public Celebrity(String celebName, CelebGender celebGender, CelebType celebType,
                      String celebGroup, String profileImage) {
