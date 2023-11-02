@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,6 +21,16 @@ public class CelebController {
         celebService.register(celebRequestDTO);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> findAllCelebForApproval(@PathVariable final Long celebId,
+                                                     @PageableDefault final Pageable pageable
+    ){
+        PageResponse<CelebListResponseDTO> page = celebService.findAllCelebForApproval(celebId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(page));
+    }
+
     @GetMapping("/celebs/{celebId}/posts")
     public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
                                             @RequestParam final Long postId,
