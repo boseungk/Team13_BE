@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.payment.domain.dto;
+package com.theocean.fundering.domain.payment.dto;
 
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.payment.domain.Payment;

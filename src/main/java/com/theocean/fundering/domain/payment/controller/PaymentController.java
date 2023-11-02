@@ -1,12 +1,12 @@
-package com.theocean.fundering.domain.payment.domain.controller;
+package com.theocean.fundering.domain.payment.controller;
 
 
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.payment.domain.dto.PaymentRequest;
-import com.theocean.fundering.domain.payment.domain.service.PaymentService;
+import com.theocean.fundering.domain.payment.dto.PaymentRequest;
+import com.theocean.fundering.domain.payment.service.PaymentService;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -26,7 +26,6 @@ import java.io.IOException;
 @RestController
 public class PaymentController {
     private final PaymentService paymentService;
-    private final JwtProvider jwtProvider;
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/verify")
@@ -41,8 +40,8 @@ public class PaymentController {
                                     @AuthenticationPrincipal CustomUserDetails userDetails,
                                     @RequestParam(value = "imp_uid") String impUid,
                                     @RequestBody PaymentRequest.DonateDTO donateDTO){
-        Member member = userDetails.getMember();
-        paymentService.donate(postId, member, impUid, donateDTO);
+        String email = userDetails.getEmail();
+        paymentService.donate(postId, email, impUid, donateDTO);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
