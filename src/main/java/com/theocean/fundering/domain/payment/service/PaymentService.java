@@ -1,12 +1,12 @@
-package com.theocean.fundering.domain.payment.domain.service;
+package com.theocean.fundering.domain.payment.service;
 
 
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.payment.domain.dto.PaymentRequest;
-import com.theocean.fundering.domain.payment.domain.repository.PaymentRepository;
+import com.theocean.fundering.domain.payment.dto.PaymentRequest;
+import com.theocean.fundering.domain.payment.repository.PaymentRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.config.PaymentConfig;
