@@ -31,6 +31,13 @@ public class CelebController {
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> approvalCelebrity(@PathVariable final Long celebId){
+        celebService.approvalCelebrity(celebId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
     @GetMapping("/celebs/{celebId}/posts")
     public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
                                             @RequestParam final Long postId,
