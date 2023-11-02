@@ -38,6 +38,13 @@ public class CelebController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> rejectCelebrity(@PathVariable final Long celebId){
+        celebService.deleteCelebrity(celebId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
     @GetMapping("/celebs/{celebId}/posts")
     public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
                                             @RequestParam final Long postId,
