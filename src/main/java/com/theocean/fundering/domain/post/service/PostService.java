@@ -47,7 +47,7 @@ public class PostService {
         );
         PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
         if (postPS.getWriter().getEmail().equals(email))
-            result.setWriter(true);
+            result.setEqWriter(true);
         return result;
     }
 

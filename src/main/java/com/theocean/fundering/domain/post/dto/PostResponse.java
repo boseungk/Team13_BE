@@ -26,7 +26,7 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private int participant;
-        private boolean isWriter;
+        private boolean eqWriter;
 
 
         public FindByPostIdDTO(Post post){
@@ -44,7 +44,7 @@ public class PostResponse {
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
             this.participant = post.getParticipants();
-            this.isWriter = false;
+            this.eqWriter = false;
         }
     }
 
