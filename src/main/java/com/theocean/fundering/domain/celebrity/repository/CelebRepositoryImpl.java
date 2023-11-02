@@ -46,7 +46,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     }
 
     @Override
-    public Slice<CelebListResponseDTO> findAllCeleb(final Long celebId, final Pageable pageable) {
+    public Slice<CelebListResponseDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebListResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebListResponseDTO.class,
@@ -57,7 +57,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebGroup,
                         celebrity.profileImage))
                 .from(celebrity)
-                .where(ltCelebId(celebId))
+                .where(ltCelebId(celebId), nameCondition(keyword).or(groupCondition(keyword)))
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -65,22 +65,21 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
-
     private BooleanExpression eqPostCelebId(final Long celebId){
         return post.celebrity.celebId.eq(celebId);
     }
 
     private BooleanExpression ltPostId(final Long cursorId){
-        if (null == cursorId){
-            return null;
-        }
-        return post.postId.lt(cursorId);
+        return cursorId != null ? post.postId.lt(cursorId) : null;
     }
 
     private BooleanExpression ltCelebId(final Long cursorId){
-        if (null == cursorId){
-            return null;
-        }
-        return celebrity.celebId.lt(cursorId);
+        return cursorId != null ? celebrity.celebId.lt(cursorId) : null;
+    }
+    private BooleanExpression nameCondition(String nameCond){
+        return nameCond != null ? celebrity.celebName.contains(nameCond) : null;
+    }
+    private BooleanExpression groupCondition(String nameCond){
+        return nameCond != null ? celebrity.celebGroup.contains(nameCond) : null;
     }
 }
