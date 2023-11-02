@@ -61,6 +61,10 @@ public class Withdrawal extends AuditingFields {
         isApproved = false;
     }
 
+    public void approveWithdrawal(){
+        isApproved = true;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
