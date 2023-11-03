@@ -25,20 +25,21 @@ public class Evidence extends AuditingFields {
     @Column(nullable = false)
     private Long withdrawalId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @Column(nullable = false)
+    private Long applicantId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Post post;
+    @Column(nullable = false)
+    private Long postId;
 
     @Column(nullable = false)
     private String url;
 
     @Builder
-    public Evidence(Long withdrawalId, Member member, Post post) {
+    public Evidence(Long withdrawalId, Long applicantId, Long postId, String url) {
         this.withdrawalId = withdrawalId;
-        this.member = member;
-        this.post = post;
+        this.applicantId = applicantId;
+        this.postId = postId;
+        this.url = url;
     }
 
     @Override
