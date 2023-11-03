@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,12 +45,18 @@ public class Withdrawal extends AuditingFields {
     private String depositAccount;
 
     // 출금액
+    @Min(value = 0)
     @Column(nullable = false)
     private int withdrawalAmount;
 
     // 승인 여부
     @Column(nullable = false)
     private Boolean isApproved;
+
+    // 출금시 계좌 잔액
+    @Min(value = 0)
+    @Column
+    private Integer balance;
 
     // 생성자
     @Builder
@@ -59,16 +66,19 @@ public class Withdrawal extends AuditingFields {
         this.usage = usage;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
-        isApproved = false;
+        isApproved = true;
     }
 
     public long getDepositTime() {
         return modifiedAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
     }
 
-
     public void approveWithdrawal() {
         isApproved = true;
+    }
+
+    public void updateBalance(int balance){
+        this.balance = balance;
     }
 
     @Override
