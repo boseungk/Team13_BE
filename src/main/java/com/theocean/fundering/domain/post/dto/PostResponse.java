@@ -39,7 +39,7 @@ public class PostResponse {
             this.content = post.getIntroduction();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getFundingAmount();
+            this.currentAmount = post.getAccount().getBalance();
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
@@ -74,7 +74,7 @@ public class PostResponse {
             this.title = post.getTitle();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getFundingAmount();
+            this.currentAmount = post.getAccount().getBalance();
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
