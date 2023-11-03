@@ -1,5 +1,6 @@
 package com.theocean.fundering.domain.celebrity.domain;
 
+import com.theocean.fundering.domain.celebrity.domain.constant.ApprovalStatus;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.follow.domain.Follow;
@@ -46,7 +47,9 @@ public class Celebrity extends AuditingFields {
     @OneToMany(mappedBy = "celebrity")
     private List<Post> post;
 
-    private boolean isApproved;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ApprovalStatus status = ApprovalStatus.PENDING;
 
     public void changeCelebName(String celebName) {
         this.celebName = celebName;
@@ -57,7 +60,7 @@ public class Celebrity extends AuditingFields {
     }
 
     public void changeCeleType(String celebGroup) {
-        this.celebType = celebType;
+        this.celebGroup = celebGroup;
     }
 
     public void changeCeleGroup(CelebType celebType) {
@@ -66,6 +69,11 @@ public class Celebrity extends AuditingFields {
 
     public void changeProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public Celebrity approvalCelebrity(){
+        status = ApprovalStatus.APPROVED;
+        return this;
     }
 
     @Builder

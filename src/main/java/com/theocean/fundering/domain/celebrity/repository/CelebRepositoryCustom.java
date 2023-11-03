@@ -9,4 +9,6 @@ public interface CelebRepositoryCustom {
     Slice<CelebFundingResponseDTO> findAllPosting(Long celebId, Long postId, Pageable pageable);
 
     Slice<CelebListResponseDTO> findAllCeleb(Long celebId, String keyword, Pageable pageable);
+
+    Slice<CelebListResponseDTO> findAllCelebForApproval(Long celebId, Pageable pageable);
 }

@@ -2,7 +2,7 @@ package com.theocean.fundering.domain.post.service;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.celebrity.dto.PageResponse;
+import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;

@@ -1,8 +1,7 @@
 package com.theocean.fundering.domain.post.controller;
 
 
-import com.theocean.fundering.domain.celebrity.dto.PageResponse;
-import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.service.PostService;
