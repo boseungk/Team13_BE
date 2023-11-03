@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.ZoneId;
 import java.util.Objects;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -61,15 +62,20 @@ public class Withdrawal extends AuditingFields {
         isApproved = false;
     }
 
-    public void approveWithdrawal(){
+    public long getDepositTime() {
+        return modifiedAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+    }
+
+
+    public void approveWithdrawal() {
         isApproved = true;
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof final Withdrawal that)) return false;
-        return Objects.equals(withdrawalId, that.withdrawalId);
+        if (!(o instanceof final Withdrawal withdrawal)) return false;
+        return Objects.equals(withdrawalId, withdrawal.withdrawalId);
     }
 
     @Override
