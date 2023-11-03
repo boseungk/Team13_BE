@@ -15,15 +15,15 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "evidence")
+@Table(name = "evidence", indexes = {@Index(name = "index_withdrawal", columnList = "withdrawalId", unique = true)})
 @Entity
 public class Evidence extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long evidenceId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Withdrawal withdrawal;
+    @Column(nullable = false)
+    private Long withdrawalId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
@@ -31,9 +31,12 @@ public class Evidence extends AuditingFields {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
+    @Column(nullable = false)
+    private String url;
+
     @Builder
-    public Evidence(Withdrawal withdrawal, Member member, Post post) {
-        this.withdrawal = withdrawal;
+    public Evidence(Long withdrawalId, Member member, Post post) {
+        this.withdrawalId = withdrawalId;
         this.member = member;
         this.post = post;
     }
