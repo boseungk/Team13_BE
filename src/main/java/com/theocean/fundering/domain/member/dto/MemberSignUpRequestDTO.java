@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.AnyKeyJavaClass;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)// 테스트 에러 방지
+@NoArgsConstructor(access = AccessLevel.PRIVATE)// 테스트 에러 방지
 public class MemberSignUpRequestDTO {
     @NotEmpty
     @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
@@ -22,12 +24,6 @@ public class MemberSignUpRequestDTO {
     @Size(min = 3, max = 45, message = "3에서 45자 이내여야 합니다.")
     @NotEmpty
     private String nickname;
-
-    private MemberSignUpRequestDTO(String email, String password, String nickname) {
-        email = email;
-        password = password;
-        nickname = nickname;
-    }
 
     public static MemberSignUpRequestDTO of(final String email, final String password, final String nickname){
         return new MemberSignUpRequestDTO(email, password, nickname);
