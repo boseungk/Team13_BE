@@ -25,4 +25,13 @@ public class FollowController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/celebs/{celebId}/unfollow")
+    public ResponseEntity<?> unfollowCelebs(@PathVariable Long celebId,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        followService.unFollowCelebs(celebId, userDetails.getId());
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
 }
