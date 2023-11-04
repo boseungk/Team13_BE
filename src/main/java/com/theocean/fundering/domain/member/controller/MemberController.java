@@ -50,6 +50,15 @@ public class MemberController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @DeleteMapping("/user/setting/cancellation")
+    public ResponseEntity<?> cancellationUser(
+            @AuthenticationPrincipal final CustomUserDetails userDetails
+    ){
+        memberService.cancellationUser(userDetails.getId());
+        return ResponseEntity.ok().body(ApiUtils.success("회원 탈퇴 되었습니다."));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/member")
     public ResponseEntity<?> member(){
         return ResponseEntity.ok().body(ApiUtils.success(null));
