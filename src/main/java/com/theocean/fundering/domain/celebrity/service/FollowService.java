@@ -29,4 +29,16 @@ public class FollowService {
             throw new Exception500("팔로우에 실패했습니다.");
         }
     }
+    @Transactional
+    public void unFollowCelebs(final Long celebId, final Long memberId) {
+
+        final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
+                () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
+        );
+        try{
+            followRepository.saveUnFollow(celebrity.getCelebId(), memberId);
+        } catch (final RuntimeException e) {
+            throw new Exception500("언팔로우에 실패했습니다.");
+        }
+    }
 }
