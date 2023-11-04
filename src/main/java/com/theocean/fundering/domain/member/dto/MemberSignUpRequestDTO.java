@@ -8,8 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @RequiredArgsConstructor
 public class MemberRequestDTO {
     @NotEmpty
@@ -25,14 +23,17 @@ public class MemberRequestDTO {
     @NotEmpty
     private String nickname;
 
-    public static MemberRequestDTO from(Member member){
-        return MemberRequestDTO.builder()
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .password(member.getPassword())
-                .build();
+    private MemberRequestDTO(String email, String password, String nickname) {
+        email = email;
+        password = password;
+        nickname = nickname;
     }
-    public Member getEntity(){
+
+    public static MemberRequestDTO of(final String email, final String password, final String nickname){
+        return new MemberRequestDTO(email, password, nickname);
+    }
+
+    public Member mapToEntity(){
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
@@ -40,8 +41,8 @@ public class MemberRequestDTO {
                 .userRole(UserRole.USER)
                 .build();
     }
-    public void encodePassword(String encodePassword){
-        this.password = encodePassword;
+    public void encodePassword(final String encodePassword){
+        password = encodePassword;
     }
 
 }
