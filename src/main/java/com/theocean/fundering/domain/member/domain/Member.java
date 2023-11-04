@@ -39,8 +39,6 @@ public class Member extends AuditingFields {
 
     private String profileImage; // 프로필 이미지
 
-    private boolean isAdmin;
-
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -74,4 +72,7 @@ public class Member extends AuditingFields {
     public int hashCode() {
         return Objects.hash(userId);
     }
+
+
 }
+
