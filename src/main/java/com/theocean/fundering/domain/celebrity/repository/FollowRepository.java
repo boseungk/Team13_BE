@@ -12,4 +12,7 @@ public interface FollowRepository extends JpaRepository<Follow, Follow.PK> {
     @Query(value = "INSERT INTO follow(celebrity_id, member_id) VALUES(:celebrity_id, :member_id)", nativeQuery = true)
     void saveFollow(@Param("celebrity_id") Long celebrity_id, @Param("member_id") Long member_id);
 
+    @Modifying
+    @Query(value = "DELETE FROM follow WHERE celebrity_id = :celebrity_id AND member_id = :member_id", nativeQuery = true)
+    void saveUnFollow(@Param("celebrity_id") Long celebrity_id, @Param("member_id") Long member_id);
 }
