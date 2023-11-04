@@ -39,6 +39,6 @@ public class MyFundingController {
             @PageableDefault final Pageable pageable
     ){
         final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 }
