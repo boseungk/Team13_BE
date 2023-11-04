@@ -3,19 +3,18 @@ package com.theocean.fundering.domain.celebrity.dto;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor // Type definition error 방지
 public class CelebRequestDTO {
-    private final String celebName;
-    private final CelebGender celebGender;
-    private final CelebType celebType;
-    private final String celebGroup;
-    private final String profileImage;
+    private String celebName;
+    private CelebGender celebGender;
+    private CelebType celebType;
+    private String celebGroup;
+    private String profileImage;
 
     public Celebrity mapToEntity(){
         return Celebrity.builder()
