@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.celebrity.controller;
 import com.theocean.fundering.domain.celebrity.dto.*;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import com.theocean.fundering.global.dto.PageResponse;
+import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -66,4 +70,13 @@ public class CelebController {
         final PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, keyword, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
+
+    @GetMapping("/celebs/recommend")
+    public ResponseEntity<?> findAllRecommendCelebs(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        List<CelebsRecommendDTO> responseDTO = celebService.recommendCelebs(userDetails);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    }
+
 }
