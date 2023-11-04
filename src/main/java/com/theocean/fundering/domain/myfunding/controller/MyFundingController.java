@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +52,15 @@ public class MyFundingController {
             @PageableDefault final Pageable pageable
     ){
         final PageResponse<MyFundingManagerResponseDTO> page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
+    @PostMapping("/myfunding/withdrawal/apply")
+    public ResponseEntity<?> applyWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId
+    ){
+        myFundingService.applyWithdrawal(userDetails.getId(), postId);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 }

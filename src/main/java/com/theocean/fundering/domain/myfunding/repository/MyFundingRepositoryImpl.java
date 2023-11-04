@@ -97,6 +97,16 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
+    @Override
+    public void applyWithdrawal(final Long userId, final Long postId) {  // withdrawalId, postId로 변경 필요 (API 문서)
+        Objects.requireNonNull(postId, "postId must not be null");
+        queryFactory.update(withdrawal)
+                .set(withdrawal.isApproved, true)
+                .where(withdrawal.applicantId.eq(userId)
+                        .and(withdrawal.postId.eq(postId)))
+                .execute();
+    }
+
     private BooleanExpression eqPostWriterId(final Long userId){
         return post.writer.userId.eq(userId);
     }

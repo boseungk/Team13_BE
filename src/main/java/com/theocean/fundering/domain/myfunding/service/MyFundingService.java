@@ -27,4 +27,8 @@ public class MyFundingService {
         var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
         return new PageResponse<>(page);
     }
+
+    public void applyWithdrawal(Long userId, Long postId) {
+        myFundingRepository.applyWithdrawal(userId, postId);
+    }
 }
