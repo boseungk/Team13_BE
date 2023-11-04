@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.myfunding.service;
 
 import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.myfunding.repository.MyFundingRepository;
 import com.theocean.fundering.global.dto.PageResponse;
@@ -19,6 +20,11 @@ public class MyFundingService {
 
     public PageResponse<MyFundingSupporterResponseDTO> findAllPostingBySupporter(Long userId, Long postId, Pageable pageable) {
         var page = myFundingRepository.findAllPostingBySupporter(userId, postId, pageable);
+        return new PageResponse<>(page);
+    }
+
+    public PageResponse<MyFundingManagerResponseDTO> findAllPostingByManager(Long userId, Long postId, Pageable pageable) {
+        var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
         return new PageResponse<>(page);
     }
 }

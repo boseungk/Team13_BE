@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.myfunding.controller;
 
 import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.myfunding.service.MyFundingService;
 import com.theocean.fundering.global.dto.PageResponse;
@@ -39,6 +40,17 @@ public class MyFundingController {
             @PageableDefault final Pageable pageable
     ){
         final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/withdrawal")
+    public ResponseEntity<?> findAllPostingByManager(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @PageableDefault final Pageable pageable
+    ){
+        final PageResponse<MyFundingManagerResponseDTO> page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 }
