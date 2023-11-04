@@ -52,6 +52,11 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode(requestDTO.getModifyPassword()));
         member.changePhoneNumber(requestDTO.getPhoneNumber());
         member.changeProfileImage(requestDTO.getProfileImage());
+        try{
+            memberRepository.save(member);
+        } catch (final Exception e) {
+            throw new Exception500("회원 정보 수정에 실패했습니다.");
+        }
 
     }
 
