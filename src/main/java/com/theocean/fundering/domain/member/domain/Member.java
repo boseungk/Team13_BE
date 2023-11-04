@@ -18,6 +18,7 @@ import java.util.Objects;
 public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long userId;
 
     @Setter
