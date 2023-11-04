@@ -41,4 +41,14 @@ public class MyFundingController {
         final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/nickname")
+    public ResponseEntity<?> getNickname(
+            @AuthenticationPrincipal final CustomUserDetails userDetails
+    ){
+        String nickname = myFundingService.getNickname(userDetails.getId());
+        return ResponseEntity.ok(ApiUtils.success(nickname));
+    }
+
 }
