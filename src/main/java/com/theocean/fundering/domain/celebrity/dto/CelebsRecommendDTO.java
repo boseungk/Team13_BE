@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class CelebsRecommendDTO {
+
     private final Long celebId;
     private final String celebName;
     private final String celebProfile;
