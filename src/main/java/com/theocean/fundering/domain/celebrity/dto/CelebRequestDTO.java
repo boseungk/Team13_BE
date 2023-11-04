@@ -9,15 +9,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class CelebRequestDTO {
-    private String celebName;
-    private CelebGender celebGender;
-    private CelebType celebType;
-    private String celebGroup;
-    private String profileImage;
+    private final String celebName;
+    private final CelebGender celebGender;
+    private final CelebType celebType;
+    private final String celebGroup;
+    private final String profileImage;
 
     public Celebrity mapToEntity(){
         return Celebrity.builder()
