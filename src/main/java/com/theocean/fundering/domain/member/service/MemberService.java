@@ -52,5 +52,18 @@ public class MemberService {
         member.setPassword(passwordEncoder.encode(requestDTO.getModifyPassword()));
         member.changePhoneNumber(requestDTO.getPhoneNumber());
         member.changeProfileImage(requestDTO.getProfileImage());
+
+    }
+
+    @Transactional
+    public void cancellationUser(Long userId) {
+        final Member member = memberRepository.findById(userId).orElseThrow(
+                () -> new Exception400("회원을 찾을 수 없습니다.")
+        );
+        try{
+            memberRepository.delete(member);
+        } catch (final Exception e) {
+            throw new Exception500("회원 탈퇴에 실패했습니다.");
+        }
     }
 }
