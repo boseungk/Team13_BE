@@ -9,7 +9,7 @@ import lombok.*;
 
 @Getter
 @RequiredArgsConstructor
-public class MemberRequestDTO {
+public class MemberSignUpRequestDTO {
     @NotEmpty
     @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
     private String email;
@@ -23,14 +23,14 @@ public class MemberRequestDTO {
     @NotEmpty
     private String nickname;
 
-    private MemberRequestDTO(String email, String password, String nickname) {
+    private MemberSignUpRequestDTO(String email, String password, String nickname) {
         email = email;
         password = password;
         nickname = nickname;
     }
 
-    public static MemberRequestDTO of(final String email, final String password, final String nickname){
-        return new MemberRequestDTO(email, password, nickname);
+    public static MemberSignUpRequestDTO of(final String email, final String password, final String nickname){
+        return new MemberSignUpRequestDTO(email, password, nickname);
     }
 
     public Member mapToEntity(){
