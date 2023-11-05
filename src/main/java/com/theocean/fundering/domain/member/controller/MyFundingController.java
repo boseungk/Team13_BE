@@ -1,10 +1,6 @@
 package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.member.service.MyFundingService;
-import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +23,8 @@ public class MyFundingController {
     @GetMapping("/myfunding/host")
     public ResponseEntity<?> findAllPostingByHost(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
             @PageableDefault final Pageable pageable) {
-        final PageResponse<MyFundingHostResponseDTO> page = myFundingService.findAllPostingByHost(userDetails.getId(), postId, pageable);
+        var page = myFundingService.findAllPostingByHost(userDetails.getId(), pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 
@@ -37,10 +32,9 @@ public class MyFundingController {
     @GetMapping("/myfunding/support")
     public ResponseEntity<?> findAllPostingBySupport(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
             @PageableDefault final Pageable pageable
     ) {
-        final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
+        var page = myFundingService.findAllPostingBySupporter(userDetails.getId(), pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 
@@ -61,24 +55,5 @@ public class MyFundingController {
         var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(followingCelebs));
     }
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/myfunding/withdrawal")
-    public ResponseEntity<?> findAllPostingByManager(
-            @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
-            @PageableDefault final Pageable pageable
-    ) {
-        final PageResponse<MyFundingManagerResponseDTO> page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
-        return ResponseEntity.ok(ApiUtils.success(null));
-    }
-
-    @PostMapping("/myfunding/withdrawal/apply")
-    public ResponseEntity<?> applyWithdrawal(
-            @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId
-    ) {
-        myFundingService.applyWithdrawal(userDetails.getId(), postId);
-        return ResponseEntity.ok(ApiUtils.success(null));
-    }
+    
 }
