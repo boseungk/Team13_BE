@@ -24,8 +24,8 @@ public class EvidenceService {
     public String uploadEvidence(final Long memberId, final Long postId, final Long withdrawalId, final MultipartFile img) {
 
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId)
-                .orElseThrow(() -> new Exception404("존재하지 않는 출금신청서 입니다"));;
-        if(!withdrawal.getApplicantId().equals(memberId)) throw new Exception403("증빙 자료 업로드 권한이 없습니다");
+                .orElseThrow(() -> new Exception404("존재하지 않는 출금신청서 입니다"));
+        if (!withdrawal.getApplicantId().equals(memberId)) throw new Exception403("증빙 자료 업로드 권한이 없습니다");
 
         final String imgUrl = uploadImage(img);
         final Evidence evidence = Evidence.builder()

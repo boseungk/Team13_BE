@@ -1,7 +1,6 @@
 package com.theocean.fundering.domain.account.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class BalanceResponse {

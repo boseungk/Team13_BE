@@ -40,7 +40,7 @@ public class WithdrawalController {
 
     // (기능) 출금내역 조회
     @GetMapping("/posts/{postId}/withdrawals")
-    public ResponseEntity<?> readWithdrawals(@PathVariable final long postId, @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<?> readWithdrawals(@PathVariable final long postId, @PageableDefault(size = 10) final Pageable pageable) {
 
         final WithdrawalResponse.FindAllDTO response = withdrawalService.getWithdrawals(postId, pageable);
 

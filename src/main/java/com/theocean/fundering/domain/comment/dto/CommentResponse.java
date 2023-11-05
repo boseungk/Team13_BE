@@ -1,10 +1,9 @@
 package com.theocean.fundering.domain.comment.dto;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
+import lombok.Getter;
 
 import java.util.List;
-
-import lombok.Getter;
 
 public class CommentResponse {
 

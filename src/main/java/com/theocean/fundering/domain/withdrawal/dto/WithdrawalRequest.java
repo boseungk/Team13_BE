@@ -17,7 +17,7 @@ public class WithdrawalRequest {
         @Min(message = "신청 금액은 최소 10000원 이상 입니다.", value = 10000)
         private final int amount;
 
-        public SaveDTO(String usage, String depositAccount, int amount) {
+        public SaveDTO(final String usage, final String depositAccount, final int amount) {
             this.usage = usage;
             this.depositAccount = depositAccount;
             this.amount = amount;

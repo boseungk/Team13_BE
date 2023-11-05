@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.withdrawal.dto;
 
-import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import lombok.Getter;
 
@@ -38,12 +37,12 @@ public class WithdrawalResponse {
 
 
         WithdrawalDTO(final Withdrawal withdrawal, final String evidenceURL) {
-            this.withdrawalId = withdrawal.getWithdrawalId();
-            this.usage = withdrawal.getUsage();
-            this.depositAmount = withdrawal.getWithdrawalAmount();
-            this.balance = withdrawal.getBalance();
-            this.evidence = evidenceURL;
-            this.depositTime = withdrawal.getDepositTime();
+            withdrawalId = withdrawal.getWithdrawalId();
+            usage = withdrawal.getUsage();
+            depositAmount = withdrawal.getWithdrawalAmount();
+            balance = withdrawal.getBalance();
+            evidence = evidenceURL;
+            depositTime = withdrawal.getDepositTime();
         }
 
         public static WithdrawalDTO fromEntity(final Withdrawal withdrawal, final String evidenceURL) {

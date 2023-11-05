@@ -22,7 +22,7 @@ public class EvidenceController {
     @PostMapping("/posts/{postId}/withdrawals/{withdrawalId}")
     public ResponseEntity<?> evidenceUpload(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestPart(value = "image") final MultipartFile img,
+            @RequestPart("image") final MultipartFile img,
             @PathVariable final long postId,
             @PathVariable final long withdrawalId) {
 
