@@ -6,12 +6,17 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface FollowRepository extends JpaRepository<Follow, Follow.PK> {
     @Query("SELECT COUNT(*) FROM Follow f WHERE f.celebrityId = :celebId")
     int countByCelebId(@Param("celebId") Long celebId);
 
     @Query("SELECT COUNT(*) FROM Follow f WHERE f.celebrityId = :celebId AND f.memberId = :followId")
     int countByCelebIdAndFollowId(@Param("celebId") Long celebId, @Param("followId") Long followId);
+
+    @Query("SELECT f.celebrityId FROM Follow f WHERE f.memberId = :memberId ")
+    List<Long> findAllFollowingCelebById(@Param("memberId") Long memberId);
 
     @Modifying
     @Query(value = "INSERT INTO follow(celebrity_id, member_id) VALUES(:celebrity_id, :member_id)", nativeQuery = true)
