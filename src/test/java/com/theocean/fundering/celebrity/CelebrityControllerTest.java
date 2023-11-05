@@ -3,8 +3,8 @@ package com.theocean.fundering.celebrity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.celebrity.controller.CelebController;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,7 +41,7 @@ class CelebrityControllerTest {
     private final Celebrity celeb = Celebrity.builder()
             .celebName(CELEB_NAME)
             .celebGender(CelebGender.FEMALE)
-            .celebType(CelebType.SINGER)
+            .celebType(CelebCategory.SINGER)
             .profileImage(PROFILE_IMAGE)
             .build();
 
@@ -53,7 +52,7 @@ class CelebrityControllerTest {
         final CelebRequestDTO requestDTO = CelebRequestDTO.builder()
                 .celebName(celeb.getCelebName())
                 .celebGender(celeb.getCelebGender())
-                .celebType(celeb.getCelebType())
+                .celebCategory(celeb.getCelebCategory())
                 .profileImage(celeb.getProfileImage())
                 .build();
         final String requestBody = om.writeValueAsString(requestDTO);

@@ -4,7 +4,7 @@ import jakarta.persistence.AttributeConverter;
 
 import java.util.Arrays;
 
-public enum CelebType {
+public enum CelebCategory {
     SINGER("singer"),
     ACTOR("actor"),
     COMEDIAN("comedian"),
@@ -13,7 +13,7 @@ public enum CelebType {
     ETC("etc");
     private final String type;
 
-    CelebType(final String type) {
+    CelebCategory(final String type) {
         this.type = type;
     }
 
@@ -21,22 +21,22 @@ public enum CelebType {
         return type;
     }
 
-    public static CelebType fromString(final String type){
+    public static CelebCategory fromString(final String type){
         return Arrays.stream(values())
                 .filter(celebType -> celebType.type.equals(type))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown type: %s".formatted(type)));
     }
 
-    public class CelebTypeToStringConverter implements AttributeConverter<CelebType, String>{
+    public class CelebCategoryToStringConverter implements AttributeConverter<CelebCategory, String>{
 
         @Override
-        public String convertToDatabaseColumn(CelebType attribute) {
+        public String convertToDatabaseColumn(CelebCategory attribute) {
             return attribute.getType();
         }
 
         @Override
-        public CelebType convertToEntityAttribute(String dbData) {
+        public CelebCategory convertToEntityAttribute(String dbData) {
             return fromString(dbData);
         }
     }
