@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +24,14 @@ public class WithdrawalController {
     private final WithdrawalService withdrawalService;
 
     // (기능) 출금 신청하기
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/withdrawals")
     public ResponseEntity<?> applyWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestBody @Valid final WithdrawalRequest.SaveDTO request,
             @PathVariable final long postId) {
 
-        final Long memberId = 1L; // Long memberId = userDetails.getId();
+        final Long memberId = userDetails.getId();
         withdrawalService.applyWithdrawal(memberId, postId, request);
 
         return ResponseEntity.ok(ApiUtils.success(null));

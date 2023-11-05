@@ -18,7 +18,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZoneId;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "Withdrawal")
 @EntityListeners(AuditingEntityListener.class)

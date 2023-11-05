@@ -1,14 +1,13 @@
 package com.theocean.fundering.domain.evidence.domain;
 
 
-import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.global.utils.AuditingFields;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,30 +38,22 @@ public class Evidence extends AuditingFields {
     private String url;
 
     @Builder
-<<<<<<<HEAD
-
-    public Evidence(Long withdrawalId, Long applicantId, Long postId, String url) {
+    public Evidence(final Long withdrawalId, final Long applicantId, final Long postId, final String url) {
         this.withdrawalId = withdrawalId;
         this.applicantId = applicantId;
         this.postId = postId;
         this.url = url;
-=======
-    public Evidence( final Withdrawal withdrawal, final Member member, final Post post){
-            this.withdrawal = withdrawal;
-            this.member = member;
-            this.post = post;
->>>>>>>feat
-        }
-
-        @Override
-        public boolean equals ( final Object o){
-            if (this == o) return true;
-            if (!(o instanceof final Evidence evidence)) return false;
-            return Objects.equals(evidenceId, evidence.evidenceId);
-        }
-
-        @Override
-        public int hashCode () {
-            return Objects.hash(evidenceId);
-        }
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof final Evidence evidence)) return false;
+        return Objects.equals(evidenceId, evidence.evidenceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(evidenceId);
+    }
+}

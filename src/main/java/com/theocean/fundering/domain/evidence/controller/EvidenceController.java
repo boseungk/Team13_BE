@@ -26,7 +26,7 @@ public class EvidenceController {
             @PathVariable final long postId,
             @PathVariable final long withdrawalId) {
 
-        final Long memberId = 1L; // Long memberId = userDetails.getId();
+        final Long memberId = userDetails.getId();
         final String result = evidenceService.uploadEvidence(memberId, postId, withdrawalId, img);
 
         return ResponseEntity.ok(ApiUtils.success(result));

@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-
 public interface CelebRepository extends JpaRepository<Celebrity, Long>, CelebRepositoryCustom {
     @Query(value = "SELECT * FROM celebrity order by RAND() limit 3", nativeQuery = true)
     List<Celebrity> findAllRandom();
