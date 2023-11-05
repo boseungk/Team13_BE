@@ -22,11 +22,11 @@ public class EvidenceController {
     @PostMapping("/posts/{postId}/withdrawals/{withdrawalId}")
     public ResponseEntity<?> evidenceUpload(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestPart(value = "image") MultipartFile img,
+            @RequestPart(value = "image") final MultipartFile img,
             @PathVariable final long postId,
             @PathVariable final long withdrawalId) {
 
-        final Long memberId = 1L; // Long memberId = userDetails.getId();
+        final Long memberId = userDetails.getId();
         final String result = evidenceService.uploadEvidence(memberId, postId, withdrawalId, img);
 
         return ResponseEntity.ok(ApiUtils.success(result));
