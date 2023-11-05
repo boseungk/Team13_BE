@@ -2,7 +2,6 @@ package com.theocean.fundering.domain.post.controller;
 
 
 import com.theocean.fundering.domain.celebrity.dto.PageResponse;
-import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.service.PostService;
@@ -50,7 +49,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/write")
     public ResponseEntity<?> writePost(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                       @RequestBody PostRequest.PostWriteDTO postWriteDTO,
+                                       @ModelAttribute PostRequest.PostWriteDTO postWriteDTO,
                                        @RequestPart(value = "thumbnail") MultipartFile thumbnail){
         String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
@@ -61,7 +60,7 @@ public class PostController {
     @PutMapping("/posts/{postId}/edit")
     public ResponseEntity<?> editPost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                       @PathVariable Long postId,
-                                      @RequestBody PostRequest.PostEditDTO postEditDTO,
+                                      @ModelAttribute PostRequest.PostEditDTO postEditDTO,
                                       @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail){
         Long editedPost = postService.editPost(postId, postEditDTO, thumbnail);
         return ResponseEntity.ok(ApiUtils.success(editedPost));
