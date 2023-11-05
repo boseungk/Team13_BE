@@ -20,10 +20,10 @@ public class AccountController {
 
     // (기능) 펀딩 출금가능 금액 조회
     @GetMapping("/posts/{postId}/balance")
-    public ResponseEntity<?> getFundingBalance(@PathVariable long postId) {
+    public ResponseEntity<?> getFundingBalance(@PathVariable final long postId) {
 
         final int balance = accountService.getBalance(postId);
-        BalanceResponse balanceResponse = new BalanceResponse(balance);
+        final BalanceResponse balanceResponse = new BalanceResponse(balance);
 
        return ResponseEntity.ok(ApiUtils.success(balanceResponse));
     }
