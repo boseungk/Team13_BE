@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 public class BalanceResponse {
     private final int balance;
 
-    public BalanceResponse(int balance) {
+    public BalanceResponse(final int balance) {
         this.balance = balance;
     }
 }
