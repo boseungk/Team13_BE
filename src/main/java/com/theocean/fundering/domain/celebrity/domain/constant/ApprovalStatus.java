@@ -13,6 +13,7 @@ public enum ApprovalStatus {
     ApprovalStatus(final String type) {
         this.type = type;
     }
+
     public static ApprovalStatus fromString(final String type) {
         return Arrays.stream(values())
                 .filter(approvalStatus -> approvalStatus.type.equals(type))
@@ -33,7 +34,7 @@ public enum ApprovalStatus {
 
         @Override
         public ApprovalStatus convertToEntityAttribute(final String dbData) {
-            return ApprovalStatus.fromString(dbData);
+            return fromString(dbData);
         }
     }
 }
