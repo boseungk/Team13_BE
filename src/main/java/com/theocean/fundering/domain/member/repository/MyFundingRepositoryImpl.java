@@ -75,7 +75,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     @Override
-    public Slice<MyFundingWithdrawalResponseDTO> findAllWithdrawalByUserId(final Long userId, final Long postId, final Pageable pageable) {
+    public Slice<MyFundingWithdrawalResponseDTO> findAllWithdrawalByUser(final Long userId, final Long postId, final Pageable pageable) {
         final List<MyFundingWithdrawalResponseDTO> contents =
                 queryFactory.select(Projections.constructor(MyFundingWithdrawalResponseDTO.class,
                         withdrawal.withdrawalId,
