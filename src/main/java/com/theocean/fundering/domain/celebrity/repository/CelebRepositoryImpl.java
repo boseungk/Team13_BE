@@ -1,5 +1,7 @@
 package com.theocean.fundering.domain.celebrity.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,7 +58,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebId,
                         celebrity.celebName,
                         celebrity.celebGender,
-                        celebrity.celebType,
+                        celebrity.celebCategory,
                         celebrity.celebGroup,
                         celebrity.profileImage))
                 .from(celebrity)
@@ -75,7 +78,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebId,
                         celebrity.celebName,
                         celebrity.celebGender,
-                        celebrity.celebType,
+                        celebrity.celebCategory,
                         celebrity.celebGroup,
                         celebrity.profileImage))
                 .from(celebrity)
