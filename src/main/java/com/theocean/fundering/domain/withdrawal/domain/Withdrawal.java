@@ -18,7 +18,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZoneId;
 import java.util.Objects;
 
->>>>>>>feat
 
 @Entity
 @Table(name = "Withdrawal")
