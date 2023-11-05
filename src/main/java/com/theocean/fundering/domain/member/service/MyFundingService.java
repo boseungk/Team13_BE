@@ -65,6 +65,7 @@ public class MyFundingService {
     }
 
     public PageResponse<MyFundingWithdrawalResponseDTO> findAllWithdrawal(final Long userId, final Pageable pageable) {
+        final Long postId = adminRepository.findByUserId(userId);
         final var page = myFundingRepository.findAllWithdrawalByUserId(userId, postId, pageable);
         return new PageResponse<>(page);
     }
