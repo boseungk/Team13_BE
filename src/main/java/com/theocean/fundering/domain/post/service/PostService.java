@@ -1,6 +1,8 @@
 package com.theocean.fundering.domain.post.service;
 
 
+import com.theocean.fundering.domain.account.domain.Account;
+import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
@@ -28,17 +30,25 @@ public class PostService {
     private final AWSS3Uploader awss3Uploader;
     private final CelebRepository celebRepository;
     private final MemberRepository memberRepository;
+    private final AccountRepository accountRepository;
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
-        dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+        dto.setThumbnailURL(awss3Uploader.uploadToS3(thumbnail));
         Member writer =  memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
         );
         Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
-        postRepository.save(dto.toEntity(writer, celebrity));
+        Post newPost = postRepository.save(dto.toEntity(writer, celebrity));
+
+        Account account = Account.builder()
+                .managerId(writer.getUserId())
+                .postId(newPost.getPostId())
+                .build();
+        accountRepository.save(account);
+        newPost.registerAccount(account);
     }
 
     public PostResponse.FindByPostIdDTO findByPostId(String email, Long postId){

@@ -49,7 +49,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/write")
     public ResponseEntity<?> writePost(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                       @RequestBody PostRequest.PostWriteDTO postWriteDTO,
+                                       @ModelAttribute PostRequest.PostWriteDTO postWriteDTO,
                                        @RequestPart(value = "thumbnail") MultipartFile thumbnail){
         String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
