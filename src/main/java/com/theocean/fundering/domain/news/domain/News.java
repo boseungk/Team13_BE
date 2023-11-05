@@ -1,15 +1,20 @@
 package com.theocean.fundering.domain.news.domain;
 
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.*;
-
-import java.util.Objects;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,21 +42,21 @@ public class News extends AuditingFields {
     private String imageUrls; // TODO: 추후 리팩토링 예정
 
     @Builder
-    public News(Long postId, Long writerId, String title, String content) {
+    public News(final Long postId, final Long writerId, final String title, final String content) {
         this.postId = postId;
         this.writerId = writerId;
         this.title = title;
         this.content = content;
     }
 
-    public void updateImageUrls(String imageUrls) {
+    public void updateImageUrls(final String imageUrls) {
         this.imageUrls = imageUrls;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof News news)) return false;
+        if (!(o instanceof final News news)) return false;
         return Objects.equals(newsId, news.newsId);
     }
 

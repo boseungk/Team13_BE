@@ -2,7 +2,6 @@ package com.theocean.fundering.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.jwt.filter.JwtAuthenticationFilter;
 import com.theocean.fundering.global.jwt.handler.LoginFailureHandler;
@@ -51,15 +50,6 @@ public class SpringSecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
-        @Override
-        public void configure(final HttpSecurity builder) throws Exception {
-            final AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtProvider));
-            super.configure(builder);
-        }
-    }
-
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         //csrf disable
@@ -105,6 +95,7 @@ public class SpringSecurityConfig {
         );
         return http.build();
     }
+
     private CorsConfigurationSource configurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
@@ -148,5 +139,14 @@ public class SpringSecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationProcessingFilter() {
         return new JwtAuthenticationFilter(authenticationManager(), memberRepository, jwtProvider);
+    }
+
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        @Override
+        public void configure(final HttpSecurity builder) throws Exception {
+            final AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtProvider));
+            super.configure(builder);
+        }
     }
 }

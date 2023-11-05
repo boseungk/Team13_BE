@@ -25,18 +25,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final MemberRepository memberRepository;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser 실행");
 
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+        final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        final OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        final String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        final Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        OAuthAttributes extractedAttributes = OAuthAttributes.of(userNameAttributeName, attributes);
+        final OAuthAttributes extractedAttributes = OAuthAttributes.of(userNameAttributeName, attributes);
 
-        Member createdUser = getUser(extractedAttributes);
+        final Member createdUser = getUser(extractedAttributes);
 
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdUser.getUserRole().name())),
@@ -47,17 +47,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private Member getUser(OAuthAttributes attributes) {
-        Member findMember = memberRepository.findById(attributes.getOauth2UserInfo().getId()).orElse(null);
+    private Member getUser(final OAuthAttributes attributes) {
+        final Member findMember = memberRepository.findById(attributes.getOauth2UserInfo().getId()).orElse(null);
 
-        if (findMember == null) {
+        if (null == findMember) {
             return saveMember(attributes);
         }
         return findMember;
     }
 
-    private Member saveMember(OAuthAttributes attributes) {
-        Member newMember = attributes.toEntity();
+    private Member saveMember(final OAuthAttributes attributes) {
+        final Member newMember = attributes.toEntity();
         return memberRepository.save(newMember);
     }
 }

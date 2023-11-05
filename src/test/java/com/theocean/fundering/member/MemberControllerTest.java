@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -189,7 +189,7 @@ class MemberControllerTest {
     @WithMockUser
     @Transactional
     @Test
-    void role_success_test() throws Exception{
+    void role_success_test() throws Exception {
 
         //given
         //when
@@ -205,7 +205,7 @@ class MemberControllerTest {
     @DisplayName("User 권한 접근 실패 테스트")
     @Transactional
     @Test
-    void role_fail_test() throws Exception{
+    void role_fail_test() throws Exception {
 
         //given
         //when

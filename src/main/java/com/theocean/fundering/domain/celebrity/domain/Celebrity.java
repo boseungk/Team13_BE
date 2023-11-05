@@ -4,8 +4,20 @@ import com.theocean.fundering.domain.celebrity.domain.constant.ApprovalStatus;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -76,9 +88,9 @@ public class Celebrity extends AuditingFields {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Celebrity celebrity)) return false;
+        if (!(o instanceof final Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 
@@ -86,6 +98,4 @@ public class Celebrity extends AuditingFields {
     public int hashCode() {
         return Objects.hash(celebId);
     }
-
-
 }

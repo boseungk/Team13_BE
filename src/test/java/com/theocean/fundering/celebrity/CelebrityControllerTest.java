@@ -23,6 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @WebMvcTest(CelebController.class)
 @ImportAutoConfiguration(exclude = OAuth2ClientAutoConfiguration.class)
 class CelebrityControllerTest {
@@ -41,7 +42,7 @@ class CelebrityControllerTest {
     private final Celebrity celeb = Celebrity.builder()
             .celebName(CELEB_NAME)
             .celebGender(CelebGender.FEMALE)
-            .celebType(CelebCategory.SINGER)
+            .celebCategory(CelebCategory.SINGER)
             .profileImage(PROFILE_IMAGE)
             .build();
 
@@ -53,7 +54,6 @@ class CelebrityControllerTest {
                 .celebName(celeb.getCelebName())
                 .celebGender(celeb.getCelebGender())
                 .celebCategory(celeb.getCelebCategory())
-                .profileImage(celeb.getProfileImage())
                 .build();
         final String requestBody = om.writeValueAsString(requestDTO);
 

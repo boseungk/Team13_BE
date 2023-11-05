@@ -1,7 +1,5 @@
 package com.theocean.fundering.domain.celebrity.repository;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +68,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     }
 
     @Override
-    public Slice<CelebListResponseDTO> findAllCelebForApproval(Long celebId, Pageable pageable) {
+    public Slice<CelebListResponseDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebListResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebListResponseDTO.class,
@@ -98,21 +95,24 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
         return celebrity.status.eq(ApprovalStatus.PENDING);
     }
 
-    private BooleanExpression eqPostCelebId(final Long celebId){
-        return post.celebrity.celebId.eq(celebId);
-    }
+        private BooleanExpression eqPostCelebId ( final Long celebId){
 
-    private BooleanExpression ltPostId(final Long cursorId){
-        return cursorId != null ? post.postId.lt(cursorId) : null;
-    }
+            return post.celebrity.celebId.eq(celebId);
+        }
 
-    private BooleanExpression ltCelebId(final Long cursorId){
-        return cursorId != null ? celebrity.celebId.lt(cursorId) : null;
+        private BooleanExpression ltPostId ( final Long cursorId){
+            return null != cursorId ? post.postId.lt(cursorId) : null;
+        }
+
+        private BooleanExpression ltCelebId ( final Long cursorId){
+            return null != cursorId ? celebrity.celebId.lt(cursorId) : null;
+        }
+
+        private BooleanExpression nameCondition ( final String nameCond){
+            return null != nameCond ? celebrity.celebName.contains(nameCond) : null;
+        }
+
+        private BooleanExpression groupCondition ( final String nameCond){
+            return null != nameCond ? celebrity.celebGroup.contains(nameCond) : null;
+        }
     }
-    private BooleanExpression nameCondition(String nameCond){
-        return nameCond != null ? celebrity.celebName.contains(nameCond) : null;
-    }
-    private BooleanExpression groupCondition(String nameCond){
-        return nameCond != null ? celebrity.celebGroup.contains(nameCond) : null;
-    }
-}

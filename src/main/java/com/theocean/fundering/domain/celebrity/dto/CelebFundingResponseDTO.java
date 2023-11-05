@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.celebrity.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

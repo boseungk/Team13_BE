@@ -4,7 +4,6 @@ import com.theocean.fundering.domain.withdrawal.dto.WithdrawalRequest;
 import com.theocean.fundering.domain.withdrawal.dto.WithdrawalResponse;
 import com.theocean.fundering.domain.withdrawal.service.WithdrawalService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
-import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +37,7 @@ public class WithdrawalController {
 
     // (기능) 출금내역 조회
     @GetMapping("/posts/{postId}/withdrawals")
-    public ResponseEntity<?> readWithdrawals(@PathVariable final long postId, @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<?> readWithdrawals(@PathVariable final long postId, @PageableDefault(size = 10) final Pageable pageable) {
 
         final WithdrawalResponse.FindAllDTO response = withdrawalService.getWithdrawals(postId, pageable);
 

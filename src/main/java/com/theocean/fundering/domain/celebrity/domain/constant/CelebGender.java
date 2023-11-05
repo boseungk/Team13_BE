@@ -13,6 +13,7 @@ public enum CelebGender {
     CelebGender(final String type) {
         this.type = type;
     }
+
     public static CelebGender fromString(final String type) {
         return Arrays.stream(values())
                 .filter(celebGender -> celebGender.type.equals(type))
@@ -33,7 +34,7 @@ public enum CelebGender {
 
         @Override
         public CelebGender convertToEntityAttribute(final String dbData) {
-            return CelebGender.fromString(dbData);
+            return fromString(dbData);
         }
     }
 }

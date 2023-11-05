@@ -1,9 +1,9 @@
 package com.theocean.fundering.domain.member.service;
 
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.member.dto.MemberSignUpRequestDTO;
 import com.theocean.fundering.domain.member.dto.MemberSettingRequestDTO;
 import com.theocean.fundering.domain.member.dto.MemberSettingResponseDTO;
+import com.theocean.fundering.domain.member.dto.MemberSignUpRequestDTO;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
@@ -35,8 +35,8 @@ public class MemberService {
 
     public void sameCheckEmail(final String email) {
         memberRepository.findByEmail(email).ifPresent(n -> {
-                    throw new Exception400("이메일이 존재합니다.");
-                });
+            throw new Exception400("이메일이 존재합니다.");
+        });
     }
 
     public MemberSettingResponseDTO findAllUserSetting(final Long id) {

@@ -15,14 +15,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Objects;
 
-import static com.theocean.fundering.domain.payment.domain.QPayment.*;
+import static com.theocean.fundering.domain.payment.domain.QPayment.payment;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
-import static com.theocean.fundering.domain.withdrawal.domain.QWithdrawal.*;
+import static com.theocean.fundering.domain.withdrawal.domain.QWithdrawal.withdrawal;
 
 @RequiredArgsConstructor
 @Repository
-public class MyFundingRepositoryImpl implements MyFundingRepository{
+public class MyFundingRepositoryImpl implements MyFundingRepository {
     private final JPAQueryFactory queryFactory;
+
     @Override
     public Slice<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Pageable pageable) {
         final List<MyFundingHostResponseDTO> contents =
@@ -107,11 +108,11 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                 .execute();
     }
 
-    private BooleanExpression eqPostWriterId(final Long userId){
+    private BooleanExpression eqPostWriterId(final Long userId) {
         return post.writer.userId.eq(userId);
     }
 
-    private BooleanExpression eqPostSupporterId(final Long userId){
+    private BooleanExpression eqPostSupporterId(final Long userId) {
         return payment.member.userId.eq(userId);
     }
 

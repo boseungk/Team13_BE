@@ -35,6 +35,7 @@ public class CelebService {
     private final AWSS3Uploader awss3Uploader;
 
 
+
     @Transactional
 //    public void register(final CelebRequestDTO celebRequestDTO, final MultipartFile thumbnail) {
     public void register(final CelebRequestDTO celebRequestDTO) {

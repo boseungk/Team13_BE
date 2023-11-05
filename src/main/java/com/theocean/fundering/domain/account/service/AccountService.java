@@ -2,14 +2,10 @@ package com.theocean.fundering.domain.account.service;
 
 import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.account.repository.AccountRepository;
-import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
