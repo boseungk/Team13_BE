@@ -2,7 +2,7 @@ package com.theocean.fundering.domain.comment.service;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
-import com.theocean.fundering.domain.comment.repository.CustomCommentRepositoryImpl;
+import com.theocean.fundering.domain.comment.repository.CustomCommentRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.errors.exception.Exception404;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReadCommentService {
 
-    private final CustomCommentRepositoryImpl customCommentRepository;
+    private final CustomCommentRepository customCommentRepository;
     private final MemberRepository memberRepository;
     private final CommentValidator commentValidator;
 
