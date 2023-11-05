@@ -17,7 +17,7 @@ public class PostRequest {
         private Long celebId;
         private String title;
         private String introduction;
-        private String thumbnail;
+        private String thumbnailURL;
         private int targetPrice;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
@@ -28,7 +28,7 @@ public class PostRequest {
                     .celebrity(celebrity)
                     .title(title)
                     .introduction(introduction)
-                    .thumbnail(thumbnail)
+                    .thumbnail(thumbnailURL)
                     .targetPrice(targetPrice)
                     .deadline(deadline)
                     .build();
@@ -39,7 +39,7 @@ public class PostRequest {
             this.celebId = celebId;
             this.title = title;
             this.introduction = introduction;
-            this.thumbnail = thumbnail;
+            this.thumbnailURL = thumbnail;
             this.targetPrice = targetPrice;
             this.deadline = deadline;
             this.createdAt = LocalDateTime.now();
