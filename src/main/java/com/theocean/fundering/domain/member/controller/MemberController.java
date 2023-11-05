@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,11 +42,12 @@ public class MemberController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/user/setting")
-    public ResponseEntity<?> modifyUserSetting(
+    public ResponseEntity<?> updateUserSetting(
             @RequestBody @Valid final MemberSettingRequestDTO requestDTO, Error error,
+            @RequestPart(value = "thumbnail") MultipartFile thumbnail,
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
-        memberService.modifyUserSetting(requestDTO, userDetails.getId());
+        memberService.updateUserSetting(requestDTO, userDetails.getId(), thumbnail);
         return ResponseEntity.ok().body(ApiUtils.success("성공적으로 변경되었습니다."));
     }
 
