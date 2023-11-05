@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface WithdrawalRepository extends JpaRepository<Withdrawal, Long> {
-    @Query("SELECT w FROM Withdrawal w WHERE w.postId = :postId AND w.isApproved = true ORDER BY w.modifiedAt DESC")
+    @Query("SELECT w FROM Withdrawal w WHERE w.postId = :postId AND w.isApproved = true ORDER BY w.withdrawalId DESC")
     Page<Withdrawal> getWithdrawalPage(@Param("postId") Long postId, Pageable pageable);
 
 }
