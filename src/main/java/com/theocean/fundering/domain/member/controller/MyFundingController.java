@@ -55,5 +55,14 @@ public class MyFundingController {
         var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(followingCelebs));
     }
-    
+
+
+    @PostMapping("/myfunding/withdrawal")
+    public ResponseEntity<?> approvalWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId
+    ) {
+        myFundingService.applyWithdrawal(userDetails.getId(), postId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 }
