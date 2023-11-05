@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class PostTest {
 
     @Test
-    public void findAll_test() throws Exception{
+    public void findAll_test() throws Exception {
 
     }
 }

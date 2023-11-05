@@ -4,8 +4,20 @@ import com.theocean.fundering.domain.celebrity.domain.constant.ApprovalStatus;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -43,14 +55,9 @@ public class Celebrity extends AuditingFields {
     @Column(nullable = false)
     private ApprovalStatus status = ApprovalStatus.PENDING;
 
-    public Celebrity approvalCelebrity(){
-        status = ApprovalStatus.APPROVED;
-        return this;
-    }
-
     @Builder
-    public Celebrity(String celebName, CelebGender celebGender, CelebType celebType,
-                     String celebGroup, String profileImage) {
+    public Celebrity(final String celebName, final CelebGender celebGender, final CelebType celebType,
+                     final String celebGroup, final String profileImage) {
         this.celebName = celebName;
         this.celebGender = celebGender;
         this.celebType = celebType;
@@ -58,10 +65,15 @@ public class Celebrity extends AuditingFields {
         this.profileImage = profileImage;
     }
 
+    public Celebrity approvalCelebrity() {
+        status = ApprovalStatus.APPROVED;
+        return this;
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Celebrity celebrity)) return false;
+        if (!(o instanceof final Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 

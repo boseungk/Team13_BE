@@ -9,7 +9,9 @@ import org.springframework.data.domain.Slice;
 
 public interface MyFundingRepository {
     Slice<MyFundingHostResponseDTO> findAllPostingByHost(Long userId, Long postId, Pageable pageable);
+
     Slice<MyFundingSupporterResponseDTO> findAllPostingBySupporter(Long userId, Long postId, Pageable pageable);
+
     Slice<MyFundingManagerResponseDTO> findAllPostingByManager(Long userId, Long postId, Pageable pageable);
 
     void applyWithdrawal(Long userId, Long postId);

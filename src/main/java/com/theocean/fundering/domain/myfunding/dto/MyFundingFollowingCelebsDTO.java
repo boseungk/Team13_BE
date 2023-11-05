@@ -14,7 +14,7 @@ public class MyFundingFollowingCelebsDTO {
         celebId = celebrity.getCelebId();
         profileImage = celebrity.getProfileImage();
         celebName = celebrity.getCelebName();
-        this.followerCount = follower;
+        followerCount = follower;
     }
 
     public static MyFundingFollowingCelebsDTO of(final Celebrity celebrity, final int followerCount) {

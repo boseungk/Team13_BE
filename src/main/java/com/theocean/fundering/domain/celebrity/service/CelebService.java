@@ -1,7 +1,11 @@
 package com.theocean.fundering.domain.celebrity.service;
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.celebrity.dto.*;
+import com.theocean.fundering.domain.celebrity.dto.CelebDetailsResponseDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebFundingResponseDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebListResponseDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebsRecommendDTO;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
@@ -28,6 +32,7 @@ public class CelebService {
     private final FollowRepository followRepository;
 
     private final MemberRepository memberRepository;
+
 
     @Transactional
     public void register(final CelebRequestDTO celebRequestDTO) {

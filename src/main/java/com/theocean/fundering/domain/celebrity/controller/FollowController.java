@@ -18,8 +18,8 @@ public class FollowController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/celebs/{celebId}/follow")
-    public ResponseEntity<?> followCelebs(@PathVariable Long celebId,
-                                          @AuthenticationPrincipal CustomUserDetails userDetails
+    public ResponseEntity<?> followCelebs(@PathVariable final Long celebId,
+                                          @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
         followService.followCelebs(celebId, userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(null));
@@ -27,8 +27,8 @@ public class FollowController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/celebs/{celebId}/unfollow")
-    public ResponseEntity<?> unfollowCelebs(@PathVariable Long celebId,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails
+    public ResponseEntity<?> unfollowCelebs(@PathVariable final Long celebId,
+                                            @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
         followService.unFollowCelebs(celebId, userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(null));

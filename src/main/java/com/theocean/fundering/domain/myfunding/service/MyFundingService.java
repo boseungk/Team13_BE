@@ -26,6 +26,7 @@ public class MyFundingService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final CelebRepository celebRepository;
+
     public PageResponse<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Long postId, final Pageable pageable) {
         final var page = myFundingRepository.findAllPostingByHost(userId, postId, pageable);
         return new PageResponse<>(page);
@@ -46,7 +47,7 @@ public class MyFundingService {
     public List<MyFundingFollowingCelebsDTO> findFollowingCelebs(final Long userId) {
         final List<MyFundingFollowingCelebsDTO> responseDTO = new ArrayList<>();
         final List<Long> allFollowingCelebId = followRepository.findAllFollowingCelebById(userId);
-        for(final Long celebId: allFollowingCelebId){
+        for (final Long celebId : allFollowingCelebId) {
             final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                     () -> new Exception400("셀럽을 찾을 수 없습니다.")
             );
@@ -56,12 +57,12 @@ public class MyFundingService {
         return responseDTO;
     }
 
-    public PageResponse<MyFundingManagerResponseDTO> findAllPostingByManager(Long userId, Long postId, Pageable pageable) {
-        var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
+    public PageResponse<MyFundingManagerResponseDTO> findAllPostingByManager(final Long userId, final Long postId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
         return new PageResponse<>(page);
     }
 
-    public void applyWithdrawal(Long userId, Long postId) {
+    public void applyWithdrawal(final Long userId, final Long postId) {
         myFundingRepository.applyWithdrawal(userId, postId);
     }
 }

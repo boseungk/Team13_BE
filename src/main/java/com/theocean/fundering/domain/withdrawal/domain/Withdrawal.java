@@ -13,11 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZoneId;
 import java.util.Objects;
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "Withdrawal")
@@ -45,7 +45,7 @@ public class Withdrawal extends AuditingFields {
     private String depositAccount;
 
     // 출금액
-    @Min(value = 0)
+    @Min(0)
     @Column(nullable = false)
     private int withdrawalAmount;
 
@@ -54,7 +54,7 @@ public class Withdrawal extends AuditingFields {
     private Boolean isApproved;
 
     // 출금시 계좌 잔액
-    @Min(value = 0)
+    @Min(0)
     @Column
     private Integer balance;
 
@@ -77,7 +77,7 @@ public class Withdrawal extends AuditingFields {
         isApproved = true;
     }
 
-    public void updateBalance(int balance){
+    public void updateBalance(final int balance) {
         this.balance = balance;
     }
 

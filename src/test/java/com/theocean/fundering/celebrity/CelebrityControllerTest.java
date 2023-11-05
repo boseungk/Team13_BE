@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,22 +28,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CelebrityControllerTest {
     private static final String CELEB_NAME = "아이유";
     private static final String PROFILE_IMAGE = "profile.jpg";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @MockBean
-    private CelebService celebService;
-
     private final Celebrity celeb = Celebrity.builder()
             .celebName(CELEB_NAME)
             .celebGender(CelebGender.FEMALE)
             .celebType(CelebType.SINGER)
             .profileImage(PROFILE_IMAGE)
             .build();
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
+    @MockBean
+    private CelebService celebService;
 
     @WithMockUser
     @Test

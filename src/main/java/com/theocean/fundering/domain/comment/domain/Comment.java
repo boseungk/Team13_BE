@@ -1,11 +1,14 @@
 package com.theocean.fundering.domain.comment.domain;
 
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.*;
-
-import java.time.ZoneId;
-import java.util.Objects;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,13 +16,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.ZoneId;
+import java.util.Objects;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-        name = "comment",
-        indexes = {@Index(name = "index_comment_order", columnList = "commentOrder", unique = false)})
+@Table(name = "comment", indexes = @Index(name = "index_comment_order", columnList = "commentOrder", unique = false))
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 public class Comment extends AuditingFields {
 
@@ -43,14 +47,14 @@ public class Comment extends AuditingFields {
     private String commentOrder;
 
     @Builder
-    public Comment(Long writerId, Long postId, String content) {
+    public Comment(final Long writerId, final Long postId, final String content) {
         this.writerId = writerId;
         this.postId = postId;
         this.content = content;
-        this.isDeleted = false;
+        isDeleted = false;
     }
 
-    public void updateCommentOrder(String commentOrder) {
+    public void updateCommentOrder(final String commentOrder) {
         this.commentOrder = commentOrder;
     }
 
@@ -59,13 +63,13 @@ public class Comment extends AuditingFields {
     }
 
     public int getDepth() {
-        return (int) commentOrder.chars().filter(ch -> ch == '.').count();
+        return (int) commentOrder.chars().filter(ch -> '.' == ch).count();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Comment comment)) return false;
+        if (!(o instanceof final Comment comment)) return false;
         return Objects.equals(commentId, comment.commentId);
     }
 

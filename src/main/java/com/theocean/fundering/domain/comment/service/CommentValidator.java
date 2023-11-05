@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentValidator {
 
+    private static final int REPLY_LIMIT = 30;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private static final int REPLY_LIMIT = 30;
 
     public void validateMemberAndPost(final Long memberId, final Long postId) {
         if (!memberRepository.existsById(memberId))

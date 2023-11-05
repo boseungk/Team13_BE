@@ -1,18 +1,17 @@
 package com.theocean.fundering.domain.comment.repository;
 
-import static com.theocean.fundering.domain.comment.domain.QComment.comment;
-
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.comment.domain.Comment;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.theocean.fundering.domain.comment.domain.QComment.comment;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,7 +20,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Comment> getCommentsPage(Long postId, Pageable pageable) {
+    public Page<Comment> getCommentsPage(final Long postId, final Pageable pageable) {
         final List<Comment> content =
                 queryFactory
                         .selectFrom(comment)
@@ -48,7 +47,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public Page<Comment> getSubCommentsPage(
-            Long postId, String parentCommentOrder, Pageable pageable) {
+            final Long postId, final String parentCommentOrder, final Pageable pageable) {
         final List<Comment> content =
                 queryFactory
                         .selectFrom(comment)

@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         final String refreshToken = jwtProvider.extractRefreshToken(request).orElse(null);
-        try{
+        try {
             // 원래 리소스 접근 시 refreshToken 없고 accessToken만 존재
             // accessToken 으로 이메일 비교 후 성공하면 인증 성공, 실패하면 다음 필터에서 인증 오류
             if (null == refreshToken) {
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             }
             // 두 토큰 다 실패하면 다음 필터에서 403 에러
-        }catch(final Exception e){
+        } catch (final Exception e) {
             forbidden(response, new Exception403("권한이 없습니다."));
         }
     }

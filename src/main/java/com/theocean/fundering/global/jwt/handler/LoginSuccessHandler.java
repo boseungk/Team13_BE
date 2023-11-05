@@ -4,7 +4,7 @@ package com.theocean.fundering.global.jwt.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.jwt.JwtProvider;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 });
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        final String result = objectMapper.writeValueAsString(ApiUtils.success(SUCCESS_MESSAGE));
+        final String result = objectMapper.writeValueAsString(ApiResult.success(SUCCESS_MESSAGE));
         response.getWriter().write(result);
     }
 
