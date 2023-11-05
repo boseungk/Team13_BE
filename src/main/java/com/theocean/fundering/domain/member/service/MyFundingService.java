@@ -4,12 +4,15 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.member.dto.MyFundingFollowingCelebsDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingWithdrawalResponseDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.member.repository.MyFundingRepository;
+import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +25,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MyFundingService {
+
     private final MyFundingRepository myFundingRepository;
+    private final WithdrawalRepository withdrawalRepository;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final PostRepository postRepository;
     private final CelebRepository celebRepository;
-    public PageResponse<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Long postId, final Pageable pageable) {
-        final var page = myFundingRepository.findAllPostingByHost(userId, postId, pageable);
+    private final AdminRepository adminRepository;
+
+    public PageResponse<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingByHost(userId, pageable);
         return new PageResponse<>(page);
     }
 
-    public PageResponse<MyFundingSupporterResponseDTO> findAllPostingBySupporter(final Long userId, final Long postId, final Pageable pageable) {
-        final var page = myFundingRepository.findAllPostingBySupporter(userId, postId, pageable);
+    public PageResponse<MyFundingSupporterResponseDTO> findAllPostingBySupporter(final Long userId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingBySupporter(userId, pageable);
         return new PageResponse<>(page);
     }
 
@@ -46,7 +54,7 @@ public class MyFundingService {
     public List<MyFundingFollowingCelebsDTO> findFollowingCelebs(final Long userId) {
         final List<MyFundingFollowingCelebsDTO> responseDTO = new ArrayList<>();
         final List<Long> allFollowingCelebId = followRepository.findAllFollowingCelebById(userId);
-        for(final Long celebId: allFollowingCelebId){
+        for (final Long celebId : allFollowingCelebId) {
             final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                     () -> new Exception400("셀럽을 찾을 수 없습니다.")
             );
@@ -56,12 +64,12 @@ public class MyFundingService {
         return responseDTO;
     }
 
-    public PageResponse<MyFundingManagerResponseDTO> findAllPostingByManager(Long userId, Long postId, Pageable pageable) {
-        var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
+    public PageResponse<MyFundingWithdrawalResponseDTO> findAllWithdrawal(final Long userId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllWithdrawalByUserId(userId, postId, pageable);
         return new PageResponse<>(page);
     }
 
-    public void applyWithdrawal(Long userId, Long postId) {
+    public void applyWithdrawal(final Long userId, final Long postId) {
         myFundingRepository.applyWithdrawal(userId, postId);
     }
 }
