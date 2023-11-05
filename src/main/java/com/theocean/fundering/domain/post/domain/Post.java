@@ -90,4 +90,8 @@ public class Post extends AuditingFields {
         this.deadline = deadline;
         this.modifiedAt = modifiedAt;
     }
+
+    public void registerAccount(Account account){
+        this.account = account;
+    }
 }
