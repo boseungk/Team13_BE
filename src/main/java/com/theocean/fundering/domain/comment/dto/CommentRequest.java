@@ -3,7 +3,8 @@ package com.theocean.fundering.domain.comment.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 public class CommentRequest {
     @Getter
@@ -13,7 +14,7 @@ public class CommentRequest {
         private final String content;
 
         @JsonCreator
-        public SaveDTO(@JsonProperty("content") String content) {
+        public SaveDTO(@JsonProperty("content") final String content) {
             this.content = content;
         }
     }

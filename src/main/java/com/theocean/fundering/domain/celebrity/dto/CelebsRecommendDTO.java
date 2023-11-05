@@ -12,14 +12,15 @@ public class CelebsRecommendDTO {
     private final int followingCount;
     private final boolean isFollowing;
 
-    private CelebsRecommendDTO(final Celebrity celebrity, int followerCount, boolean following) {
+    private CelebsRecommendDTO(final Celebrity celebrity, final int followerCount, final boolean following) {
         celebId = celebrity.getCelebId();
         celebName = celebrity.getCelebName();
         celebProfile = celebrity.getProfileImage();
         followingCount = followerCount;
         isFollowing = following;
     }
-    public static CelebsRecommendDTO of(Celebrity celebrity, int followerCount, boolean following) {
+
+    public static CelebsRecommendDTO of(final Celebrity celebrity, final int followerCount, final boolean following) {
         return new CelebsRecommendDTO(celebrity, followerCount, following);
     }
 }

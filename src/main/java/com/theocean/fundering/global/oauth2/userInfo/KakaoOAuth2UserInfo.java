@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
-    public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
+    public KakaoOAuth2UserInfo(final Map<String, Object> attributes) {
         super(attributes);
     }
 
@@ -15,10 +15,10 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getNickname() {
-        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+        final Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+        final Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
-        if (account == null || profile == null) {
+        if (null == account || null == profile) {
             return null;
         }
 
@@ -27,10 +27,10 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getImageUrl() {
-        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+        final Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+        final Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
-        if (account == null || profile == null) {
+        if (null == account || null == profile) {
             return null;
         }
 
@@ -39,10 +39,10 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getEmail() {
-        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+        final Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+        final Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
-        if (account == null || profile == null) {
+        if (null == account || null == profile) {
             return null;
         }
 

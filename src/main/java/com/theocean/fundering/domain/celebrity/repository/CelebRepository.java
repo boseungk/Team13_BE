@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+=======
+        >>>>>>>feat
+
 public interface CelebRepository extends JpaRepository<Celebrity, Long>, CelebRepositoryCustom {
     @Query(value = "SELECT * FROM celebrity order by RAND() limit 3", nativeQuery = true)
     Optional<List<Celebrity>> findAllRandom();

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class PaymentConfig {
 
     @Bean
-    public IamportClient iamportClient(){
-        return new IamportClient("","");
+    public IamportClient iamportClient() {
+        return new IamportClient("", "");
     }
 }

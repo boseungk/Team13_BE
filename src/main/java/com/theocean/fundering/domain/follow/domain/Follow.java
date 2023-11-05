@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.like.domain;
+package com.theocean.fundering.domain.follow.domain;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
@@ -6,48 +6,41 @@ import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
+@Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "heart")
+@Table(name = "follow")
 @Entity
-public class Heart {
-
+public class Follow {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long heartId;
+    @GeneratedValue
+    private Long followId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    private Celebrity celeb;
-
-
-    @Builder
-    public Heart(final Member member, final Celebrity celeb) {
-        this.member = member;
-        this.celeb = celeb;
-    }
+    private Celebrity celebrity;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof final Heart heart)) return false;
-        return Objects.equals(heartId, heart.heartId);
+        if (!(o instanceof final Follow follow)) return false;
+        return Objects.equals(followId, follow.followId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(heartId);
+        return Objects.hash(followId);
     }
 }

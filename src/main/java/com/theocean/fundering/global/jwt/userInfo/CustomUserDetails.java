@@ -24,6 +24,15 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private UserRole role;
 
+    public static CustomUserDetails from(final Member member) {
+        return builder()
+                .id(member.getUserId())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .role(member.getUserRole())
+                .build();
+    }
+
     public Long getId() {
         return id;
     }
@@ -61,14 +70,5 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public static CustomUserDetails from(final Member member){
-        return CustomUserDetails.builder()
-                .id(member.getUserId())
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .role(member.getUserRole())
-                .build();
     }
 }

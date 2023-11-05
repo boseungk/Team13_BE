@@ -17,26 +17,26 @@ public enum CelebType {
         this.type = type;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public static CelebType fromString(final String type){
+    public static CelebType fromString(final String type) {
         return Arrays.stream(values())
                 .filter(celebType -> celebType.type.equals(type))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown type: %s".formatted(type)));
     }
 
-    public class CelebTypeToStringConverter implements AttributeConverter<CelebType, String>{
+    public String getType() {
+        return type;
+    }
+
+    public class CelebTypeToStringConverter implements AttributeConverter<CelebType, String> {
 
         @Override
-        public String convertToDatabaseColumn(CelebType attribute) {
+        public String convertToDatabaseColumn(final CelebType attribute) {
             return attribute.getType();
         }
 
         @Override
-        public CelebType convertToEntityAttribute(String dbData) {
+        public CelebType convertToEntityAttribute(final String dbData) {
             return fromString(dbData);
         }
     }

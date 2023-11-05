@@ -1,15 +1,9 @@
 package com.theocean.fundering.global.dto;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class PageResponse<T> {
@@ -17,9 +11,17 @@ public class PageResponse<T> {
     private final int currentPage;
     private final boolean isLastPage;
 
+<<<<<<<HEAD:src/main/java/com/theocean/fundering/global/dto/PageResponse.java
+
     public PageResponse(Slice<T> sliceContent) {
-        this.content = sliceContent.getContent();
-        this.currentPage = sliceContent.getNumber() + 1;
-        this.isLastPage = sliceContent.isLast();
+        content = sliceContent.getContent();
+        currentPage = sliceContent.getNumber() + 1;
+        isLastPage = sliceContent.isLast();
+=======
+    public PageResponse( final Slice<T> sliceContent){
+            content = sliceContent.getContent();
+            currentPage = sliceContent.getNumber() + 1;
+            isLast = sliceContent.isLast();
+>>>>>>>src / main / java / com / theocean / fundering / domain / celebrity / dto / PageResponse.java
+        }
     }
-}

@@ -16,7 +16,7 @@ public class EmailRequestDTO {
         this.email = email;
     }
 
-    public static EmailRequestDTO from(final String email){
+    public static EmailRequestDTO from(final String email) {
         return new EmailRequestDTO(email);
     }
 }

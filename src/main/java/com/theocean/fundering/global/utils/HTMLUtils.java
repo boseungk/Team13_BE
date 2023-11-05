@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HTMLUtils {
-    public String markdownToHTML(String md){
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        Node content = parser.parse(md);
+    public String markdownToHTML(final String md) {
+        final Parser parser = Parser.builder().build();
+        final HtmlRenderer renderer = HtmlRenderer.builder().build();
+        final Node content = parser.parse(md);
         return renderer.render(content);
     }
 

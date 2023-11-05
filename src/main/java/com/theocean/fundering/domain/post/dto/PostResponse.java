@@ -28,57 +28,54 @@ public class PostResponse {
         private int participant;
         private boolean eqWriter;
 
-
-        public FindByPostIdDTO(Post post){
-            this.postId = post.getPostId();
-            this.writerId = post.getWriter().getUserId();
-            this.writer = post.getWriter().getNickname();
-            this.celebrity = post.getCelebrity().getCelebName();
-            this.celebImg = post.getCelebrity().getProfileImage();
-            this.title = post.getTitle();
-            this.content = post.getIntroduction();
-            this.thumbnail = post.getThumbnail();
-            this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getBalance();
-            this.deadline = post.getDeadline();
-            this.createdAt = post.getCreatedAt();
-            this.modifiedAt = post.getModifiedAt();
-            this.participant = post.getParticipants();
-            this.eqWriter = false;
+        public FindByPostIdDTO( final Post post){
+                postId = post.getPostId();
+                writerId = post.getWriter().getUserId();
+                writer = post.getWriter().getNickname();
+                celebrity = post.getCelebrity().getCelebName();
+                celebImg = post.getCelebrity().getProfileImage();
+                title = post.getTitle();
+                content = post.getIntroduction();
+                thumbnail = post.getThumbnail();
+                targetPrice = post.getTargetPrice();
+                currentAmount = post.getAccount().getBalance();
+                deadline = post.getDeadline();
+                createdAt = post.getCreatedAt();
+                modifiedAt = post.getModifiedAt();
+                participant = post.getParticipants();
+                eqWriter = false;
+            }
         }
-    }
 
+        @Getter
+        @Setter
+        public static class FindAllDTO {
+            private Long postId;
+            private Long writerId;
+            private String writer;
+            private String celebrity;
+            private String celebImg;
+            private String title;
+            private String thumbnail;
+            private int targetPrice;
+            private int currentAmount;
+            private LocalDateTime deadline;
+            private LocalDateTime createdAt;
+            private LocalDateTime modifiedAt;
+        public FindAllDTO( final Post post){
+                    postId = post.getPostId();
+                    writerId = post.getWriter().getUserId();
+                    writer = post.getWriter().getNickname();
+                    celebrity = post.getCelebrity().getCelebName();
+                    celebImg = post.getCelebrity().getProfileImage();
+                    title = post.getTitle();
+                    thumbnail = post.getThumbnail();
+                    targetPrice = post.getTargetPrice();
+                    currentAmount = post.getAccount().getBalance();
+                    deadline = post.getDeadline();
+                    createdAt = post.getCreatedAt();
+                    modifiedAt = post.getModifiedAt();
+                }
+            }
 
-    @Getter
-    @Setter
-    public static class FindAllDTO{
-        private Long postId;
-        private Long writerId;
-        private String writer;
-        private String celebrity;
-        private String celebImg;
-        private String title;
-        private String thumbnail;
-        private int targetPrice;
-        private int currentAmount;
-        private LocalDateTime deadline;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
-
-        public FindAllDTO(Post post){
-            this.postId = post.getPostId();
-            this.writerId = post.getWriter().getUserId();
-            this.writer = post.getWriter().getNickname();
-            this.celebrity = post.getCelebrity().getCelebName();
-            this.celebImg = post.getCelebrity().getProfileImage();
-            this.title = post.getTitle();
-            this.thumbnail = post.getThumbnail();
-            this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getBalance();
-            this.deadline = post.getDeadline();
-            this.createdAt = post.getCreatedAt();
-            this.modifiedAt = post.getModifiedAt();
         }
-    }
-
-}
