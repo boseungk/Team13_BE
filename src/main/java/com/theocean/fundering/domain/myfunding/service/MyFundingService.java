@@ -7,6 +7,7 @@ import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingFollowingCelebsDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.myfunding.repository.MyFundingRepository;
 import com.theocean.fundering.global.dto.PageResponse;
@@ -53,5 +54,14 @@ public class MyFundingService {
             responseDTO.add(MyFundingFollowingCelebsDTO.of(celebrity, followerCount));
         }
         return responseDTO;
+    }
+
+    public PageResponse<MyFundingManagerResponseDTO> findAllPostingByManager(Long userId, Long postId, Pageable pageable) {
+        var page = myFundingRepository.findAllPostingByManager(userId, postId, pageable);
+        return new PageResponse<>(page);
+    }
+
+    public void applyWithdrawal(Long userId, Long postId) {
+        myFundingRepository.applyWithdrawal(userId, postId);
     }
 }

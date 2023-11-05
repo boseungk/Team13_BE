@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.myfunding.controller;
 
 import com.theocean.fundering.domain.myfunding.dto.MyFundingFollowingCelebsDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
 import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.myfunding.service.MyFundingService;
 import com.theocean.fundering.global.dto.PageResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,5 +63,25 @@ public class MyFundingController {
     ){
         var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(followingCelebs));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/withdrawal")
+    public ResponseEntity<?> findAllPostingByManager(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @PageableDefault final Pageable pageable
+    ){
+        final PageResponse<MyFundingManagerResponseDTO> page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
+    @PostMapping("/myfunding/withdrawal/apply")
+    public ResponseEntity<?> applyWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId
+    ){
+        myFundingService.applyWithdrawal(userDetails.getId(), postId);
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 }
