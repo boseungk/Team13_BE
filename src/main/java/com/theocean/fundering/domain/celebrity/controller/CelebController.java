@@ -10,14 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,44 +21,64 @@ import java.util.List;
 @RestController
 public class CelebController {
     private final CelebService celebService;
-
     @PostMapping("/celebs")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error) {
+    public ResponseEntity<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
+//                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
+//        celebService.register(celebRequestDTO, thumbnail);
         celebService.register(celebRequestDTO);
-        return ApiResult.success(null);
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> findAllCelebForApproval(@PathVariable final Long celebId,
+                                                     @PageableDefault final Pageable pageable
+    ){
+        PageResponse<CelebListResponseDTO> page = celebService.findAllCelebForApproval(celebId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(page));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> approvalCelebrity(@PathVariable final Long celebId){
+        celebService.approvalCelebrity(celebId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/celebs/{celebId}/admin")
+    public ResponseEntity<?> rejectCelebrity(@PathVariable final Long celebId){
+        celebService.deleteCelebrity(celebId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 
     @GetMapping("/celebs/{celebId}/posts")
-    public ApiResult<?> findAllPosting(@PathVariable final Long celebId,
+    public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
                                             @PageableDefault final Pageable pageable){
         final PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, pageable);
-        return ApiResult.success(page);
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 
     @GetMapping("/celebs/{celebId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findByCelebId(@PathVariable final Long celebId) {
+    public ResponseEntity<?> findByCelebId(@PathVariable final Long celebId){
         final CelebDetailsResponseDTO responseDTO = celebService.findByCelebId(celebId);
-        return ApiResult.success(responseDTO);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
     @GetMapping("/celebs")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAllCelebs(@RequestParam final Long celebId,
-                                      @RequestParam final String keyword,
-                                      @PageableDefault final Pageable pageable) {
+    public ResponseEntity<?> findAllCelebs(@RequestParam final Long celebId,
+                                           @RequestParam final String keyword,
+                                           @PageableDefault final Pageable pageable){
         final PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, keyword, pageable);
-        return ApiResult.success(page);
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 
     @GetMapping("/celebs/recommend")
-    public ApiResult<?> findAllRecommendCelebs(
-            @AuthenticationPrincipal final CustomUserDetails userDetails
-    ) {
-        final List<CelebsRecommendResponseDTO> responseDTO = celebService.recommendCelebs(userDetails);
-        return ApiResult.success(responseDTO);
+    public ResponseEntity<?> findAllRecommendCelebs(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        List<CelebsRecommendResponseDTO> responseDTO = celebService.recommendCelebs(userDetails);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
 }

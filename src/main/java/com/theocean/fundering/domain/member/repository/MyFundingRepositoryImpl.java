@@ -21,30 +21,29 @@ import static com.theocean.fundering.domain.withdrawal.domain.QWithdrawal.withdr
 
 @RequiredArgsConstructor
 @Repository
-public class MyFundingRepositoryImpl implements MyFundingRepository {
+public class MyFundingRepositoryImpl implements MyFundingRepository{
     private final JPAQueryFactory queryFactory;
-
     @Override
     public Slice<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Pageable pageable) {
         final List<MyFundingHostResponseDTO> contents =
                 queryFactory.select(Projections.constructor(MyFundingHostResponseDTO.class,
-                        post.postId,
-                        post.writer.nickname,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.introduction,
-                        post.targetPrice,
-                        post.deadline,
-                        post.modifiedAt,
-                        post.createdAt
-                ))
-                .from(post)
-                .where(eqPostWriterId(userId))
-                .orderBy(post.postId.desc())
-                .limit(pageable.getPageSize())
-                .fetch();
+                                post.postId,
+                                post.writer.nickname,
+                                post.celebrity.celebName,
+                                post.celebrity.profileImage,
+                                post.title,
+                                post.thumbnail,
+                                post.introduction,
+                                post.targetPrice,
+                                post.deadline,
+                                post.modifiedAt,
+                                post.createdAt
+                        ))
+                        .from(post)
+                        .where(eqPostWriterId(userId))
+                        .orderBy(post.postId.desc())
+                        .limit(pageable.getPageSize())
+                        .fetch();
         final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
@@ -53,24 +52,24 @@ public class MyFundingRepositoryImpl implements MyFundingRepository {
     public Slice<MyFundingSupporterResponseDTO> findAllPostingBySupporter(final Long userId, final Pageable pageable) {
         final List<MyFundingSupporterResponseDTO> contents =
                 queryFactory.select(Projections.constructor(MyFundingSupporterResponseDTO.class,
-                        post.postId,
-                        post.writer.nickname,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.introduction,
-                        post.targetPrice,
-                        payment.amount,
-                        post.deadline,
-                        post.modifiedAt,
-                        post.createdAt
-                ))
-                .from(post, payment)
-                .where(eqPostSupporterId(userId))
-                .orderBy(post.postId.desc())
-                .limit(pageable.getPageSize())
-                .fetch();
+                                post.postId,
+                                post.writer.nickname,
+                                post.celebrity.celebName,
+                                post.celebrity.profileImage,
+                                post.title,
+                                post.thumbnail,
+                                post.introduction,
+                                post.targetPrice,
+                                payment.amount,
+                                post.deadline,
+                                post.modifiedAt,
+                                post.createdAt
+                        ))
+                        .from(post, payment)
+                        .where(eqPostSupporterId(userId))
+                        .orderBy(post.postId.desc())
+                        .limit(pageable.getPageSize())
+                        .fetch();
         final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
@@ -79,21 +78,21 @@ public class MyFundingRepositoryImpl implements MyFundingRepository {
     public Slice<MyFundingWithdrawalResponseDTO> findAllWithdrawalByUser(final Long userId, final Long postId, final Pageable pageable) {
         final List<MyFundingWithdrawalResponseDTO> contents =
                 queryFactory.select(Projections.constructor(MyFundingWithdrawalResponseDTO.class,
-                        withdrawal.withdrawalId,
-                        withdrawal.withdrawalAmount,
-                        withdrawal.usage,
-                        post.postId,
-                        post.thumbnail,
-                        post.title,
-                        post.writer.userId,
-                        post.writer.profileImage,
-                        post.writer.nickname
-                ))
-                .from(post, withdrawal)
-                .where(eqWithdrawalApplicationId(userId), eqPostId(postId))
-                .orderBy(withdrawal.withdrawalId.desc())
-                .limit(pageable.getPageSize())
-                .fetch();
+                                withdrawal.withdrawalId,
+                                withdrawal.withdrawalAmount,
+                                withdrawal.usage,
+                                post.postId,
+                                post.thumbnail,
+                                post.title,
+                                post.writer.userId,
+                                post.writer.profileImage,
+                                post.writer.nickname
+                        ))
+                        .from(post, withdrawal)
+                        .where(eqWithdrawalApplicationId(userId), eqPostId(postId))
+                        .orderBy(withdrawal.withdrawalId.desc())
+                        .limit(pageable.getPageSize())
+                        .fetch();
         final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
@@ -108,11 +107,11 @@ public class MyFundingRepositoryImpl implements MyFundingRepository {
                 .execute();
     }
 
-    private BooleanExpression eqPostWriterId(final Long userId) {
+    private BooleanExpression eqPostWriterId(final Long userId){
         return post.writer.userId.eq(userId);
     }
 
-    private BooleanExpression eqPostSupporterId(final Long userId) {
+    private BooleanExpression eqPostSupporterId(final Long userId){
         return payment.member.userId.eq(userId);
     }
 

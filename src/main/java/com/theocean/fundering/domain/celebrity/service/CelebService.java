@@ -34,8 +34,6 @@ public class CelebService {
 
     private final AWSS3Uploader awss3Uploader;
 
-
-
     @Transactional
 //    public void register(final CelebRequestDTO celebRequestDTO, final MultipartFile thumbnail) {
     public void register(final CelebRequestDTO celebRequestDTO) {
@@ -97,7 +95,7 @@ public class CelebService {
 
         final List<Celebrity> celebrities = celebRepository.findAllRandom();
         if(null == celebrities)
-                throw new Exception400("해당 셀럽을 찾을 수 없습니다.");
+            throw new Exception400("해당 셀럽을 찾을 수 없습니다.");
 
         final List<CelebsRecommendResponseDTO> responseDTO = new ArrayList<>();
         for (final Celebrity celebrity : celebrities) {

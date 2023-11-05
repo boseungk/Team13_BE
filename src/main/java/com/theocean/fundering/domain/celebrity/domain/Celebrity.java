@@ -26,7 +26,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "celebrity",
         indexes = {
-            @Index(columnList = "name"), @Index(columnList = "follower_count")
+                @Index(columnList = "name"), @Index(columnList = "follower_count")
         }
 )
 @Entity
@@ -60,7 +60,7 @@ public class Celebrity extends AuditingFields {
     @Column(nullable = false, name = "approval_status")
     private ApprovalStatus status = ApprovalStatus.PENDING;
 
-    public Celebrity approvalCelebrity(){
+    public Celebrity approvalCelebrity() {
         status = ApprovalStatus.APPROVED;
         return this;
     }
@@ -69,11 +69,11 @@ public class Celebrity extends AuditingFields {
         followerCount += 1;
     }
 
-    public void minusFollowerCount(){
+    public void minusFollowerCount() {
         followerCount -= 1;
     }
 
-    public void updateProfileImage(String thumbnail){
+    public void updateProfileImage(String thumbnail) {
         profileImage = thumbnail;
     }
 
@@ -88,9 +88,9 @@ public class Celebrity extends AuditingFields {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof final Celebrity celebrity)) return false;
+        if (!(o instanceof Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 
@@ -98,4 +98,5 @@ public class Celebrity extends AuditingFields {
     public int hashCode() {
         return Objects.hash(celebId);
     }
+
 }

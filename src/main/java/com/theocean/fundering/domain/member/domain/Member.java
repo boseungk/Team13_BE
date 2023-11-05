@@ -46,6 +46,7 @@ public class Member extends AuditingFields {
 
     @Column(length = 11)
     private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
@@ -56,6 +57,27 @@ public class Member extends AuditingFields {
     @Column(name = "profile_image")
     private String profileImage; // 프로필 이미지
 
+    public void changeNickname(final String nickname){
+        this.nickname = nickname;
+    }
+
+    public void setPassword(final String password){
+        this.password = password;
+    }
+
+    public void updateRefreshToken(final String updateRefreshToken) {
+        refreshToken = updateRefreshToken;
+    }
+
+    public void changePhoneNumber(final String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+
+
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Builder
     public Member(final Long userId, final String nickname, final String password, final String email, final UserRole userRole, final String profileImage) {
         this.userId = userId;
@@ -64,26 +86,6 @@ public class Member extends AuditingFields {
         this.email = email;
         this.profileImage = profileImage;
         this.userRole = userRole;
-    }
-
-    public void changeNickname(final String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public void updateRefreshToken(final String updateRefreshToken) {
-        refreshToken = updateRefreshToken;
-    }
-
-    public void changePhoneNumber(final String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void changeProfileImage(final String profileImage) {
-        this.profileImage = profileImage;
     }
 
     @Override
@@ -106,4 +108,3 @@ public class Member extends AuditingFields {
         changeProfileImage(profileImage);
     }
 }
-

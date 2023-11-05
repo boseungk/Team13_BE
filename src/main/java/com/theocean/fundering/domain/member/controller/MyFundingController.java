@@ -1,11 +1,13 @@
 package com.theocean.fundering.domain.member.controller;
 
+import com.theocean.fundering.domain.member.service.MyFundingService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,64 +19,48 @@ public class MyFundingController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/host")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAllPostingByHost(
+    public ResponseEntity<?> findAllPostingByHost(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @PageableDefault final Pageable pageable) {
         var page = myFundingService.findAllPostingByHost(userDetails.getId(), pageable);
-            return ApiResult.success(page);
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/support")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAllPostingBySupport(
+    public ResponseEntity<?> findAllPostingBySupport(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @PageableDefault final Pageable pageable
     ) {
         var page = myFundingService.findAllPostingBySupporter(userDetails.getId(), pageable);
-        return ApiResult.success(page);
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/nickname")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> getNickname(
+    public ResponseEntity<?> getNickname(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
-        final String nickname = myFundingService.getNickname(userDetails.getId());
-        return ApiResult.success(nickname);
+        String nickname = myFundingService.getNickname(userDetails.getId());
+        return ResponseEntity.ok(ApiUtils.success(nickname));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/followers")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findFollowingCelebs(
+    public ResponseEntity<?> findFollowingCelebs(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
         var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
-        return ApiResult.success(followingCelebs);
+        return ResponseEntity.ok(ApiUtils.success(followingCelebs));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/myfunding/withdrawal")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAllPostingByManager(
-            @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
-            @PageableDefault final Pageable pageable
-    ) {
-        final var page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
-        return ApiResult.success(page);
-    }
 
     @PostMapping("/myfunding/withdrawal")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> approvalWithdrawal(
+    public ResponseEntity<?> approvalWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId
     ) {
         myFundingService.applyWithdrawal(userDetails.getId(), postId);
-            return ApiResult.success(null);
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 }
