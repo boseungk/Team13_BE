@@ -3,7 +3,6 @@ package com.theocean.fundering.domain.celebrity.service;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
-import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,8 @@ public class FollowService {
         );
         try{
             followRepository.saveFollow(celebrity.getCelebId(), memberId);
+            celebrity.addFollowerCount();
+            celebRepository.save(celebrity);
         } catch (final RuntimeException e) {
             throw new Exception500("팔로우에 실패했습니다.");
         }
@@ -37,6 +38,8 @@ public class FollowService {
         );
         try{
             followRepository.saveUnFollow(celebrity.getCelebId(), memberId);
+            celebrity.minusFollowerCount();
+            celebRepository.save(celebrity);
         } catch (final RuntimeException e) {
             throw new Exception500("언팔로우에 실패했습니다.");
         }
