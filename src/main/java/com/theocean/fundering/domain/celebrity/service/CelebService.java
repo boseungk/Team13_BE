@@ -4,15 +4,18 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.dto.*;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
-import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
+import com.theocean.fundering.global.utils.AWSS3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +28,21 @@ public class CelebService {
 
     private final CelebRepository celebRepository;
 
+    private final PostRepository postRepository;
+
     private final FollowRepository followRepository;
 
-    private final MemberRepository memberRepository;
+    private final AWSS3Uploader awss3Uploader;
+
 
     @Transactional
+//    public void register(final CelebRequestDTO celebRequestDTO, final MultipartFile thumbnail) {
     public void register(final CelebRequestDTO celebRequestDTO) {
         try {
-            celebRepository.save(celebRequestDTO.mapToEntity());
+//            final String img = uploadImage(thumbnail);
+            final Celebrity celebrity = celebRequestDTO.mapToEntity();
+//            celebrity.updateProfileImage(img);
+            celebRepository.save(celebrity);
         } catch (final RuntimeException e) {
             throw new Exception500("셀럽 등록 실패");
         }
@@ -62,7 +72,13 @@ public class CelebService {
     public CelebDetailsResponseDTO findByCelebId(final Long celebId) {
         final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
-        return CelebDetailsResponseDTO.from(celebrity);
+        final int followerCount = celebrity.getFollowerCount();
+        final int followerRank = celebRepository.getFollowerRank(celebId);
+        final List<Post> postsByCelebId = postRepository.findPostByCelebId(celebId);
+        if(null == postsByCelebId)
+            throw new Exception400("관련 포스팅을 찾을 수 없습니다.");
+        // postsByCelebId에서 총 펀딩금액, 펀딩 금액 등수, 진행 중인 펀딩 개수 추출하는 로직
+        return CelebDetailsResponseDTO.of(celebrity, followerCount, followerRank, postsByCelebId);
     }
 
     public PageResponse<CelebListResponseDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
@@ -75,18 +91,24 @@ public class CelebService {
         return new PageResponse<>(page);
     }
 
-    public List<CelebsRecommendDTO> recommendCelebs(final CustomUserDetails member) {
+    public List<CelebsRecommendResponseDTO> recommendCelebs(final CustomUserDetails member) {
         final Long id = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
 
-        final List<Celebrity> celebrities = celebRepository.findAllRandom().orElseThrow(
-                () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
-        );
-        final List<CelebsRecommendDTO> responseDTO = new ArrayList<>();
+        final List<Celebrity> celebrities = celebRepository.findAllRandom();
+        if(null == celebrities)
+                throw new Exception400("해당 셀럽을 찾을 수 없습니다.");
+
+        final List<CelebsRecommendResponseDTO> responseDTO = new ArrayList<>();
         for (final Celebrity celebrity : celebrities) {
+            //celebrity의 followerCount와 같은 거 같아서 확인 후 리팩토링
             final int followCount = followRepository.countByCelebId(celebrity.getCelebId());
             final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebrity.getCelebId(), id);
-            responseDTO.add(CelebsRecommendDTO.of(celebrity, followCount, isFollow));
+            responseDTO.add(CelebsRecommendResponseDTO.of(celebrity, followCount, isFollow));
         }
         return responseDTO;
+    }
+
+    private String uploadImage(final MultipartFile img){
+        return awss3Uploader.uploadToS3(img);
     }
 }
