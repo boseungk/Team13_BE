@@ -54,9 +54,8 @@ public class CelebController {
 
     @GetMapping("/celebs/{celebId}/posts")
     public ResponseEntity<?> findAllPosting(@PathVariable final Long celebId,
-                                            @RequestParam final Long postId,
                                             @PageableDefault final Pageable pageable){
-        final PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
+        final PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
 

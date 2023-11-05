@@ -64,8 +64,8 @@ public class CelebService {
         );
     }
 
-    public PageResponse<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
-        final var page = celebRepository.findAllPosting(celebId, postId, pageable);
+    public PageResponse<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Pageable pageable) {
+        final var page = celebRepository.findAllPosting(celebId, pageable);
         return new PageResponse<>(page);
     }
 

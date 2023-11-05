@@ -27,7 +27,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
+    public Slice<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebFundingResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebFundingResponseDTO.class,
@@ -41,7 +41,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         post.participants,
                         post.targetPrice))
                 .from(post)
-                .where(eqPostCelebId(celebId), ltPostId(postId), eqCelebApprovalStatus())
+                .where(eqPostCelebId(celebId), eqCelebApprovalStatus())
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
