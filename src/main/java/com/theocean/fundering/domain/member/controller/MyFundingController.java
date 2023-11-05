@@ -1,10 +1,9 @@
-package com.theocean.fundering.domain.myfunding.controller;
+package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.myfunding.dto.MyFundingFollowingCelebsDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
-import com.theocean.fundering.domain.myfunding.service.MyFundingService;
+import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
+import com.theocean.fundering.domain.member.service.MyFundingService;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 public class MyFundingController {
@@ -31,7 +28,7 @@ public class MyFundingController {
     public ResponseEntity<?> findAllPostingByHost(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId,
-            @PageableDefault final Pageable pageable){
+            @PageableDefault final Pageable pageable) {
         final PageResponse<MyFundingHostResponseDTO> page = myFundingService.findAllPostingByHost(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
@@ -42,7 +39,7 @@ public class MyFundingController {
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId,
             @PageableDefault final Pageable pageable
-    ){
+    ) {
         final PageResponse<MyFundingSupporterResponseDTO> page = myFundingService.findAllPostingBySupporter(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
     }
@@ -51,7 +48,7 @@ public class MyFundingController {
     @GetMapping("/myfunding/nickname")
     public ResponseEntity<?> getNickname(
             @AuthenticationPrincipal final CustomUserDetails userDetails
-    ){
+    ) {
         String nickname = myFundingService.getNickname(userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(nickname));
     }
@@ -60,7 +57,7 @@ public class MyFundingController {
     @GetMapping("/myfunding/followers")
     public ResponseEntity<?> findFollowingCelebs(
             @AuthenticationPrincipal final CustomUserDetails userDetails
-    ){
+    ) {
         var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
         return ResponseEntity.ok(ApiUtils.success(followingCelebs));
     }
@@ -71,7 +68,7 @@ public class MyFundingController {
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId,
             @PageableDefault final Pageable pageable
-    ){
+    ) {
         final PageResponse<MyFundingManagerResponseDTO> page = myFundingService.findAllPostingByManager(userDetails.getId(), postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
@@ -80,7 +77,7 @@ public class MyFundingController {
     public ResponseEntity<?> applyWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId
-    ){
+    ) {
         myFundingService.applyWithdrawal(userDetails.getId(), postId);
         return ResponseEntity.ok(ApiUtils.success(null));
     }

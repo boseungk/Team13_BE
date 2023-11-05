@@ -1,15 +1,15 @@
-package com.theocean.fundering.domain.myfunding.service;
+package com.theocean.fundering.domain.member.service;
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingFollowingCelebsDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
-import com.theocean.fundering.domain.myfunding.repository.MyFundingRepository;
+import com.theocean.fundering.domain.member.dto.MyFundingFollowingCelebsDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
+import com.theocean.fundering.domain.member.repository.MyFundingRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import lombok.RequiredArgsConstructor;

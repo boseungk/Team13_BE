@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.myfunding.dto;
+package com.theocean.fundering.domain.member.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

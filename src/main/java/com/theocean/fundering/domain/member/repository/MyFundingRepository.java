@@ -1,8 +1,8 @@
-package com.theocean.fundering.domain.myfunding.repository;
+package com.theocean.fundering.domain.member.repository;
 
-import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 

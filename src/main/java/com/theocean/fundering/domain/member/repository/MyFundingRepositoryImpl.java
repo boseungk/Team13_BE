@@ -1,11 +1,11 @@
-package com.theocean.fundering.domain.myfunding.repository;
+package com.theocean.fundering.domain.member.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingManagerResponseDTO;
-import com.theocean.fundering.domain.myfunding.dto.MyFundingSupporterResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
