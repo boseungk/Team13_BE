@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberSettingResponseDTO {
     private final String nickname;
-    private final int phoneNumber;
+    private final String phoneNumber;
     private final String profileImage;
 
     private MemberSettingResponseDTO(final Member member) {

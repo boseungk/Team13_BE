@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "member_id")
     private Long userId;
 
     @Setter
@@ -32,7 +32,7 @@ public class Member extends AuditingFields {
     private String email;
 
     @Column(length = 11)
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -41,6 +41,7 @@ public class Member extends AuditingFields {
 
     private String refreshToken; // 리프레시 토큰
 
+    @Column(name = "profile_image")
     private String profileImage; // 프로필 이미지
 
     public void changeNickname(final String nickname){
@@ -55,7 +56,7 @@ public class Member extends AuditingFields {
         refreshToken = updateRefreshToken;
     }
 
-    public void changePhoneNumber(final int phoneNumber){
+    public void changePhoneNumber(final String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
 
@@ -87,5 +88,11 @@ public class Member extends AuditingFields {
     }
 
 
+    public void updateUserSetting(String nickname, String encodePassword, String phoneNumber, String profileImage) {
+        changeNickname(nickname);
+        setPassword(encodePassword);
+        changePhoneNumber(phoneNumber);
+        changeProfileImage(profileImage);
+    }
 }
 
