@@ -1,7 +1,5 @@
 package com.theocean.fundering.domain.withdrawal.domain;
 
-import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,67 +61,36 @@ public class Withdrawal extends AuditingFields {
 
     // 생성자
     @Builder
-<<<<<<<HEAD
-
     public Withdrawal(final Long applicantId, final Long postId, final String usage, final String depositAccount, final int withdrawalAmount) {
         this.applicantId = applicantId;
         this.postId = postId;
-=======
-    public Withdrawal( final Member member, final Post post, final String usage, final String depositAccount,
-        final Integer withdrawalAmount, final Boolean isApproved){
-            this.member = member;
-            this.post = post;
->>>>>>>feat
-            this.usage = usage;
-            this.depositAccount = depositAccount;
-            this.withdrawalAmount = withdrawalAmount;
-            isApproved = true;
-        }
+        this.usage = usage;
+        this.depositAccount = depositAccount;
+        this.withdrawalAmount = withdrawalAmount;
+        isApproved = true;
+    }
 
-<<<<<<<HEAD
-        public long getDepositTime () {
-            return modifiedAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-        }
+    public long getDepositTime() {
+        return modifiedAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+    }
 
-        public void approveWithdrawal () {
-            isApproved = true;
-        }
+    public void approveWithdrawal() {
+        isApproved = true;
+    }
 
-        public void updateBalance ( int balance){
-            this.balance = balance;
-=======
-            // Setter Methods
-            public void updateUsage ( final String usage){
-                this.usage = usage;
-            }
+    public void updateBalance(final int balance) {
+        this.balance = balance;
+    }
 
-            public void updateDepositAccount ( final String depositAccount){
-                this.depositAccount = depositAccount;
-            }
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof final Withdrawal withdrawal)) return false;
+        return Objects.equals(withdrawalId, withdrawal.withdrawalId);
+    }
 
-            public void updateWithdrawalAmount ( final Integer withdrawalAmount){
-                this.withdrawalAmount = withdrawalAmount;
-            }
-
-            public void updateIsApproved ( final boolean isApproved){
-                this.isApproved = isApproved;
->>>>>>>feat
-            }
-
-            @Override
-            public boolean equals ( final Object o){
-                if (this == o) return true;
-<<<<<<<HEAD
-                if (!(o instanceof final Withdrawal withdrawal)) return false;
-                return Objects.equals(withdrawalId, withdrawal.withdrawalId);
-=======
-                if (!(o instanceof final Withdrawal that)) return false;
-                return Objects.equals(withdrawal_id, that.withdrawal_id);
->>>>>>>feat
-            }
-
-            @Override
-            public int hashCode () {
-                return Objects.hash(withdrawalId);
-            }
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(withdrawalId);
+    }
+}

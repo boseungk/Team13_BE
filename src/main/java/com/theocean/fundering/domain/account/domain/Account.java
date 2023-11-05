@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.account.domain;
 
-import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,20 +33,21 @@ public class Account {
     private int balance;
 
     @Builder
-    public Account( final Long managerId, final int fundingAmount){
-            this.managerId = managerId;
-            this.balance = fundingAmount;
-        }
-
-        @Override
-        public boolean equals ( final Object o){
-            if (this == o) return true;
-            if (!(o instanceof final Account account)) return false;
-            return Objects.equals(accountId, account.accountId);
-        }
-
-        @Override
-        public int hashCode () {
-            return Objects.hash(accountId);
-        }
+    public Account(final Long managerId, final Long postId) {
+        this.managerId = managerId;
+        this.postId = postId;
+        balance = 0;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof final Account account)) return false;
+        return Objects.equals(accountId, account.accountId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId);
+    }
+}
