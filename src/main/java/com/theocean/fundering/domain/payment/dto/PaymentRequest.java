@@ -15,23 +15,26 @@ public class PaymentRequest {
     @Setter
     @NoArgsConstructor
     @ToString
-    public static class DonateDTO{
+    public static class DonateDTO {
         private String member;
         private Integer amount;
+        private String impUid;
 
 
-        public Payment toEntity(Member member, Post post, String impUid){
+        @Builder
+        public DonateDTO(final String member, final Integer amount, final String impUid) {
+            this.member = member;
+            this.amount = amount;
+            this.impUid = impUid;
+        }
+
+        public Payment toEntity(final Member member, final Post post) {
             return Payment.builder()
                     .member(member)
                     .post(post)
                     .impUid(impUid)
                     .amount(amount)
                     .build();
-        }
-        @Builder
-        public DonateDTO(String member, Integer amount){
-            this.member = member;
-            this.amount = amount;
         }
 
     }

@@ -1,18 +1,24 @@
 package com.theocean.fundering.domain.payment.domain;
 
-import com.theocean.fundering.global.utils.AuditingFields;
-import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.global.utils.AuditingFields;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Objects;
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 @Getter
@@ -41,7 +47,7 @@ public class Payment extends AuditingFields {
 
     // 생성자
     @Builder
-    public Payment(Member member, Post post, String impUid, Integer amount) {
+    public Payment(final Member member, final Post post, final String impUid, final Integer amount) {
         this.member = member;
         this.post = post;
         this.impUid = impUid;
@@ -49,9 +55,9 @@ public class Payment extends AuditingFields {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Payment payment)) return false;
+        if (!(o instanceof final Payment payment)) return false;
         return Objects.equals(paymentId, payment.paymentId);
     }
 

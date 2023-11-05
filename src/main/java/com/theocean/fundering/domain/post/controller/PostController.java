@@ -6,13 +6,22 @@ import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.service.PostService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -23,66 +32,68 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> findAll(@RequestParam(value = "postId", required = false) Long postId, Pageable pageable){
-        PageResponse<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageable);
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAll(@RequestParam(value = "postId", required = false) final Long postId, final Pageable pageable) {
+        final PageResponse<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageable);
+        return ApiResult.success(responseDTO);
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<?> findByPostId(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long postId){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findByPostId(@AuthenticationPrincipal final CustomUserDetails userDetails, @PathVariable final Long postId) {
         String memberEmail = null;
-        if (userDetails != null)
+        if (null != userDetails)
             memberEmail = userDetails.getEmail();
-        PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(memberEmail, postId);
+        final PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(memberEmail, postId);
 
-        return ResponseEntity.ok(ApiUtils.success(responseDTO));
+        return ApiResult.success(responseDTO);
 
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/posts/{postId}/introduction")
-    public ResponseEntity<?> postIntroduction(@PathVariable Long postId){
-        String introduction = postService.getIntroduction(postId);
-        return ResponseEntity.ok(ApiUtils.success(introduction));
+    @GetMapping("/posts/{postId}/introduction")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> postIntroduction(@PathVariable final Long postId) {
+        final String introduction = postService.getIntroduction(postId);
+        return ApiResult.success(introduction);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/write")
-    public ResponseEntity<?> writePost(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                       @ModelAttribute PostRequest.PostWriteDTO postWriteDTO,
-                                       @RequestPart(value = "thumbnail") MultipartFile thumbnail){
-        String writerEmail = userDetails.getEmail();
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> writePost(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                  @ModelAttribute final PostRequest.PostWriteDTO postWriteDTO,
+                                  @RequestPart("thumbnail") final MultipartFile thumbnail) {
+        final String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/posts/{postId}/edit")
-    public ResponseEntity<?> editPost(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                      @PathVariable Long postId,
-                                      @ModelAttribute PostRequest.PostEditDTO postEditDTO,
-                                      @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail){
-        Long editedPost = postService.editPost(postId, postEditDTO, thumbnail);
-        return ResponseEntity.ok(ApiUtils.success(editedPost));
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                 @PathVariable final Long postId,
+                                 @ModelAttribute final PostRequest.PostEditDTO postEditDTO,
+                                 @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail) {
+        final Long editedPost = postService.editPost(postId, postEditDTO, thumbnail);
+        return ApiResult.success(editedPost);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/posts/{postId}/delete")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> deletePost(@PathVariable final Long postId) {
         postService.deletePost(postId);
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @GetMapping("/posts/search")
-    public ResponseEntity<?> searchPost(@RequestParam(value = "postId", required = false) Long postId, @RequestParam(value = "keyword") String keyword, Pageable pageable){
-        var result = postService.searchPost(postId, keyword, pageable);
-        return ResponseEntity.ok(ApiUtils.success(result));
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> searchPost(@RequestParam(value = "postId", required = false) final Long postId, @RequestParam("keyword") final String keyword, final Pageable pageable) {
+        final var result = postService.searchPost(postId, keyword, pageable);
+        return ApiResult.success(result);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/uploadImg")
-    public ResponseEntity<?> uploadImage(@RequestPart(value = "image") MultipartFile img){
-        String result = postService.uploadImage(img);
-        return ResponseEntity.ok(ApiUtils.success(result));
-    }
+
 }

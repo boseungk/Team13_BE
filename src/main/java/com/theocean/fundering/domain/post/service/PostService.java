@@ -30,64 +30,61 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+    public void writePost(final String email, final PostRequest.PostWriteDTO dto, final MultipartFile thumbnail) {
         dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Member writer =  memberRepository.findByEmail(email).orElseThrow(
+        final Member writer = memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
         );
-        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
+        final Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
         postRepository.save(dto.toEntity(writer, celebrity));
     }
 
-    public PostResponse.FindByPostIdDTO findByPostId(String email, Long postId){
-        Post postPS = postRepository.findById(postId).orElseThrow(
+    public PostResponse.FindByPostIdDTO findByPostId(final String email, final Long postId) {
+        final Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
-        PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
+        final PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
         if (postPS.getWriter().getEmail().equals(email))
             result.setEqWriter(true);
         return result;
     }
 
-    public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable){
-        var postList = postRepository.findAll(postId, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable final Long postId, final Pageable pageable) {
+        final var postList = postRepository.findAll(postId, pageable);
         return new PageResponse<>(postList);
 
     }
 
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, String email, Pageable pageable){
-        var postList = postRepository.findAllByWriterEmail(postId, email, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterId(@Nullable final Long postId, final String email, final Pageable pageable) {
+        final var postList = postRepository.findAllByWriterEmail(postId, email, pageable);
         return new PageResponse<>(postList);
     }
 
     @Transactional
-    public Long editPost(Long postId, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
-        if (thumbnail != null)
+    public Long editPost(final Long postId, final PostRequest.PostEditDTO dto, @Nullable final MultipartFile thumbnail) {
+        if (null != thumbnail)
             dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Post postPS = postRepository.findById(postId).orElseThrow(
+        final Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
         postPS.update(dto.getTitle(), dto.getIntroduction(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 
-    public void deletePost(Long postId){
+    public void deletePost(final Long postId) {
         postRepository.deleteById(postId);
     }
 
-    public PageResponse<PostResponse.FindAllDTO> searchPost(@Nullable Long postId, String keyword, Pageable pageable){
-        var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
+    public PageResponse<PostResponse.FindAllDTO> searchPost(@Nullable final Long postId, final String keyword, final Pageable pageable) {
+        final var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
         return new PageResponse<>(postList);
 
     }
 
-    public String uploadImage(MultipartFile img){
-        return awss3Uploader.uploadToS3(img);
-    }
 
-    public String getIntroduction(Long postId){
+    public String getIntroduction(final Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No mathced post found")
         ).getIntroduction();

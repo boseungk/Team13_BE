@@ -1,7 +1,6 @@
 package com.theocean.fundering.global.jwt.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception401;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.servlet.http.HttpServletRequest;

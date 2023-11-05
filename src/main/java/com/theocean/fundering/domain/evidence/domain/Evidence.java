@@ -1,11 +1,17 @@
 package com.theocean.fundering.domain.evidence.domain;
 
 
-import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
-import jakarta.persistence.*;
+import com.theocean.fundering.global.utils.AuditingFields;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,16 +38,16 @@ public class Evidence extends AuditingFields {
     private Post post;
 
     @Builder
-    public Evidence(Withdrawal withdrawal, Member member, Post post) {
+    public Evidence(final Withdrawal withdrawal, final Member member, final Post post) {
         this.withdrawal = withdrawal;
         this.member = member;
         this.post = post;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Evidence evidence)) return false;
+        if (!(o instanceof final Evidence evidence)) return false;
         return Objects.equals(evidenceId, evidence.evidenceId);
     }
 

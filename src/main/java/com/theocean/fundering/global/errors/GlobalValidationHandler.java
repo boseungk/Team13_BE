@@ -16,15 +16,14 @@ public class GlobalValidationHandler {
     }
 
     @Before("postMapping()")
-    public void validationAdvice(JoinPoint jp) {
-        Object[] args = jp.getArgs();
-        for (Object arg : args) {
-            if (arg instanceof Errors) {
-                Errors errors = (Errors) arg;
+    public void validationAdvice(final JoinPoint jp) {
+        final Object[] args = jp.getArgs();
+        for (final Object arg : args) {
+            if (arg instanceof final Errors errors) {
 
                 if (errors.hasErrors()) {
                     throw new Exception400(
-                            errors.getFieldErrors().get(0).getDefaultMessage()+":"+errors.getFieldErrors().get(0).getField()
+                            errors.getFieldErrors().get(0).getDefaultMessage() + ":" + errors.getFieldErrors().get(0).getField()
                     );
                 }
             }

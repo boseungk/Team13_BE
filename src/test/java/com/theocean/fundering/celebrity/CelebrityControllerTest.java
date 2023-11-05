@@ -7,13 +7,10 @@ import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -23,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.BDDMockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,22 +30,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CelebrityControllerTest {
     private static final String CELEB_NAME = "아이유";
     private static final String PROFILE_IMAGE = "profile.jpg";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @MockBean
-    private CelebService celebService;
-
     private final Celebrity celeb = Celebrity.builder()
             .celebName(CELEB_NAME)
             .celebGender(CelebGender.FEMALE)
             .celebType(CelebType.SINGER)
             .profileImage(PROFILE_IMAGE)
             .build();
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper om;
+    @MockBean
+    private CelebService celebService;
 
     @WithMockUser
     @Test

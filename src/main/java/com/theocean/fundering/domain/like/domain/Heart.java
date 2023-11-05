@@ -3,16 +3,21 @@ package com.theocean.fundering.domain.like.domain;
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="heart")
+@Table(name = "heart")
 @Entity
 public class Heart {
 
@@ -29,15 +34,15 @@ public class Heart {
 
 
     @Builder
-    public Heart(Member member, Celebrity celeb) {
+    public Heart(final Member member, final Celebrity celeb) {
         this.member = member;
         this.celeb = celeb;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Heart heart)) return false;
+        if (!(o instanceof final Heart heart)) return false;
         return Objects.equals(heartId, heart.heartId);
     }
 

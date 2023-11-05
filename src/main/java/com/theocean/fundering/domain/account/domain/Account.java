@@ -1,8 +1,13 @@
 package com.theocean.fundering.domain.account.domain;
 
-import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,15 +31,15 @@ public class Account {
     private int fundingAmount;
 
     @Builder
-    public Account(Member member, int fundingAmount) {
+    public Account(final Member member, final int fundingAmount) {
         this.member = member;
         this.fundingAmount = fundingAmount;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Account account)) return false;
+        if (!(o instanceof final Account account)) return false;
         return Objects.equals(accountId, account.accountId);
     }
 

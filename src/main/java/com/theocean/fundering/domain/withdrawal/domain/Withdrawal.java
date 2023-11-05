@@ -1,19 +1,26 @@
 package com.theocean.fundering.domain.withdrawal.domain;
 
-import com.theocean.fundering.global.utils.AuditingFields;
-import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.global.utils.AuditingFields;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Withdrawal")
@@ -56,8 +63,8 @@ public class Withdrawal extends AuditingFields {
 
     // 생성자
     @Builder
-    public Withdrawal(Member member, Post post, String usage, String depositAccount,
-                      Integer withdrawalAmount, Boolean isApproved) {
+    public Withdrawal(final Member member, final Post post, final String usage, final String depositAccount,
+                      final Integer withdrawalAmount, final Boolean isApproved) {
         this.member = member;
         this.post = post;
         this.usage = usage;
@@ -67,26 +74,26 @@ public class Withdrawal extends AuditingFields {
     }
 
     // Setter Methods
-    public void updateUsage(String usage) {
+    public void updateUsage(final String usage) {
         this.usage = usage;
     }
 
-    public void updateDepositAccount(String depositAccount) {
+    public void updateDepositAccount(final String depositAccount) {
         this.depositAccount = depositAccount;
     }
 
-    public void updateWithdrawalAmount(Integer withdrawalAmount) {
+    public void updateWithdrawalAmount(final Integer withdrawalAmount) {
         this.withdrawalAmount = withdrawalAmount;
     }
 
-    public void updateIsApproved(boolean isApproved) {
+    public void updateIsApproved(final boolean isApproved) {
         this.isApproved = isApproved;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Withdrawal that)) return false;
+        if (!(o instanceof final Withdrawal that)) return false;
         return Objects.equals(withdrawal_id, that.withdrawal_id);
     }
 

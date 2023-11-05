@@ -3,10 +3,23 @@ package com.theocean.fundering.domain.celebrity.domain;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.follow.domain.Follow;
-import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
-import jakarta.persistence.*;
-import lombok.*;
+import com.theocean.fundering.global.utils.AuditingFields;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,29 +61,9 @@ public class Celebrity extends AuditingFields {
 
     private boolean isApproved;
 
-    public void changeCelebName(String celebName) {
-        this.celebName = celebName;
-    }
-
-    public void changeCelebGender(CelebGender celebGender) {
-        this.celebGender = celebGender;
-    }
-
-    public void changeCeleType(String celebGroup) {
-        this.celebType = celebType;
-    }
-
-    public void changeCeleGroup(CelebType celebType) {
-        this.celebType = celebType;
-    }
-
-    public void changeProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
     @Builder
-    public Celebrity(String celebName, CelebGender celebGender, CelebType celebType,
-                     String celebGroup, String profileImage) {
+    public Celebrity(final String celebName, final CelebGender celebGender, final CelebType celebType,
+                     final String celebGroup, final String profileImage) {
         this.celebName = celebName;
         this.celebGender = celebGender;
         this.celebType = celebType;
@@ -78,10 +71,30 @@ public class Celebrity extends AuditingFields {
         this.profileImage = profileImage;
     }
 
+    public void changeCelebName(final String celebName) {
+        this.celebName = celebName;
+    }
+
+    public void changeCelebGender(final CelebGender celebGender) {
+        this.celebGender = celebGender;
+    }
+
+    public void changeCeleType(final String celebGroup) {
+        celebType = celebType;
+    }
+
+    public void changeCeleGroup(final CelebType celebType) {
+        this.celebType = celebType;
+    }
+
+    public void changeProfileImage(final String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Celebrity celebrity)) return false;
+        if (!(o instanceof final Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 

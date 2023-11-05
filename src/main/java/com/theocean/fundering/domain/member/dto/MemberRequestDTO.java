@@ -5,7 +5,10 @@ import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
@@ -25,14 +28,15 @@ public class MemberRequestDTO {
     @NotEmpty
     private String nickname;
 
-    public static MemberRequestDTO from(Member member){
-        return MemberRequestDTO.builder()
+    public static MemberRequestDTO from(final Member member) {
+        return builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .password(member.getPassword())
                 .build();
     }
-    public Member getEntity(){
+
+    public Member getEntity() {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
@@ -40,8 +44,9 @@ public class MemberRequestDTO {
                 .userRole(UserRole.USER)
                 .build();
     }
-    public void encodePassword(String encodePassword){
-        this.password = encodePassword;
+
+    public void encodePassword(final String encodePassword) {
+        password = encodePassword;
     }
 
 }

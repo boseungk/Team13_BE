@@ -1,16 +1,17 @@
 package com.theocean.fundering.domain.member.controller;
 
 import com.theocean.fundering.domain.member.dto.EmailRequestDTO;
-import com.theocean.fundering.domain.member.service.MemberService;
 import com.theocean.fundering.domain.member.dto.MemberRequestDTO;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.domain.member.service.MemberService;
+import com.theocean.fundering.global.utils.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -19,21 +20,24 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup/check")
-    public ResponseEntity<?> checkEmail(@RequestBody @Valid final EmailRequestDTO emailRequestDTO , Error error){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> checkEmail(@RequestBody @Valid final EmailRequestDTO emailRequestDTO, final Error error) {
         memberService.sameCheckEmail(emailRequestDTO.getEmail());
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Valid final MemberRequestDTO requestDTO, Error error){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> signUp(@RequestBody @Valid final MemberRequestDTO requestDTO, final Error error) {
         memberService.signUp(requestDTO);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/member")
-    public ResponseEntity<?> member(){
-        return ResponseEntity.ok().body(ApiUtils.success(null));
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> member() {
+        return ApiResult.success(null);
     }
 
 //    @PostMapping("/login")
