@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class CelebController {
     private final CelebService celebService;
     @PostMapping("/celebs")
     public ResponseEntity<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
+//                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
+//        celebService.register(celebRequestDTO, thumbnail);
         celebService.register(celebRequestDTO);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
@@ -75,7 +78,7 @@ public class CelebController {
     public ResponseEntity<?> findAllRecommendCelebs(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
-        List<CelebsRecommendDTO> responseDTO = celebService.recommendCelebs(userDetails);
+        List<CelebsRecommendResponseDTO> responseDTO = celebService.recommendCelebs(userDetails);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
