@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingManagerResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingWithdrawalResponseDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +24,9 @@ import static com.theocean.fundering.domain.withdrawal.domain.QWithdrawal.*;
 public class MyFundingRepositoryImpl implements MyFundingRepository{
     private final JPAQueryFactory queryFactory;
     @Override
-    public Slice<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Long postId, final Pageable pageable) {
-        Objects.requireNonNull(postId, "postId must not be null");
-        final List<MyFundingHostResponseDTO> contents = queryFactory.select(Projections.constructor(MyFundingHostResponseDTO.class,
+    public Slice<MyFundingHostResponseDTO> findAllPostingByHost(final Long userId, final Pageable pageable) {
+        final List<MyFundingHostResponseDTO> contents =
+                queryFactory.select(Projections.constructor(MyFundingHostResponseDTO.class,
                         post.postId,
                         post.writer.nickname,
                         post.celebrity.celebName,
@@ -49,9 +49,9 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     @Override
-    public Slice<MyFundingSupporterResponseDTO> findAllPostingBySupporter(final Long userId, final Long postId, final Pageable pageable) {
-        Objects.requireNonNull(postId, "postId must not be null");
-        final List<MyFundingSupporterResponseDTO> contents = queryFactory.select(Projections.constructor(MyFundingSupporterResponseDTO.class,
+    public Slice<MyFundingSupporterResponseDTO> findAllPostingBySupporter(final Long userId, final Pageable pageable) {
+        final List<MyFundingSupporterResponseDTO> contents =
+                queryFactory.select(Projections.constructor(MyFundingSupporterResponseDTO.class,
                         post.postId,
                         post.writer.nickname,
                         post.celebrity.celebName,
@@ -75,22 +75,22 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     @Override
-    public Slice<MyFundingManagerResponseDTO> findAllPostingByManager(final Long userId, final Long postId, final Pageable pageable) {
-        Objects.requireNonNull(postId, "postId must not be null");
-        final List<MyFundingManagerResponseDTO> contents = queryFactory.select(Projections.constructor(MyFundingManagerResponseDTO.class,
+    public Slice<MyFundingWithdrawalResponseDTO> findAllWithdrawalByUserId(final Long userId, final Long postId, final Pageable pageable) {
+        final List<MyFundingWithdrawalResponseDTO> contents =
+                queryFactory.select(Projections.constructor(MyFundingWithdrawalResponseDTO.class,
                         withdrawal.withdrawalId,
+                        withdrawal.withdrawalAmount,
+                        withdrawal.usage,
                         post.postId,
                         post.thumbnail,
                         post.title,
                         post.writer.userId,
                         post.writer.profileImage,
-                        post.writer.nickname,
-                        withdrawal.withdrawalAmount,
-                        withdrawal.usage
+                        post.writer.nickname
                 ))
-                .from(post)
-                .where(eqPostManagerId(userId))
-                .orderBy(post.postId.desc())
+                .from(post, withdrawal)
+                .where(eqWithdrawalApplicationId(userId), eqPostId(postId))
+                .orderBy(withdrawal.withdrawalId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
         final boolean hasNext = contents.size() > pageable.getPageSize();
@@ -115,7 +115,11 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
         return payment.member.userId.eq(userId);
     }
 
-    private BooleanExpression eqPostManagerId(final Long userId) {
+    private BooleanExpression eqWithdrawalApplicationId(final Long userId) {
         return withdrawal.applicantId.eq(userId);
+    }
+
+    private BooleanExpression eqPostId(final Long postId) {
+        return withdrawal.postId.eq(postId);
     }
 }
