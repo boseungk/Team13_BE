@@ -30,19 +30,19 @@ public class WithdrawalResponse {
     public static class WithdrawalDTO {
         private final Long withdrawalId;
         private final String usage;
-        private final int depositAmount;
+        private final int withdrawalAmount;
         private final Integer balance;
         private final String evidence;
-        private final Long depositTime;
+        private final Long withDrawalTime;
 
 
         WithdrawalDTO(final Withdrawal withdrawal, final String evidenceURL) {
             withdrawalId = withdrawal.getWithdrawalId();
             usage = withdrawal.getUsage();
-            depositAmount = withdrawal.getWithdrawalAmount();
+            withdrawalAmount = withdrawal.getWithdrawalAmount();
             balance = withdrawal.getBalance();
             evidence = evidenceURL;
-            depositTime = withdrawal.getDepositTime();
+            withDrawalTime = withdrawal.getDepositTime();
         }
 
         public static WithdrawalDTO fromEntity(final Withdrawal withdrawal, final String evidenceURL) {

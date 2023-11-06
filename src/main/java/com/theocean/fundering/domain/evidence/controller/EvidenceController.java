@@ -18,7 +18,7 @@ public class EvidenceController {
     // (기능) 펀딩 증빙 이미지 업로드
     @PostMapping("/posts/{postId}/withdrawals/{withdrawalId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> evidenceUpload(
+    public ApiResult<String> evidenceUpload(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestPart("image") final MultipartFile img,
             @PathVariable final long postId,
