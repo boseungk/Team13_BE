@@ -68,4 +68,27 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/myfunding/withdrawal/approval")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?>  approvalWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @RequestParam final Long withdrawalId
+    ) {
+        myFundingService.approvalWithdrawal(userDetails.getId(), postId, withdrawalId);
+        return ApiResult.success(null);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/myfunding/withdrawal/rejection   ")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?>  rejectWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @RequestParam final Long withdrawalId
+    ) {
+        myFundingService.rejectWithdrawal(userDetails.getId(), postId, withdrawalId);
+        return ApiResult.success(null);
+    }
 }
