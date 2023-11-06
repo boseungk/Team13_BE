@@ -21,18 +21,18 @@ public class CommentValidator {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public void validateMemberAndPost(final Long memberId, final Long postId) {
+    void validateMemberAndPost(final Long memberId, final Long postId) {
         if (!memberRepository.existsById(memberId))
             throw new Exception404("존재하지 않는 회원입니다: " + memberId);
 
         validatePostExistence(postId);
     }
 
-    public void validatePostExistence(final long postId) {
+    void validatePostExistence(final long postId) {
         if (!postRepository.existsById(postId)) throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
     }
 
-    public void validateCommentExistence(final long commentId) {
+    void validateCommentExistence(final long commentId) {
         final Comment parentComment =
                 commentRepository
                         .findById(commentId)
@@ -41,12 +41,12 @@ public class CommentValidator {
         if (parentComment.isDeleted()) throw new Exception400("삭제된 댓글입니다.");
     }
 
-    public void validateCommentOwner(final Long memberId, final Comment comment) {
+    void validateCommentOwner(final Long memberId, final Comment comment) {
 
         if (!memberId.equals(comment.getWriterId())) throw new Exception403("댓글 삭제 권한이 없습니다.");
     }
 
-    public void validateDepthLimit(final String commentOrder) {
+    void validateDepthLimit(final String commentOrder) {
         if (commentOrder.contains(".")) throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
     }
 
@@ -65,7 +65,7 @@ public class CommentValidator {
     }
 
     // 원댓글의 commentOrder 반환
-    public String findCommentOrder(final Long commentId) {
+    String findCommentOrder(final Long commentId) {
         final Comment comment =
                 commentRepository
                         .findById(commentId)
