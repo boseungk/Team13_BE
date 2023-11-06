@@ -65,7 +65,7 @@ public class Withdrawal extends AuditingFields {
         this.usage = usage;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
-        isApproved = true;
+        isApproved = false;
     }
 
     public long getDepositTime() {
