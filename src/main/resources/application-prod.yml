@@ -10,8 +10,9 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: root
+  jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -21,15 +22,3 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   # org.hibernate.type: trace
-
-cloud:
-  aws:
-    s3:
-      bucket: fundering-img
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
-#    credentials:
-#      profile-name: default
