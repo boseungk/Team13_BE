@@ -3,8 +3,8 @@ package com.theocean.fundering.celebrity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.celebrity.controller.CelebController;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import org.junit.jupiter.api.Test;
@@ -23,23 +23,28 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @WebMvcTest(CelebController.class)
 @ImportAutoConfiguration(exclude = OAuth2ClientAutoConfiguration.class)
 class CelebrityControllerTest {
     private static final String CELEB_NAME = "아이유";
     private static final String PROFILE_IMAGE = "profile.jpg";
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper om;
+
+    @MockBean
+    private CelebService celebService;
+
     private final Celebrity celeb = Celebrity.builder()
             .celebName(CELEB_NAME)
             .celebGender(CelebGender.FEMALE)
-            .celebType(CelebType.SINGER)
+            .celebCategory(CelebCategory.SINGER)
             .profileImage(PROFILE_IMAGE)
             .build();
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper om;
-    @MockBean
-    private CelebService celebService;
 
     @WithMockUser
     @Test
@@ -48,8 +53,7 @@ class CelebrityControllerTest {
         final CelebRequestDTO requestDTO = CelebRequestDTO.builder()
                 .celebName(celeb.getCelebName())
                 .celebGender(celeb.getCelebGender())
-                .celebType(celeb.getCelebType())
-                .profileImage(celeb.getProfileImage())
+                .celebCategory(celeb.getCelebCategory())
                 .build();
         final String requestBody = om.writeValueAsString(requestDTO);
 

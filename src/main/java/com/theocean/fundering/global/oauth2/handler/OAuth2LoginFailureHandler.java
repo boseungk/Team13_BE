@@ -2,7 +2,7 @@ package com.theocean.fundering.global.oauth2.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.global.errors.exception.Exception401;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         log.info("로그인에 실패했습니다. 메시지 : {}", exception.getMessage());
-        final String result = objectMapper.writeValueAsString(ApiUtils.error(FAILURE_MESSAGE, new Exception401("아이디나 비밀번호가 잘못 되었습니다.").status()));
+        final String result = objectMapper.writeValueAsString(ApiResult.error(FAILURE_MESSAGE, new Exception401("아이디나 비밀번호가 잘못 되었습니다.").status()));
         response.getWriter().write(result);
     }
 }

@@ -31,7 +31,7 @@ import java.util.Objects;
 public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "member_id")
     private Long userId;
 
     @Setter
@@ -44,12 +44,9 @@ public class Member extends AuditingFields {
     @Column(nullable = false, length = 50)
     private String email;
 
-<<<<<<<HEAD
     @Column(length = 11)
-    private int phoneNumber;
+    private String phoneNumber;
 
-=======
-        >>>>>>>feat
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
@@ -57,11 +54,31 @@ public class Member extends AuditingFields {
 
     private String refreshToken; // 리프레시 토큰
 
+    @Column(name = "profile_image")
     private String profileImage; // 프로필 이미지
 
-<<<<<<<HEAD
-    private boolean isAdmin;
+    public void changeNickname(final String nickname){
+        this.nickname = nickname;
+    }
 
+    public void setPassword(final String password){
+        this.password = password;
+    }
+
+    public void updateRefreshToken(final String updateRefreshToken) {
+        refreshToken = updateRefreshToken;
+    }
+
+    public void changePhoneNumber(final String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+
+
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    @Builder
     public Member(final Long userId, final String nickname, final String password, final String email, final UserRole userRole, final String profileImage) {
         this.userId = userId;
         this.nickname = nickname;
@@ -69,42 +86,6 @@ public class Member extends AuditingFields {
         this.email = email;
         this.profileImage = profileImage;
         this.userRole = userRole;
-    }
-
-    public void changeNickname(final String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public void updateRefreshToken(final String updateRefreshToken) {
-        refreshToken = updateRefreshToken;
-    }
-=======
-
-    public void changePhoneNumber(final int phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
->>>>>>>feat
-
-    @Builder
-
-    public void changeProfileImage(final String profileImage) {
-        this.profileImage = profileImage;
-    }
-
-    public void changeNickname(final String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public void updateRefreshToken(final String updateRefreshToken) {
-        refreshToken = updateRefreshToken;
     }
 
     @Override
@@ -120,5 +101,10 @@ public class Member extends AuditingFields {
     }
 
 
+    public void updateUserSetting(String nickname, String encodePassword, String phoneNumber, String profileImage) {
+        changeNickname(nickname);
+        setPassword(encodePassword);
+        changePhoneNumber(phoneNumber);
+        changeProfileImage(profileImage);
+    }
 }
-

@@ -2,14 +2,11 @@ package com.theocean.fundering.domain.evidence.controller;
 
 import com.theocean.fundering.domain.evidence.service.EvidenceService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -20,7 +17,8 @@ public class EvidenceController {
 
     // (기능) 펀딩 증빙 이미지 업로드
     @PostMapping("/posts/{postId}/withdrawals/{withdrawalId}")
-    public ResponseEntity<?> evidenceUpload(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> evidenceUpload(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestPart("image") final MultipartFile img,
             @PathVariable final long postId,
@@ -29,6 +27,6 @@ public class EvidenceController {
         final Long memberId = userDetails.getId();
         final String result = evidenceService.uploadEvidence(memberId, postId, withdrawalId, img);
 
-        return ResponseEntity.ok(ApiUtils.success(result));
+        return ApiResult.success(result);
     }
 }

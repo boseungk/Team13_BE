@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
->>>>>>>feat:src/main/java/com/theocean/fundering/domain/member/dto/MemberRequestDTO.java
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)// 테스트 에러 방지
@@ -28,38 +27,20 @@ public class MemberSignUpRequestDTO {
     @NotEmpty
     private String nickname;
 
-<<<<<<<HEAD:src/main/java/com/theocean/fundering/domain/member/dto/MemberSignUpRequestDTO.java
-
-    public static MemberSignUpRequestDTO of(final String email, final String password, final String nickname) {
+    public static MemberSignUpRequestDTO of(final String email, final String password, final String nickname){
         return new MemberSignUpRequestDTO(email, password, nickname);
     }
 
-    public Member mapToEntity() {
-=======
-        public static MemberRequestDTO from ( final Member member){
-            return builder()
-                    .email(member.getEmail())
-                    .nickname(member.getNickname())
-                    .password(member.getPassword())
-                    .build();
-        }
+    public Member mapToEntity(){
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .password(password)
+                .userRole(UserRole.USER)
+                .build();
+    }
+    public void encodePassword(final String encodePassword){
+        password = encodePassword;
+    }
 
-        public Member getEntity () {
->>>>>>>src / main / java / com / theocean / fundering / domain / member / dto / MemberRequestDTO.java
-            return Member.builder()
-                    .email(email)
-                    .nickname(nickname)
-                    .password(password)
-                    .userRole(UserRole.USER)
-                    .build();
-        }
-<<<<<<<src / main / java / com / theocean / fundering / domain / member / dto / MemberSignUpRequestDTO.java
-        public void encodePassword ( final String encodePassword){
-=======
-
-            public void encodePassword ( final String encodePassword){
->>>>>>>src / main / java / com / theocean / fundering / domain / member / dto / MemberRequestDTO.java
-                password = encodePassword;
-            }
-
-        }
+}

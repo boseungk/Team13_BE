@@ -98,13 +98,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
             specifiers.add(new OrderSpecifier(Order.DESC, post.createdAt));
         } else if ("deadline".equals(sort.toString())) {
             specifiers.add(new OrderSpecifier(Order.DESC, post.deadline));
-<<<<<<<HEAD
         } else if ("amount".equals(sort.toString())) {
             specifiers.add(new OrderSpecifier(Order.DESC, post.account.balance));
-=======
-        } else if ("amount".equals(sort.toString())) {
-            specifiers.add(new OrderSpecifier(Order.DESC, post.account.fundingAmount));
->>>>>>>feat
         }
         return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
     }
