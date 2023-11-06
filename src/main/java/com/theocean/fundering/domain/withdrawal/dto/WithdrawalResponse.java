@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.withdrawal.dto;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class WithdrawalResponse {
@@ -33,7 +34,7 @@ public class WithdrawalResponse {
         private final int withdrawalAmount;
         private final Integer balance;
         private final String evidence;
-        private final Long withDrawalTime;
+        private final LocalDateTime withDrawalTime;
 
 
         WithdrawalDTO(final Withdrawal withdrawal, final String evidenceURL) {
@@ -42,7 +43,7 @@ public class WithdrawalResponse {
             withdrawalAmount = withdrawal.getWithdrawalAmount();
             balance = withdrawal.getBalance();
             evidence = evidenceURL;
-            withDrawalTime = withdrawal.getDepositTime();
+            withDrawalTime = withdrawal.getModifiedAt();
         }
 
         public static WithdrawalDTO fromEntity(final Withdrawal withdrawal, final String evidenceURL) {
