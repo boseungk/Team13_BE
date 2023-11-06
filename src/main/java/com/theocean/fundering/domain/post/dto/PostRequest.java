@@ -4,6 +4,7 @@ package com.theocean.fundering.domain.post.dto;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,8 +22,9 @@ public class PostRequest {
         private int targetPrice;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
+        private PostStatus postStatus;
 
-        public Post toEntity(Member writer, Celebrity celebrity){
+        public Post toEntity(Member writer, Celebrity celebrity, PostStatus postStatus){
             return Post.builder()
                     .writer(writer)
                     .celebrity(celebrity)
@@ -31,6 +33,7 @@ public class PostRequest {
                     .thumbnail(thumbnailURL)
                     .targetPrice(targetPrice)
                     .deadline(deadline)
+                    .postStatus(postStatus)
                     .build();
         }
 

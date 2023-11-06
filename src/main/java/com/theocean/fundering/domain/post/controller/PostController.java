@@ -65,7 +65,8 @@ public class PostController {
                                       @PathVariable final Long postId,
                                       @RequestBody final PostRequest.PostEditDTO postEditDTO,
                                       @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail){
-        final Long editedPost = postService.editPost(postId, postEditDTO, thumbnail);
+        final String memberEmail = userDetails.getEmail();
+        final Long editedPost = postService.editPost(postId, memberEmail, postEditDTO, thumbnail);
         return ApiResult.success(editedPost);
     }
 
@@ -77,10 +78,17 @@ public class PostController {
         return ApiResult.success(null);
     }
 
-    @GetMapping("/posts/search")
+    @GetMapping("/posts/search/keyword")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> searchPost(@RequestParam(value = "postId", required = false) final Long postId, @RequestParam("keyword") final String keyword, final Pageable pageable){
-        final var response = postService.searchPost(postId, keyword, pageable);
+    public ApiResult<?> searchPostByKeyword(@RequestParam(value = "postId", required = false) final Long postId, @RequestParam("keyword") final String keyword, final Pageable pageable){
+        final var response = postService.searchPostByKeyword(postId, keyword, pageable);
+        return ApiResult.success(response);
+    }
+
+    @GetMapping("/posts/search/nickname")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> searchPostByNickname(@RequestParam(value = "postId", required = false) final Long postId, @RequestParam("nickname") final String nickname, final Pageable pageable){
+        final var response = postService.findAllByWriterEmail(postId, nickname, pageable);
         return ApiResult.success(response);
     }
 
