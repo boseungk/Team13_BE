@@ -101,9 +101,9 @@ public class Post extends AuditingFields {
         return Objects.hash(postId);
     }
 
-    public void update(final String title, final String content, final String thumbnail, final int targetPrice, final LocalDateTime deadline, final LocalDateTime modifiedAt) {
+    public void update(final String title, final String introduction, final String thumbnail, final int targetPrice, final LocalDateTime deadline, final LocalDateTime modifiedAt) {
         this.title = title;
-        introduction = content;
+        this.introduction = introduction;
         this.thumbnail = thumbnail;
         this.targetPrice = targetPrice;
         this.deadline = deadline;

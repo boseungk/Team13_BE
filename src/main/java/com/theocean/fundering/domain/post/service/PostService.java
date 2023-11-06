@@ -35,14 +35,14 @@ public class PostService {
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
-        dto.setThumbnailURL(awss3Uploader.uploadToS3(thumbnail));
+        String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
         Member writer =  memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
         );
         Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
-        Post newPost = postRepository.save(dto.toEntity(writer, celebrity, PostStatus.ONGOING));
+        Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, PostStatus.ONGOING));
 
         Account account = Account.builder()
                 .managerId(writer.getUserId())
@@ -75,14 +75,17 @@ public class PostService {
 
     @Transactional
     public Long editPost(Long postId, String email, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
-        if (thumbnail != null)
-            dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+        String newThumbnail = null;
         Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
+        if (thumbnail != null)
+            newThumbnail = awss3Uploader.uploadToS3(thumbnail);
+        else
+            newThumbnail = postPS.getThumbnail();
         if (!postPS.getWriter().getEmail().equals(email))
             throw new Exception403("");
-        postPS.update(dto.getTitle(), dto.getIntroduction(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
+        postPS.update(dto.getTitle(), dto.getIntroduction(), newThumbnail, dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 
