@@ -28,7 +28,7 @@ public class EvidenceService {
         if (!withdrawal.getApplicantId().equals(memberId)) throw new Exception403("증빙 자료 업로드 권한이 없습니다");
 
         final String imgUrl = uploadImage(img);
-        final Evidence evidence = Evidence.builder()
+        final var evidence = Evidence.builder()
                 .withdrawalId(withdrawalId)
                 .applicantId(memberId)
                 .postId(postId)

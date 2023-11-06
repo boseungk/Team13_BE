@@ -45,7 +45,6 @@ public class WithdrawalService {
     public WithdrawalResponse.FindAllDTO getWithdrawals(final Long postId, final Pageable pageable) {
         final Account account = accountRepository.findByPostId(postId)
                 .orElseThrow(() -> new Exception404("계좌가 존재하지 않습니다."));
-        final int currentBalance = account.getBalance();
 
         final Page<Withdrawal> withdrawalPage = withdrawalRepository.getWithdrawalPage(postId, pageable);
         final List<Withdrawal> withdrawals = withdrawalPage.getContent();
