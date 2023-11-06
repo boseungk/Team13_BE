@@ -86,4 +86,36 @@ public class MyFundingService {
         }
         return responseDTO;
     }
+
+    public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
+        final List<Long> postIdList = adminRepository.findByUserId(userId);
+        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
+        if(isAdmin == false)
+            throw new Exception400("관리자가 아닙니다.");
+        Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
+                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+        );
+        try{
+            withdrawal.approveWithdrawal();
+            withdrawalRepository.save(withdrawal);
+        }catch (RuntimeException e){
+            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
+        }
+    }
+
+    public void rejectWithdrawal(Long userId, Long postId, Long withdrawalId) {
+        final List<Long> postIdList = adminRepository.findByUserId(userId);
+        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
+        if(isAdmin == false)
+            throw new Exception400("관리자가 아닙니다.");
+        Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
+                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+        );
+        try{
+            withdrawal.denialWithdrawal();
+            withdrawalRepository.save(withdrawal);
+        }catch (RuntimeException e){
+            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
+        }
+    }
 }
