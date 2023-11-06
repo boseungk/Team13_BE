@@ -19,48 +19,53 @@ public class MyFundingController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/host")
-    public ResponseEntity<?> findAllPostingByHost(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAllPostingByHost(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @PageableDefault final Pageable pageable) {
-        var page = myFundingService.findAllPostingByHost(userDetails.getId(), pageable);
-        return ResponseEntity.ok(ApiUtils.success(page));
+        final var page = myFundingService.findAllPostingByHost(userDetails.getId(), pageable);
+        return ApiResult.success(page);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/support")
-    public ResponseEntity<?> findAllPostingBySupport(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAllPostingBySupport(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @PageableDefault final Pageable pageable
     ) {
-        var page = myFundingService.findAllPostingBySupporter(userDetails.getId(), pageable);
-        return ResponseEntity.ok(ApiUtils.success(page));
+        final var page = myFundingService.findAllPostingBySupporter(userDetails.getId(), pageable);
+        return ApiResult.success(page);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/nickname")
-    public ResponseEntity<?> getNickname(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> getNickname(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
-        String nickname = myFundingService.getNickname(userDetails.getId());
-        return ResponseEntity.ok(ApiUtils.success(nickname));
+        final String nickname = myFundingService.getNickname(userDetails.getId());
+        return ApiResult.success(nickname);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/followers")
-    public ResponseEntity<?> findFollowingCelebs(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findFollowingCelebs(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
-        var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
-        return ResponseEntity.ok(ApiUtils.success(followingCelebs));
+        final var followingCelebs = myFundingService.findFollowingCelebs(userDetails.getId());
+        return ApiResult.success(followingCelebs);
     }
 
 
     @PostMapping("/myfunding/withdrawal")
-    public ResponseEntity<?> approvalWithdrawal(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?>  approvalWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestParam final Long postId
     ) {
         myFundingService.applyWithdrawal(userDetails.getId(), postId);
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 }

@@ -9,7 +9,6 @@ import com.theocean.fundering.global.utils.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,50 +20,50 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup/check")
-    public ResponseEntity<?> checkEmail(@RequestBody @Valid final EmailRequestDTO emailRequestDTO , Error error){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> checkEmail(@RequestBody @Valid final EmailRequestDTO emailRequestDTO , final Error error){
         memberService.sameCheckEmail(emailRequestDTO.getEmail());
-        return ResponseEntity.ok(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Valid final MemberSignUpRequestDTO requestDTO, Error error){
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> signUp(@RequestBody @Valid final MemberSignUpRequestDTO requestDTO, final Error error){
         memberService.signUp(requestDTO);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
+        return ApiResult.success(null);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/setting")
-    public ResponseEntity<?> findAllUserSetting(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAllUserSetting(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
-        var responseDTO = memberService.findAllUserSetting(userDetails.getId());
-        return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
+        final var responseDTO = memberService.findAllUserSetting(userDetails.getId());
+        return ApiResult.success(responseDTO);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/user/setting")
-    public ResponseEntity<?> updateUserSetting(
-            @RequestBody @Valid final MemberSettingRequestDTO requestDTO, Error error,
-            @RequestPart(value = "thumbnail") MultipartFile thumbnail,
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> updateUserSetting(
+            @RequestBody @Valid final MemberSettingRequestDTO requestDTO, final Error error,
+            @RequestPart("thumbnail") final MultipartFile thumbnail,
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
         memberService.updateUserSetting(requestDTO, userDetails.getId(), thumbnail);
-        return ResponseEntity.ok().body(ApiUtils.success("성공적으로 변경되었습니다."));
+        return ApiResult.success(null);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/user/setting/cancellation")
-    public ResponseEntity<?> cancellationUser(
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> cancellationUser(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
         memberService.cancellationUser(userDetails.getId());
-        return ResponseEntity.ok().body(ApiUtils.success("회원 탈퇴 되었습니다."));
+        return ApiResult.success(null);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/member")
-    public ResponseEntity<?> member(){
-        return ResponseEntity.ok().body(ApiUtils.success(null));
-    }
 
 }
