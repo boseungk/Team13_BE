@@ -11,7 +11,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT MAX(c.commentOrder) FROM Comment c WHERE c.postId = :postId")
     String findMaxCommentOrder(Long postId);
 
-    @Query(
-            "SELECT COUNT(c) FROM Comment c WHERE c.postId = :postId AND c.commentOrder LIKE :commentOrder")
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.postId = :postId AND c.commentOrder LIKE :commentOrder")
     int countReplies(@Param("postId") Long postId, @Param("commentOrder") String commentOrder);
 }
