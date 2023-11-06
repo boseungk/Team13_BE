@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +57,15 @@ public class MyFundingController {
         return ApiResult.success(followingCelebs);
     }
 
-
-    @PostMapping("/myfunding/withdrawal")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/withdrawal")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?>  approvalWithdrawal(
+    public ApiResult<?> findAwaitingApprovalWithdrawals(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId
-    ) {
-        myFundingService.applyWithdrawal(userDetails.getId(), postId);
-        return ApiResult.success(null);
+            final Pageable pageable
+    ){
+        final var page = myFundingService.findAwaitingApprovalWithdrawals(userDetails.getId(), pageable);
+        return ApiResult.success(page);
     }
+
 }
