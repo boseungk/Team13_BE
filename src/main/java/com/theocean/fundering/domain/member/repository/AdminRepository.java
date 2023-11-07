@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Admin.PK> {
     @Query("SELECT a.postId FROM Admin a WHERE a.memberId = :userId")
-    Long findByUserId(@Param("userId")Long userId);
+    List<Long> findByUserId(@Param("userId")Long userId);
 }

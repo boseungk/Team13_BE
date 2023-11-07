@@ -9,7 +9,9 @@ import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +38,15 @@ public class CommentController {
     private final DeleteCommentService deleteCommentService;
 
     // (기능) 댓글 작성
-    @Operation(summary = "댓글 작성", description = "해당 postId에 해당하는 게시글에 댓글을 작성합니다.")
+    @Operation(summary = "댓글 작성", description = "해당 postId에 해당하는 게시글에 댓글을 작성한다.")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/comments")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> createComment(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestBody @Valid @Schema(implementation = CommentRequest.SaveDTO.class) final CommentRequest.SaveDTO commentRequest,
-            @Parameter(description = "게시글의 PK") @PathVariable final long postId) {
-
+            @Parameter(description = "게시글의 PK") @PathVariable final long postId
+    ){
         final Long memberId = userDetails.getId();
         createCommentService.createComment(memberId, postId, commentRequest);
 
@@ -52,7 +54,7 @@ public class CommentController {
     }
 
     // (기능) 대댓글 작성
-    @Operation(summary = "대댓글 작성", description = "해당 postId와 commentId에 해당하는 댓글에 대댓글을 작성합니다.")
+    @Operation(summary = "대댓글 작성", description = "해당 postId와 commentId에 해당하는 댓글에 대댓글을 작성한다.")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
@@ -60,8 +62,8 @@ public class CommentController {
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @RequestBody @Valid final CommentRequest.SaveDTO commentRequest,
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @Parameter(description = "댓글의 PK") @PathVariable final long commentId) {
-
+            @Parameter(description = "댓글의 PK") @PathVariable final long commentId
+    ){
         final Long memberId = userDetails.getId();
         createCommentService.createSubComment(memberId, postId, commentId, commentRequest);
 
@@ -69,13 +71,15 @@ public class CommentController {
     }
 
     // (기능) 댓글 목록 조회
-    @Operation(summary = "댓글 목록 조회", description = "해당 postId에 해당하는 게시글에 달린 댓글들을 조회한다.")
+    @Operation(summary = "댓글 목록 조회", description = "해당 postId에 해당하는 게시글에 달린 댓글들을 조회한다.", responses = {
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CommentResponse.FindAllDTO.class)))
+    })
     @GetMapping("/posts/{postId}/comments")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<CommentResponse.FindAllDTO> readComments(
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @Parameter(hidden = true) @PageableDefault(size = 10) final Pageable pageable) {
-
+            @Parameter(hidden = true) @PageableDefault(size = 10) final Pageable pageable
+    ){
         final CommentResponse.FindAllDTO response = readCommentService.getComments(postId, pageable);
 
         return ApiResult.success(response);
@@ -88,8 +92,8 @@ public class CommentController {
     public ApiResult<CommentResponse.FindAllDTO> readSubComments(
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
             @Parameter(description = "댓글의 PK") @PathVariable final long commentId,
-            @Parameter(hidden = true) @PageableDefault(size = 10) final Pageable pageable) {
-
+            @Parameter(hidden = true) @PageableDefault(size = 10) final Pageable pageable
+    ){
         final CommentResponse.FindAllDTO response =
                 readCommentService.getSubComments(postId, commentId, pageable);
 
@@ -104,8 +108,8 @@ public class CommentController {
     public ApiResult<?> deleteComment(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @Parameter(description = "댓글의 PK") @PathVariable final long commentId) {
-
+            @Parameter(description = "댓글의 PK") @PathVariable final long commentId
+    ){
         final Long memberId = userDetails.getId();
         deleteCommentService.deleteComment(memberId, postId, commentId);
 

@@ -16,7 +16,7 @@ public class ImageUploadController {
 
     private final AWSS3Uploader awss3Uploader;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/uploadImg")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> uploadImage(@RequestPart("image") final MultipartFile img) {

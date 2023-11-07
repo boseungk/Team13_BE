@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.celebrity.domain.constant;
+package com.theocean.fundering.global.utils;
 
 import jakarta.persistence.AttributeConverter;
 

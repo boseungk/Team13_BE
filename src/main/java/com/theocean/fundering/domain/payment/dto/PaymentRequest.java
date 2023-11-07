@@ -16,14 +16,12 @@ public class PaymentRequest {
     @NoArgsConstructor
     @ToString
     public static class DonateDTO {
-        private String member;
         private Integer amount;
         private String impUid;
 
 
         @Builder
-        public DonateDTO(final String member, final Integer amount, final String impUid) {
-            this.member = member;
+        public DonateDTO(final Integer amount, final String impUid) {
             this.amount = amount;
             this.impUid = impUid;
         }

@@ -39,6 +39,7 @@ public class Post extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,32 +48,36 @@ public class Post extends AuditingFields {
     @ManyToOne(fetch = FetchType.LAZY)
     private Celebrity celebrity;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, name = "title")
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT", name = "introduction")
     private String introduction;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
 
-    @Column
+    @Column(nullable = false, name = "thumbnail")
     private String thumbnail;
 
-    @Column
+    @Column(nullable = false, name = "targetPrice")
     @Min(1000)
     private int targetPrice;
 
-    @Column
+    @Column(name = "participants")
     @Min(0)
     private int participants;
 
-    @Column
+    @Column(nullable = false, name = "daedline")
     @DateTimeFormat
     private LocalDateTime deadline;
 
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
+
+    @Column(name = "heartCount")
+    @Min(0)
+    int heartCount;
 
 
     @Builder
@@ -101,9 +106,9 @@ public class Post extends AuditingFields {
         return Objects.hash(postId);
     }
 
-    public void update(final String title, final String content, final String thumbnail, final int targetPrice, final LocalDateTime deadline, final LocalDateTime modifiedAt) {
+    public void update(final String title, final String introduction, final String thumbnail, final int targetPrice, final LocalDateTime deadline, final LocalDateTime modifiedAt) {
         this.title = title;
-        introduction = content;
+        this.introduction = introduction;
         this.thumbnail = thumbnail;
         this.targetPrice = targetPrice;
         this.deadline = deadline;
@@ -112,5 +117,13 @@ public class Post extends AuditingFields {
 
     public void registerAccount(Account account){
         this.account = account;
+    }
+
+    public void addHeartCount() {
+        heartCount += 1;
+    }
+
+    public void minusHeartCount() {
+        heartCount -= 1;
     }
 }
