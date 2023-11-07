@@ -26,20 +26,23 @@ public class PaymentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
-    public IamportResponse<Payment> verifyByImpUid(final String impUid) throws IamportResponseException, IOException {
-        return paymentConfig.iamportClient().paymentByImpUid(impUid);
-    }
 
     @Transactional
-    public void donate(final Long postId, final String email, final PaymentRequest.DonateDTO donateDTO) {
-        final Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new Exception500("No matched member found")
-        );
-        final Post post = postRepository.findById(postId).orElseThrow(
-                () -> new Exception500("No matched post found")
-        );
-        paymentRepository.save(donateDTO.toEntity(member, post));
+    public IamportResponse<Payment> verifyByImpUid(final String email,
+                                                   final PaymentRequest.DonateDTO dto,
+                                                   final String impUid,
+                                                   final Long postId) throws IamportResponseException, IOException {
+        final IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(impUid);
+        if (iamportResponse.getResponse().getAmount().intValue() == dto.getAmount()){
+            final Member member = memberRepository.findByEmail(email).orElseThrow(
+                    () -> new Exception500("No matched member found")
+            );
+            final Post post = postRepository.findById(postId).orElseThrow(
+                    () -> new Exception500("No matched post found")
+            );
+            paymentRepository.save(dto.toEntity(member, post));
+        }
+        return iamportResponse;
     }
-
 
 }

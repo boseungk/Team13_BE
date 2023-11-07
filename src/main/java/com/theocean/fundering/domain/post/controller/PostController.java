@@ -7,7 +7,6 @@ import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +61,7 @@ public class PostController {
     @PostMapping(value = "/posts/write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> writePost(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                  @Parameter(description = "게시물 작성 DTO") @RequestPart(value = "dto") final PostRequest.PostWriteDTO postWriteDTO,
+                                  @Parameter(description = "게시물 작성 DTO, content-type: application/json") @RequestPart(value = "dto") final PostRequest.PostWriteDTO postWriteDTO,
                                   @Parameter(description = "썸네일 이미지") @RequestPart(value = "thumbnail") final MultipartFile thumbnail){
         final String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
@@ -75,7 +74,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                  @PathVariable final Long postId,
-                                 @Parameter(description = "게시물 수정 DTO") @RequestPart(value = "dto") final PostRequest.PostEditDTO postEditDTO,
+                                 @Parameter(description = "게시물 수정 DTO, content-type: application/json") @RequestPart(value = "dto") final PostRequest.PostEditDTO postEditDTO,
                                  @Parameter(description = "새로운 썸네일 이미지") @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail){
         final String memberEmail = userDetails.getEmail();
         final Long editedPost = postService.editPost(postId, memberEmail, postEditDTO, thumbnail);
