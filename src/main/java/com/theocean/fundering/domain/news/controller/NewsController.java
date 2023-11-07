@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class NewsController {
     private final ReadNewsService readNewsService;
 
     // (기능) 펀딩 업데이트 작성
+    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "펀딩 업데이트 작성", description = "펀딩 주최자가 업데이트를 작성한다.")
     @PostMapping("/posts/{postId}/updates")
     @ResponseStatus(HttpStatus.OK)

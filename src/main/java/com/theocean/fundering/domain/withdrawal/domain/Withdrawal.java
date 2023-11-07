@@ -39,7 +39,7 @@ public class Withdrawal extends AuditingFields {
     private Long postId;
 
     // 사용처
-    @Column(nullable = false)
+    @Column(nullable = false, name = "usage")
     private String usage;
 
     // 입금계좌
