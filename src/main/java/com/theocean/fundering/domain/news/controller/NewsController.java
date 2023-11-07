@@ -7,6 +7,7 @@ import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class NewsController {
     private final ReadNewsService readNewsService;
 
     // (기능) 펀딩 업데이트 작성
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/updates")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> createUpdates(
