@@ -7,6 +7,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Component
 public class CommentEventHandler {
@@ -16,10 +18,10 @@ public class CommentEventHandler {
 
     @Async
     @EventListener
-    public void handleCommentCreated(CommentEvent.CreatedEvent event) {
+    public void handleCommentCreated(final CommentEvent.CreatedEvent event) {
         // 대댓글 카운트를 계산합니다.
-        int replyCount = commentRepository.countReplies(event.getPostId(), event.getParentCommentOrder() + "%.%");
+        final int replyCount = commentRepository.countReplies(event.getPostId(), event.getParentCommentOrder() + "%.%");
         // 캐시를 업데이트합니다.
-        cacheManager.getCache("replyCounts").put(event.getPostId() + "_" + event.getParentCommentOrder(), replyCount);
+        Objects.requireNonNull(cacheManager.getCache("replyCounts")).put(event.getPostId() + "_" + event.getParentCommentOrder(), replyCount);
     }
 }
