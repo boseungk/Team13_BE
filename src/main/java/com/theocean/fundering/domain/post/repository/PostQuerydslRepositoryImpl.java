@@ -29,14 +29,17 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
 
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId,
+                        post.writer.nickname,
+                        post.celebrity.celebName,
+                        post.celebrity.profileImage,
                         post.title,
                         post.thumbnail,
-                        post.writer,
-                        post.celebrity,
                         post.targetPrice,
-                        post.account,
+                        post.account.balance,
                         post.deadline,
-                        post.createdAt))
+                        post.createdAt,
+                        post.modifiedAt))
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
@@ -51,14 +54,17 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     public Slice<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable final Long postId, final String email, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId,
+                        post.writer.nickname,
+                        post.celebrity.celebName,
+                        post.celebrity.profileImage,
                         post.title,
                         post.thumbnail,
-                        post.writer,
-                        post.celebrity,
                         post.targetPrice,
-                        post.account,
+                        post.account.balance,
                         post.deadline,
-                        post.createdAt))
+                        post.createdAt,
+                        post.modifiedAt))
                 .from(post)
                 .where(ltPostId(postId), eqWriter(email))
                 .orderBy(post.postId.desc())
@@ -72,14 +78,17 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable final Long postId, final String keyword, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId,
+                        post.writer.nickname,
+                        post.celebrity.celebName,
+                        post.celebrity.profileImage,
                         post.title,
                         post.thumbnail,
-                        post.writer,
-                        post.celebrity,
                         post.targetPrice,
-                        post.account,
+                        post.account.balance,
                         post.deadline,
-                        post.createdAt))
+                        post.createdAt,
+                        post.modifiedAt))
                 .from(post)
                 .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())
