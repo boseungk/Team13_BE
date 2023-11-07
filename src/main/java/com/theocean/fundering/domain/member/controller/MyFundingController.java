@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +57,38 @@ public class MyFundingController {
         return ApiResult.success(followingCelebs);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/withdrawal")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAwaitingApprovalWithdrawals(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            final Pageable pageable
+    ){
+        final var page = myFundingService.findAwaitingApprovalWithdrawals(userDetails.getId(), pageable);
+        return ApiResult.success(page);
+    }
 
-    @PostMapping("/myfunding/withdrawal")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/myfunding/withdrawal/approval")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?>  approvalWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId
+            @RequestParam final Long postId,
+            @RequestParam final Long withdrawalId
     ) {
-        myFundingService.applyWithdrawal(userDetails.getId(), postId);
+        myFundingService.approvalWithdrawal(userDetails.getId(), postId, withdrawalId);
+        return ApiResult.success(null);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/myfunding/withdrawal/rejection   ")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?>  rejectWithdrawal(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam final Long postId,
+            @RequestParam final Long withdrawalId
+    ) {
+        myFundingService.rejectWithdrawal(userDetails.getId(), postId, withdrawalId);
         return ApiResult.success(null);
     }
 }
