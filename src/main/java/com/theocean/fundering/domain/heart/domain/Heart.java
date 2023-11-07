@@ -1,8 +1,8 @@
-package com.theocean.fundering.domain.like.domain;
+package com.theocean.fundering.domain.heart.domain;
 
 
-import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,13 +30,13 @@ public class Heart {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Celebrity celeb;
+    private Post post;
 
 
     @Builder
-    public Heart(final Member member, final Celebrity celeb) {
+    public Heart(final Member member, final Post post) {
         this.member = member;
-        this.celeb = celeb;
+        this.post = post;
     }
 
     @Override
