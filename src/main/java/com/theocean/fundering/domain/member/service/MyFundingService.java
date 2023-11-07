@@ -11,16 +11,21 @@ import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingWithdrawalResponseDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
 import com.theocean.fundering.domain.member.repository.MyFundingRepository;
+import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
+import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -64,13 +69,53 @@ public class MyFundingService {
         return responseDTO;
     }
 
-    public PageResponse<MyFundingWithdrawalResponseDTO> findAllWithdrawal(final Long userId, final Pageable pageable) {
-        final Long postId = adminRepository.findByUserId(userId);
-        final var page = myFundingRepository.findAllWithdrawalByUser(userId, postId, pageable);
-        return new PageResponse<>(page);
+    public List<MyFundingWithdrawalResponseDTO> findAwaitingApprovalWithdrawals(final Long userId, final Pageable pageable) {
+        final List<MyFundingWithdrawalResponseDTO> responseDTO = new ArrayList<>();
+        final List<Long> postIdList = adminRepository.findByUserId(userId);
+        for (final Long postId : postIdList) {
+            final List<Withdrawal> withdrawalList = withdrawalRepository.findWithdrawalByPostId(postId);
+            if(null != withdrawalList){
+                //N+1 문제 발생 가능성 쿼리 수정 필요
+                final Post post = postRepository.findById(postId).orElseThrow(
+                        () -> new Exception400("게시물을 찾을 수 없습니다.")
+                );
+                withdrawalList.stream()
+                        .map(withdrawal -> MyFundingWithdrawalResponseDTO.of(withdrawal, post))
+                        .forEachOrdered(responseDTO::add);
+            }
+        }
+        return responseDTO;
     }
 
-    public void applyWithdrawal(final Long userId, final Long postId) {
-        myFundingRepository.applyWithdrawal(userId, postId);
+    public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
+        final List<Long> postIdList = adminRepository.findByUserId(userId);
+        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
+        if(isAdmin == false)
+            throw new Exception400("관리자가 아닙니다.");
+        Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
+                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+        );
+        try{
+            withdrawal.approveWithdrawal();
+            withdrawalRepository.save(withdrawal);
+        }catch (RuntimeException e){
+            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
+        }
+    }
+
+    public void rejectWithdrawal(Long userId, Long postId, Long withdrawalId) {
+        final List<Long> postIdList = adminRepository.findByUserId(userId);
+        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
+        if(isAdmin == false)
+            throw new Exception400("관리자가 아닙니다.");
+        Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
+                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+        );
+        try{
+            withdrawal.denialWithdrawal();
+            withdrawalRepository.save(withdrawal);
+        }catch (RuntimeException e){
+            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
+        }
     }
 }
