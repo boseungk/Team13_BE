@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.post.dto;
 
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class PostResponse {
         private LocalDateTime modifiedAt;
         private int participant;
         private boolean eqWriter;
+        private int heartCount;
 
         public FindByPostIdDTO(final Post post) {
             postId = post.getPostId();
@@ -44,14 +46,18 @@ public class PostResponse {
             modifiedAt = post.getModifiedAt();
             participant = post.getParticipants();
             eqWriter = false;
+            heartCount = post.getHeartCount();
         }
     }
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class FindAllDTO {
         private Long postId;
+        private Long writerId;
         private String writer;
+        private Long celebId;
         private String celebrity;
         private String celebImg;
         private String title;
@@ -61,10 +67,13 @@ public class PostResponse {
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+        private int heartCount;
 
         public FindAllDTO(final Post post) {
             postId = post.getPostId();
+            writerId = post.getWriter().getUserId();
             writer = post.getWriter().getNickname();
+            celebId = post.getCelebrity().getCelebId();
             celebrity = post.getCelebrity().getCelebName();
             celebImg = post.getCelebrity().getProfileImage();
             title = post.getTitle();
@@ -74,6 +83,7 @@ public class PostResponse {
             deadline = post.getDeadline();
             createdAt = post.getCreatedAt();
             modifiedAt = post.getModifiedAt();
+            heartCount = post.getHeartCount();
         }
     }
 
