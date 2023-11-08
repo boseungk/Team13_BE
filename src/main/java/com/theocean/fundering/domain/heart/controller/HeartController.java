@@ -4,12 +4,14 @@ package com.theocean.fundering.domain.heart.controller;
 import com.theocean.fundering.domain.heart.service.HeartService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "HEART", description = "찜하기 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
