@@ -37,8 +37,8 @@ public class Withdrawal extends AuditingFields {
     private Long postId;
 
     // 사용처
-    @Column(nullable = false, name = "`usage`")
-    private String usage;
+    @Column(nullable = false, name = "purpose")
+    private String purpose;
 
     // 입금계좌
     @Column(nullable = false, name = "depositAccount")
@@ -50,7 +50,7 @@ public class Withdrawal extends AuditingFields {
     private int withdrawalAmount;
 
     // 승인 여부
-    @Column(nullable = false, name = "status")
+    @Column(nullable = false, name = "approval_status")
     private ApprovalStatus status;
 
     // 출금시 계좌 잔액
@@ -63,7 +63,7 @@ public class Withdrawal extends AuditingFields {
     public Withdrawal(final Long applicantId, final Long postId, final String usage, final String depositAccount, final int withdrawalAmount) {
         this.applicantId = applicantId;
         this.postId = postId;
-        this.usage = usage;
+        this.purpose = usage;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
         status = ApprovalStatus.PENDING;
