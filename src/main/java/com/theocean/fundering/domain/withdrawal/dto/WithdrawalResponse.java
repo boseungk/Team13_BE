@@ -39,7 +39,7 @@ public class WithdrawalResponse {
 
         WithdrawalDTO(final Withdrawal withdrawal, final String evidenceURL) {
             withdrawalId = withdrawal.getWithdrawalId();
-            usage = withdrawal.getUsage();
+            usage = withdrawal.getPurpose();
             withdrawalAmount = withdrawal.getWithdrawalAmount();
             balance = withdrawal.getBalance();
             evidence = evidenceURL;
