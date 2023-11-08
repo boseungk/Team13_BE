@@ -9,7 +9,7 @@ public class NewsRequest {
     @Getter
     @Builder
     @RequiredArgsConstructor
-    public static class saveDTO {
+    public static class SaveDTO {
         private final String title;
         private final String content; // 마크다운 형식의 문자열이 저장됨
     }

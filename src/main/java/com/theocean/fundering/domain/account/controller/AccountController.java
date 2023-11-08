@@ -28,7 +28,7 @@ public class AccountController {
     @GetMapping("/posts/{postId}/balance")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<BalanceResponse> getFundingBalance(
-            @Parameter(description = "게시물의 PK") @PathVariable final long postId
+            @Parameter(description = "게시글의 PK") @PathVariable final long postId
     ){
         final int balance = accountService.getBalance(postId);
         final var balanceResponse = new BalanceResponse(balance);

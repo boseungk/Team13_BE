@@ -22,7 +22,7 @@ public class CreateNewsService {
     // (기능) 업데이트 글 작성
     @Transactional
     public void createNews(
-            final Long writerId, final Long postId, final NewsRequest.saveDTO request) {
+            final Long writerId, final Long postId, final NewsRequest.SaveDTO request) {
         // DTO에서 필요한 정보를 추출합니다.
         final String title = request.getTitle();
         final String content = request.getContent();
