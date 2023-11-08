@@ -28,9 +28,11 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
         final OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                .select(Projections.constructor(PostResponse.FindAllDTO.class,
                         post.postId,
+                        post.writer.userId,
                         post.writer.nickname,
+                        post.celebrity.celebId,
                         post.celebrity.celebName,
                         post.celebrity.profileImage,
                         post.title,
@@ -39,7 +41,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.account.balance,
                         post.deadline,
                         post.createdAt,
-                        post.modifiedAt))
+                        post.modifiedAt,
+                        post.heartCount))
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
@@ -53,9 +56,11 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     @Override
     public Slice<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable final Long postId, final String email, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                .select(Projections.constructor(PostResponse.FindAllDTO.class,
                         post.postId,
+                        post.writer.userId,
                         post.writer.nickname,
+                        post.celebrity.celebId,
                         post.celebrity.celebName,
                         post.celebrity.profileImage,
                         post.title,
@@ -64,7 +69,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.account.balance,
                         post.deadline,
                         post.createdAt,
-                        post.modifiedAt))
+                        post.modifiedAt,
+                        post.heartCount))
                 .from(post)
                 .where(ltPostId(postId), eqWriter(email))
                 .orderBy(post.postId.desc())
@@ -77,9 +83,11 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     @Override
     public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable final Long postId, final String keyword, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                .select(Projections.constructor(PostResponse.FindAllDTO.class,
                         post.postId,
+                        post.writer.userId,
                         post.writer.nickname,
+                        post.celebrity.celebId,
                         post.celebrity.celebName,
                         post.celebrity.profileImage,
                         post.title,
@@ -88,7 +96,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.account.balance,
                         post.deadline,
                         post.createdAt,
-                        post.modifiedAt))
+                        post.modifiedAt,
+                        post.heartCount))
                 .from(post)
                 .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())

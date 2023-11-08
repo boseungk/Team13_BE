@@ -27,6 +27,7 @@ public class PostResponse {
         private LocalDateTime modifiedAt;
         private int participant;
         private boolean eqWriter;
+        private int heartCount;
 
         public FindByPostIdDTO(final Post post) {
             postId = post.getPostId();
@@ -44,6 +45,7 @@ public class PostResponse {
             modifiedAt = post.getModifiedAt();
             participant = post.getParticipants();
             eqWriter = false;
+            heartCount = post.getHeartCount();
         }
     }
 
@@ -51,7 +53,9 @@ public class PostResponse {
     @Setter
     public static class FindAllDTO {
         private Long postId;
+        private Long writerId;
         private String writer;
+        private Long celebId;
         private String celebrity;
         private String celebImg;
         private String title;
@@ -61,10 +65,13 @@ public class PostResponse {
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+        private int heartCount;
 
         public FindAllDTO(final Post post) {
             postId = post.getPostId();
+            writerId = post.getWriter().getUserId();
             writer = post.getWriter().getNickname();
+            celebId = post.getCelebrity().getCelebId();
             celebrity = post.getCelebrity().getCelebName();
             celebImg = post.getCelebrity().getProfileImage();
             title = post.getTitle();
@@ -74,6 +81,7 @@ public class PostResponse {
             deadline = post.getDeadline();
             createdAt = post.getCreatedAt();
             modifiedAt = post.getModifiedAt();
+            heartCount = post.getHeartCount();
         }
     }
 
