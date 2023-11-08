@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.payment.service;
 
 
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import com.theocean.fundering.domain.member.domain.Member;
@@ -31,7 +32,7 @@ public class PaymentService {
     public IamportResponse<Payment> verifyByImpUidAndDonate(final String email,
                                                             final PaymentRequest.DonateDTO dto,
                                                             final Long postId) throws IamportResponseException, IOException {
-        final IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(dto.getImpUid());
+        IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(dto.getImpUid());
         if (iamportResponse.getResponse().getAmount().intValue() == dto.getAmount()){
             final Member member = memberRepository.findByEmail(email).orElseThrow(
                     () -> new Exception500("No matched member found")
@@ -40,6 +41,10 @@ public class PaymentService {
                     () -> new Exception500("No matched post found")
             );
             paymentRepository.save(dto.toEntity(member, post));
+        }
+        else {
+            CancelData cancelData = new CancelData(dto.getImpUid(), true);
+            iamportResponse = paymentConfig.iamportClient().cancelPaymentByImpUid(cancelData);
         }
         return iamportResponse;
     }

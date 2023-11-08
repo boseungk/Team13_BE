@@ -24,7 +24,7 @@ public class PaymentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/donate")
     public IamportResponse<Payment> verifyByImpUidAndDonate(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                                   @RequestPart(value = "dto") final PaymentRequest.DonateDTO donateDTO,
+                                                   @RequestBody final PaymentRequest.DonateDTO donateDTO,
                                                    @PathVariable("postId") Long postId) {
         try {
             final String email = userDetails.getEmail();
