@@ -6,6 +6,7 @@ import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class CreateCommentService {
 
     private final CommentRepository commentRepository;
     private final CommentValidator commentValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * (기능) 댓글 작성
@@ -75,10 +77,10 @@ public class CreateCommentService {
         commentValidator.validateDepthLimit(parentCommentOrder);
 
         createChildComment(postId, parentCommentOrder, newComment);
+        eventPublisher.publishEvent(new CommentEvent.CreatedEvent(postId, parentCommentOrder));
     }
 
     // 대댓글 생성
-    // @CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")
     private void createChildComment(
             final Long postId, final String parentCommentOrder, final Comment newComment) {
 

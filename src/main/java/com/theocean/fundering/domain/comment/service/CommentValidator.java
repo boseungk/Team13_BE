@@ -8,7 +8,6 @@ import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -50,8 +49,7 @@ public class CommentValidator {
         if (commentOrder.contains(".")) throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
     }
 
-    @CacheEvict(key = "#postId + '_' + #parentCommentOrder", value = "replyCounts")
-    public int validateReplyLimit(final Long postId, final String parentCommentOrder) {
+    int validateReplyLimit(final Long postId, final String parentCommentOrder) {
         final int replyCount = commentRepository.countReplies(postId, parentCommentOrder + "%.%");
         if (REPLY_LIMIT <= replyCount) throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
         return replyCount;
