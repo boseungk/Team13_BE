@@ -40,7 +40,7 @@ public class NewsController {
     public ApiResult<?> createUpdates(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @RequestBody @Schema(implementation = NewsRequest.class) final NewsRequest.saveDTO request
+            @RequestBody @Schema(implementation = NewsRequest.SaveDTO.class) final NewsRequest.SaveDTO request
     ){
         final Long writerId = userDetails.getId();
         createNewsService.createNews(writerId, postId, request);
@@ -56,7 +56,7 @@ public class NewsController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> readUpdates(
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @Parameter(hidden = true) @RequestParam(required = false, defaultValue = "0") final long cursor,
+            @Parameter(description = "마지막으로 조회한 업데이트 글의 PK") @RequestParam(required = false, defaultValue = "0") final long cursor,
             @Parameter(hidden = true) @RequestParam(required = false, defaultValue = "6") final int pageSize
     ){
         final var response = readNewsService.getNews(postId, cursor, pageSize);
