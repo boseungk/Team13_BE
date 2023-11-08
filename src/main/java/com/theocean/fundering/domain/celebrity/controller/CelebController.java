@@ -30,8 +30,7 @@ public class CelebController {
     @PostMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> registerCeleb(
-            @RequestBody @Valid final CelebRequestDTO celebRequestDTO,
-            @Parameter(hidden = true) final Error error){
+            @RequestBody @Valid final CelebRequest.SaveDTO celebRequestDTO) {
 //                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
 //        celebService.register(celebRequestDTO, thumbnail);
         celebService.register(celebRequestDTO);
@@ -45,7 +44,7 @@ public class CelebController {
     public ApiResult<?> findAllCelebForApproval(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
-    ){
+    ) {
         final var page = celebService.findAllCelebForApproval(celebId, pageable);
         return ApiResult.success(page);
     }
@@ -56,7 +55,7 @@ public class CelebController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> approvalCelebrity(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId
-    ){
+    ) {
         celebService.approvalCelebrity(celebId);
         return ApiResult.success(null);
     }
@@ -67,58 +66,61 @@ public class CelebController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> rejectCelebrity(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId
-    ){
+    ) {
         celebService.deleteCelebrity(celebId);
         return ApiResult.success(null);
     }
 
     @Operation(summary = "셀럽의 펀딩 조회", description = "셀럽의 id를 기반으로 펀딩을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebFundingResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.FundingDTO.class)))
     })
     @GetMapping("/celebs/{celebId}/posts")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllPosting(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
-    ){
+    ) {
         final var page = celebService.findAllPosting(celebId, pageable);
         return ApiResult.success(page);
     }
 
     @Operation(summary = "셀럽의 상세 정보 조회", description = "셀럽의 id를 기반으로 상세 정보를 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebDetailsResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.DetailsDTO.class)))
     })
     @GetMapping("/celebs/{celebId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findByCelebId(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId
-    ){
+    ) {
         final var responseDTO = celebService.findByCelebId(celebId);
         return ApiResult.success(responseDTO);
     }
 
     @Operation(summary = "셀럽 목록 조회", description = "셀럽의 전체 목록을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebListResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.ListDTO.class)))
     })
     @GetMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebs(
-            @RequestParam final Long celebId,
-            @RequestParam final String keyword,
+            @Parameter(description = "cursor 셀럽 Id, Id가 커질수록 많은 데이터 조회")
+            @RequestParam(value = "celebId", required = false) final Long celebId,
+            @Parameter(description = "검색 keyword 입력 시 검색 결과, 셀럽 이름이랑 셀럽 그룹 검색 가능")
+            @RequestParam(value = "keyword", required = false) final String keyword,
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
-    ){
-        final var page = celebService.findAllCeleb(celebId, keyword, pageable);
+    ) {
+        final var page = celebService.findAllCeleb(celebId, userDetails, keyword, pageable);
         return ApiResult.success(page);
     }
 
     @Operation(summary = "추천 셀럽 조회", description = "추천 셀럽의 정보를 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebsRecommendResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.ProfileDTO.class)))
     })
     @GetMapping("/celebs/recommend")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllRecommendCelebs(
             @AuthenticationPrincipal final CustomUserDetails userDetails
-    ){
+    ) {
         final var responseDTO = celebService.recommendCelebs(userDetails);
         return ApiResult.success(responseDTO);
     }

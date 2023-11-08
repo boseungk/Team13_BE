@@ -26,7 +26,7 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
-    private static final String NO_CHECK_URL = "/login";
+    private static final String NO_CHECK_URL = "/api/login";
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain) throws IOException, ServletException {
-        // "/login" 요청은 토큰 확인 x
+        // "/api/login" 요청은 토큰 확인 x
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
             chain.doFilter(request, response);
             return;

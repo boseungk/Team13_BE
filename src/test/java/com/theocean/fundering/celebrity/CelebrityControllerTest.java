@@ -5,7 +5,7 @@ import com.theocean.fundering.domain.celebrity.controller.CelebController;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebRequest;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ class CelebrityControllerTest {
     @Test
     void reigsterCeleb() throws Exception {
         //given
-        final CelebRequestDTO requestDTO = CelebRequestDTO.builder()
+        final CelebRequest.SaveDTO requestDTO = CelebRequest.SaveDTO.builder()
                 .celebName(celeb.getCelebName())
                 .celebGender(celeb.getCelebGender())
                 .celebCategory(celeb.getCelebCategory())

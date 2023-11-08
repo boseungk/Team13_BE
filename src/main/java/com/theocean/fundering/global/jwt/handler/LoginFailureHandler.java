@@ -17,7 +17,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private final String FAILURE_MESSAGE = "아이디나 비밀번호가 잘못 되었습니다.";
     private final ObjectMapper objectMapper;
 
     @Override
@@ -26,7 +25,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        final String result = objectMapper.writeValueAsString(ApiResult.error(FAILURE_MESSAGE, new Exception401("아이디나 비밀번호가 잘못 되었습니다.").status()));
+        final String result = objectMapper.writeValueAsString(ApiResult.error(null, new Exception401("아이디나 비밀번호가 잘못 되었습니다.").status()));
         response.getWriter().write(result);
     }
 }

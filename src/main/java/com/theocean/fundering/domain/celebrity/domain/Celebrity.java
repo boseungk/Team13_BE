@@ -2,23 +2,17 @@ package com.theocean.fundering.domain.celebrity.domain;
 
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
+import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.global.utils.ApprovalStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -35,6 +29,9 @@ public class Celebrity extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long celebId;
+
+    @OneToMany(mappedBy = "celebrity")
+    private List<Post> post;
 
     @Column(nullable = false, length = 15, name = "name")
     private String celebName;

@@ -19,7 +19,6 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final String SUCCESS_MESSAGE = "로그인에 성공했습니다.";
 
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
@@ -42,7 +41,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 });
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        final String result = objectMapper.writeValueAsString(ApiResult.success(SUCCESS_MESSAGE));
+        final String result = objectMapper.writeValueAsString(ApiResult.success(null));
         response.getWriter().write(result);
     }
 
