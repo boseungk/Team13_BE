@@ -18,23 +18,24 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "evidence", indexes = @Index(name = "index_withdrawal", columnList = "withdrawalId", unique = true))
+@Table(name = "evidence", indexes = @Index(name = "index_withdrawal", columnList = "withdrawal_id", unique = true))
 @Entity
 public class Evidence extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long evidenceId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "withdrawal_id")
     private Long withdrawalId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "applicant_id")
     private Long applicantId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "post_id")
     private Long postId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "url")
     private String url;
 
     @Builder

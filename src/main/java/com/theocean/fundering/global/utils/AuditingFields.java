@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public abstract class AuditingFields {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "created_at")
     protected LocalDateTime createdAt; // 생성일시
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(nullable = false, name = "modified_at")
     protected LocalDateTime modifiedAt; // 수정일시
 }

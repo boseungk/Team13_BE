@@ -22,7 +22,7 @@ public class MyFundingWithdrawalResponseDTO {
     private MyFundingWithdrawalResponseDTO(Withdrawal withdrawal, Post post){
         withdrawalId = withdrawal.getWithdrawalId();
         withdrawalAmount = withdrawal.getWithdrawalAmount();
-        usage = withdrawal.getUsage();
+        usage = withdrawal.getPurpose();
         postId = post.getPostId();
         thumbnail = post.getThumbnail();
         title = post.getTitle();
