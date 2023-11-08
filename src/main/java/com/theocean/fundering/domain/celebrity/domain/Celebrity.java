@@ -33,7 +33,7 @@ import java.util.Objects;
 public class Celebrity extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "celebrity_id")
+    @Column(name = "id")
     private Long celebId;
 
     @Column(nullable = false, length = 15, name = "name")
