@@ -28,11 +28,10 @@ public class PaymentService {
 
 
     @Transactional
-    public IamportResponse<Payment> verifyByImpUid(final String email,
-                                                   final PaymentRequest.DonateDTO dto,
-                                                   final String impUid,
-                                                   final Long postId) throws IamportResponseException, IOException {
-        final IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(impUid);
+    public IamportResponse<Payment> verifyByImpUidAndDonate(final String email,
+                                                            final PaymentRequest.DonateDTO dto,
+                                                            final Long postId) throws IamportResponseException, IOException {
+        final IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(dto.getImpUid());
         if (iamportResponse.getResponse().getAmount().intValue() == dto.getAmount()){
             final Member member = memberRepository.findByEmail(email).orElseThrow(
                     () -> new Exception500("No matched member found")
