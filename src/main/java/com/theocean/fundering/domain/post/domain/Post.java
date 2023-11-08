@@ -68,7 +68,7 @@ public class Post extends AuditingFields {
     @Min(0)
     private int participants;
 
-    @Column(nullable = false, name = "daedline")
+    @Column(nullable = false, name = "deadline")
     @DateTimeFormat
     private LocalDateTime deadline;
 
