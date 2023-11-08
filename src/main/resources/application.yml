@@ -1,5 +1,5 @@
 spring:
   profiles:
-    include: oauth, cloud
+    include: cloud
     active:
       - local
