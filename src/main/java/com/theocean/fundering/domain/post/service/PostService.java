@@ -52,6 +52,7 @@ public class PostService {
         newPost.registerAccount(account);
     }
 
+    @Transactional
     public PostResponse.FindByPostIdDTO findByPostId(String email, Long postId){
         Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
@@ -62,14 +63,16 @@ public class PostService {
         return result;
     }
 
+    @Transactional
     public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable){
         var postList = postRepository.findAll(postId, pageable);
         return new PageResponse<>(postList);
 
     }
 
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable Long postId, String email, Pageable pageable){
-        var postList = postRepository.findAllByWriterEmail(postId, email, pageable);
+    @Transactional
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(@Nullable Long postId, String nickname, Pageable pageable){
+        var postList = postRepository.findAllByWriterName(postId, nickname, pageable);
         return new PageResponse<>(postList);
     }
 
