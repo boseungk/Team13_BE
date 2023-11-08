@@ -107,7 +107,7 @@ public class PostController {
     public ApiResult<?> searchPostByNickname(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
                                              @Parameter(description = "page, size, sort") final Pageable pageable){
-        final var response = postService.findAllByWriterEmail(postId, nickname, pageable);
+        final var response = postService.findAllByWriterName(postId, nickname, pageable);
         return ApiResult.success(response);
     }
 

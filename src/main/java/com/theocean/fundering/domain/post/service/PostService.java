@@ -71,8 +71,8 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable Long postId, String email, Pageable pageable){
-        var postList = postRepository.findAllByWriterEmail(postId, email, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(@Nullable Long postId, String nickname, Pageable pageable){
+        var postList = postRepository.findAllByWriterName(postId, nickname, pageable);
         return new PageResponse<>(postList);
     }
 

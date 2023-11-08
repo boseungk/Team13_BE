@@ -54,7 +54,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     }
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable final Long postId, final String email, final Pageable pageable) {
+    public Slice<PostResponse.FindAllDTO> findAllByWriterName(@Nullable final Long postId, final String nickname, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.postId.as("postId"),
@@ -72,7 +72,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(ltPostId(postId), eqWriter(email))
+                .where(ltPostId(postId), eqWriter(nickname))
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -127,8 +127,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
         return post.postId.lt(postId);
     }
 
-    private BooleanExpression eqWriter(final String email) {
-        return post.writer.email.eq(email);
+    private BooleanExpression eqWriter(final String nickname) {
+        return post.writer.nickname.contains(nickname);
     }
 
     private BooleanExpression containKeyword(final String keyword) {
