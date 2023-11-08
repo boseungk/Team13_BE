@@ -23,27 +23,28 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "comment", indexes = @Index(name = "index_comment_order", columnList = "commentOrder", unique = false))
+@Table(name = "comment", indexes = @Index(name = "index_comment_order", columnList = "comment_order", unique = false))
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 public class Comment extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long commentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "writer_id")
     private Long writerId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "post_id")
     private Long postId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "content")
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "comment_order")
     private String commentOrder;
 
     @Builder
