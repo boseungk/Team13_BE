@@ -1,8 +1,8 @@
 package com.theocean.fundering.domain.celebrity.domain;
 
-import com.theocean.fundering.domain.celebrity.domain.constant.ApprovalStatus;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
+import com.theocean.fundering.global.utils.ApprovalStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -31,17 +31,13 @@ public class NewsResponse {
         private final Long updateId;
         private final String title;
         private final String content;
-        private final long createdAt;
+        private final LocalDateTime createdAt;
 
         public newsDTO(final News news) {
             updateId = news.getNewsId();
             title = news.getTitle();
             content = news.getContent();
-            createdAt = toEpochSecond(news.getCreatedAt());
-        }
-
-        private long toEpochSecond(final LocalDateTime localDateTime) {
-            return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+            createdAt = news.getCreatedAt();
         }
     }
 }

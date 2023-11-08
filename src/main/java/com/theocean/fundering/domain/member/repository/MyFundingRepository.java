@@ -12,5 +12,4 @@ public interface MyFundingRepository {
     Slice<MyFundingSupporterResponseDTO> findAllPostingBySupporter(Long userId, Pageable pageable);
     Slice<MyFundingWithdrawalResponseDTO> findAllWithdrawalByUser(Long userId, Long postId, Pageable pageable);
 
-    void applyWithdrawal(Long userId, Long postId);
 }
