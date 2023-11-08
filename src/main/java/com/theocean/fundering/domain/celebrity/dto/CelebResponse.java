@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jmx.export.annotation.ManagedNotifications;
 
 import java.util.List;
 
@@ -58,15 +59,14 @@ public class CelebResponse {
     @AllArgsConstructor
     public static class ListDTO {
 
-        private Long celebId;
-        private String celebName;
-        private CelebGender celebGender;
-        private CelebCategory celebCategory;
-        private String celeGroup;
-        private String profileImage;
-        private int followerCount;
-        private int postId = 1;
-        private PostStatus postStatus = PostStatus.ONGOING;
+        private final Long celebId;
+        private final String celebName;
+        private final CelebGender celebGender;
+        private final CelebCategory celebCategory;
+        private final String celeGroup;
+        private final String profileImage;
+        private final int followerCount;
+        private final Long postId;
     }
 
     @Getter
