@@ -31,6 +31,7 @@ public class AWSS3Uploader {
             final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(fileName)
+                    .contentType(mFile.getContentType())
                     .acl(ObjectCannedACL.PUBLIC_READ)
                     .build();
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(mFile.getInputStream(), mFile.getInputStream().available()));
