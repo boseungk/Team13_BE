@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "EVIDENCE", description = "증빙 관련 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class EvidenceController {
 
     private final EvidenceService evidenceService;

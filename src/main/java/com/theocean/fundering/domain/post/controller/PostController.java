@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "POST", description = "펀딩 게시물 관련 API")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
