@@ -24,22 +24,21 @@ import java.util.Objects;
 public class News extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long newsId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "post_id")
     private Long postId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "writer_id")
     private Long writerId;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, name = "title")
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT", name = "content")
     private String content;
 
-    @Column
-    private String imageUrls; // TODO: 추후 리팩토링 예정
 
     @Builder
     public News(final Long postId, final Long writerId, final String title, final String content) {
@@ -47,10 +46,6 @@ public class News extends AuditingFields {
         this.writerId = writerId;
         this.title = title;
         this.content = content;
-    }
-
-    public void updateImageUrls(final String imageUrls) {
-        this.imageUrls = imageUrls;
     }
 
     @Override
