@@ -12,8 +12,8 @@ public interface CelebRepository extends JpaRepository<Celebrity, Long>, CelebRe
     List<Celebrity> findAllRandom();
 
     @Query(value = "SELECT rank FROM " +
-            "(SELECT celebrity_id, RANK() OVER (ORDER BY follower_count DESC) as rank FROM celebrity )" +
-            "WHERE celebrity_id = :celebId", nativeQuery = true)
+            "(SELECT id, RANK() OVER (ORDER BY follower_count DESC) as rank FROM celebrity )" +
+            "WHERE id = :celebId", nativeQuery = true)
     int getFollowerRank(@Param("celebId") Long celebId);
 
 }

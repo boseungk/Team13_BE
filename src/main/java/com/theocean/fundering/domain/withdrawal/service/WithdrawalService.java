@@ -4,10 +4,13 @@ import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.evidence.domain.Evidence;
 import com.theocean.fundering.domain.evidence.repository.EvidenceRepository;
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.domain.withdrawal.dto.WithdrawalRequest;
 import com.theocean.fundering.domain.withdrawal.dto.WithdrawalResponse;
 import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
+import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,10 +30,17 @@ public class WithdrawalService {
     private final WithdrawalRepository withdrawalRepository;
     private final AccountRepository accountRepository;
     private final EvidenceRepository evidenceRepository;
+    private final PostRepository postRepository;
 
     // 출금 신청 저장 로직
     @Transactional
     public void applyWithdrawal(final Long memberId, final Long postId, final WithdrawalRequest.SaveDTO request) {
+
+        final Optional<Post> post = postRepository.findById(postId);
+        if (post.isEmpty()) throw new Exception404("게시글이 존재하지 않습니다.");
+        final Long ownerId = post.get().getWriter().getUserId();
+        if (!ownerId.equals(memberId)) throw new Exception403("출금신청 권한이 존재하지 않습니다.");
+
         final Withdrawal withdrawal = Withdrawal.builder()
                 .applicantId(memberId)
                 .postId(postId)

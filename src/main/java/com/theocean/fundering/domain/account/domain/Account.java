@@ -16,20 +16,21 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "account", indexes = @Index(columnList = "postId"))
+@Table(name = "account", indexes = @Index(columnList = "post_id"))
 @Entity
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long accountId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "manager_id")
     private Long managerId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "post_id")
     private Long postId;
 
-    @Column
+    @Column(name = "balance")
     private int balance;
 
     @Builder

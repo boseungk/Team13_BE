@@ -38,11 +38,7 @@ public class CommentResponse {
         private final int depth;
         private final long createdAt;
 
-        CommentDTO(
-                final Comment comment,
-                final int replyCount,
-                final String writerName,
-                final String writerProfile) {
+        CommentDTO(final Comment comment, final int replyCount, final String writerName, final String writerProfile) {
             commentId = comment.getCommentId();
             writerId = comment.getWriterId();
             this.writerName = writerName;

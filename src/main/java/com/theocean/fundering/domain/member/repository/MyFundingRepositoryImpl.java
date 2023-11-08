@@ -80,7 +80,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                 queryFactory.select(Projections.constructor(MyFundingWithdrawalResponseDTO.class,
                                 withdrawal.withdrawalId,
                                 withdrawal.withdrawalAmount,
-                                withdrawal.usage,
+                                withdrawal.purpose,
                                 post.postId,
                                 post.thumbnail,
                                 post.title,

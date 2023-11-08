@@ -51,6 +51,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation platform('software.amazon.awssdk:bom:2.20.56')
 	implementation 'software.amazon.awssdk:s3'
+	implementation 'software.amazon.awssdk:apache-client'
 	implementation 'org.commonmark:commonmark:0.21.0'
 
 	// cache

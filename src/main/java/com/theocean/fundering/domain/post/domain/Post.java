@@ -16,6 +16,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -39,13 +40,15 @@ public class Post extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "id")
     private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "writer_id")
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "celeb_id")
     private Celebrity celebrity;
 
     @Column(nullable = false, length = 100, name = "title")
@@ -55,6 +58,7 @@ public class Post extends AuditingFields {
     private String introduction;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "account_id")
     private Account account;
 
     @Column(nullable = false, name = "thumbnail")
@@ -68,11 +72,12 @@ public class Post extends AuditingFields {
     @Min(0)
     private int participants;
 
-    @Column(nullable = false, name = "daedline")
+    @Column(nullable = false, name = "deadline")
     @DateTimeFormat
     private LocalDateTime deadline;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "post_status")
     private PostStatus postStatus;
 
     @Column(name = "heartCount")
