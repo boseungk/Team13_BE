@@ -31,7 +31,7 @@ public class HeartController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/posts/{postId}}/unHeart")
+    @DeleteMapping("/posts/{postId}/unHeart")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> unHeart(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @PathVariable Long postId){

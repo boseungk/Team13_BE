@@ -2,4 +2,4 @@ spring:
   profiles:
     include: oauth, cloud
     active:
-      - prod
+      - local
