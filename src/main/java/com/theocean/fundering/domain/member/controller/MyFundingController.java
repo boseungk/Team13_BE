@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "MYFUNDING", description = "My 펀딩 관련 API")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class MyFundingController {
     private final MyFundingService myFundingService;
 

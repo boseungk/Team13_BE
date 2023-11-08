@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "CELEB", description = "celeb 관련 API")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class CelebController {
     private final CelebService celebService;
 

@@ -16,17 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "NEWS", description = "펀딩 업데이트 관련 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class NewsController {
 
     private final CreateNewsService createNewsService;
@@ -40,7 +35,7 @@ public class NewsController {
     public ApiResult<?> createUpdates(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @RequestBody @Schema(implementation = NewsRequest.class) final NewsRequest.saveDTO request
+            @RequestBody @Schema(implementation = NewsRequest.SaveDTO.class) final NewsRequest.SaveDTO request
     ){
         final Long writerId = userDetails.getId();
         createNewsService.createNews(writerId, postId, request);
@@ -56,7 +51,7 @@ public class NewsController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> readUpdates(
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
-            @Parameter(hidden = true) @RequestParam(required = false, defaultValue = "0") final long cursor,
+            @Parameter(description = "마지막으로 조회한 업데이트 글의 PK") @RequestParam(required = false, defaultValue = "0") final long cursor,
             @Parameter(hidden = true) @RequestParam(required = false, defaultValue = "6") final int pageSize
     ){
         final var response = readNewsService.getNews(postId, cursor, pageSize);

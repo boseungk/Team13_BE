@@ -33,7 +33,7 @@ import java.util.Objects;
 public class Celebrity extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "celebrity_id")
+    @Column(name = "id")
     private Long celebId;
 
     @Column(nullable = false, length = 15, name = "name")
@@ -47,7 +47,7 @@ public class Celebrity extends AuditingFields {
     private CelebGender celebGender;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "celeb_type")
+    @Column(nullable = false, name = "category")
     private CelebCategory celebCategory;
 
     @Column(length = 50, name = "celeb_group")

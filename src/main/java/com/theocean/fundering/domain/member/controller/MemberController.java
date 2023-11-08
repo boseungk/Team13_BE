@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "MEMBER", description = "회원 관련 API")
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class MemberController {
     private final MemberService memberService;
 
