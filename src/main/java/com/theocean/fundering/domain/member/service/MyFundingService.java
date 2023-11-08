@@ -20,12 +20,10 @@ import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -112,7 +110,7 @@ public class MyFundingService {
                 () -> new Exception400("출금 신청을 찾을 수 없습니다.")
         );
         try{
-            withdrawal.denialWithdrawal();
+            withdrawal.denyWithdrawal();
             withdrawalRepository.save(withdrawal);
         }catch (RuntimeException e){
             throw new Exception500("출금 신청 중 오류가 발생했습니다.");

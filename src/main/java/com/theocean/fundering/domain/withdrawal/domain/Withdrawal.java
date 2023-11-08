@@ -14,50 +14,48 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.ZoneId;
 import java.util.Objects;
-import java.util.prefs.AbstractPreferences;
 
 @Entity
-@Table(name = "Withdrawal")
+@Table(name = "withdrawal")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Withdrawal extends AuditingFields {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long withdrawalId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "applicant_id")
     private Long applicantId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "post_id")
     private Long postId;
 
     // 사용처
-    @Column(nullable = false, name = "usage")
+    @Column(nullable = false, name = "`usage`")
     private String usage;
 
     // 입금계좌
-    @Column(nullable = false)
+    @Column(nullable = false, name = "depositAccount")
     private String depositAccount;
 
     // 출금액
     @Min(0)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "withdrawal_amount")
     private int withdrawalAmount;
 
     // 승인 여부
-    @Column(nullable = false)
+    @Column(nullable = false, name = "status")
     private ApprovalStatus status;
 
     // 출금시 계좌 잔액
     @Min(0)
-    @Column
+    @Column(name = "balance")
     private Integer balance;
 
     // 생성자
@@ -71,20 +69,12 @@ public class Withdrawal extends AuditingFields {
         status = ApprovalStatus.PENDING;
     }
 
-    public long getDepositTime() {
-        return modifiedAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-    }
-
     public void approveWithdrawal() {
         status = ApprovalStatus.APPROVED;
     }
 
-    public void denialWithdrawal(){
+    public void denyWithdrawal(){
         status = ApprovalStatus.PENDING;
-    }
-
-    public void updateBalance(final int balance) {
-        this.balance = balance;
     }
 
     @Override
