@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.post.dto;
 
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,7 @@ public class PostResponse {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class FindAllDTO {
         private Long postId;
         private Long writerId;

@@ -28,21 +28,21 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
         final OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.constructor(PostResponse.FindAllDTO.class,
-                        post.postId,
-                        post.writer.userId,
-                        post.writer.nickname,
-                        post.celebrity.celebId,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.targetPrice,
-                        post.account.balance,
-                        post.deadline,
-                        post.createdAt,
-                        post.modifiedAt,
-                        post.heartCount))
+                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
@@ -56,21 +56,21 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     @Override
     public Slice<PostResponse.FindAllDTO> findAllByWriterEmail(@Nullable final Long postId, final String email, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.constructor(PostResponse.FindAllDTO.class,
-                        post.postId,
-                        post.writer.userId,
-                        post.writer.nickname,
-                        post.celebrity.celebId,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.targetPrice,
-                        post.account.balance,
-                        post.deadline,
-                        post.createdAt,
-                        post.modifiedAt,
-                        post.heartCount))
+                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
                 .where(ltPostId(postId), eqWriter(email))
                 .orderBy(post.postId.desc())
@@ -83,21 +83,21 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     @Override
     public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable final Long postId, final String keyword, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
-                .select(Projections.constructor(PostResponse.FindAllDTO.class,
-                        post.postId,
-                        post.writer.userId,
-                        post.writer.nickname,
-                        post.celebrity.celebId,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.targetPrice,
-                        post.account.balance,
-                        post.deadline,
-                        post.createdAt,
-                        post.modifiedAt,
-                        post.heartCount))
+                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
                 .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())
