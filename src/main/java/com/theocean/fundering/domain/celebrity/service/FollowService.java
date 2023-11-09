@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class FollowService {
 
     private final FollowRepository followRepository;
     private final CelebRepository celebRepository;
+    private final ThreadLocal<Celebrity> threadLocal = new ThreadLocal<>();
 
     @Transactional
     public void followCelebs(final Long celebId, final Long memberId) {
@@ -37,9 +39,10 @@ public class FollowService {
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
         );
         try{
-            followRepository.saveUnFollow(celebrity.getCelebId(), memberId);
-            celebrity.minusFollowerCount();
-            celebRepository.save(celebrity);
+            threadLocal.set(celebrity);
+            followRepository.saveUnFollow(threadLocal.get().getCelebId(), memberId);
+            threadLocal.get().minusFollowerCount();
+            celebRepository.save(threadLocal.get());
         } catch (final RuntimeException e) {
             throw new Exception500("언팔로우에 실패했습니다.");
         }

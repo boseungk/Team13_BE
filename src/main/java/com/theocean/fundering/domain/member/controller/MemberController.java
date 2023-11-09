@@ -1,9 +1,6 @@
 package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.member.dto.EmailRequestDTO;
-import com.theocean.fundering.domain.member.dto.MemberSettingRequestDTO;
-import com.theocean.fundering.domain.member.dto.MemberSettingResponseDTO;
-import com.theocean.fundering.domain.member.dto.MemberSignUpRequestDTO;
+import com.theocean.fundering.domain.member.dto.*;
 import com.theocean.fundering.domain.member.service.MemberService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -32,7 +29,7 @@ public class MemberController {
     @PostMapping("/signup/check")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> checkEmail(
-            @RequestBody @Valid @Schema(implementation = EmailRequestDTO.class) final EmailRequestDTO emailRequestDTO,
+            @RequestBody @Valid @Schema(implementation = MemberRequest.EmailRequestDTO.class) final MemberRequest.EmailRequestDTO emailRequestDTO,
             @Parameter(hidden = true) final Error error
     ){
         memberService.sameCheckEmail(emailRequestDTO.getEmail());
@@ -43,7 +40,7 @@ public class MemberController {
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> signUp(
-            @RequestBody @Valid @Schema(implementation = MemberSignUpRequestDTO.class) final MemberSignUpRequestDTO requestDTO,
+            @RequestBody @Valid @Schema(implementation = MemberRequest.SignUpDTO.class) final MemberRequest.SignUpDTO requestDTO,
             @Parameter(hidden = true) final Error error
     ){
         memberService.signUp(requestDTO);
@@ -51,7 +48,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원정보 조회", description = "토큰을 기반으로 사용자의 회원정보를 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MemberSettingResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MemberResponse.SettingDTO.class)))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/setting")
@@ -68,7 +65,7 @@ public class MemberController {
     @PutMapping("/user/setting")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> updateUserSetting(
-            @RequestBody @Valid @Schema(implementation = MemberSettingRequestDTO.class) final MemberSettingRequestDTO requestDTO,
+            @RequestBody @Valid @Schema(implementation = MemberRequest.SettingDTO.class) final MemberRequest.SettingDTO requestDTO,
             @RequestPart("thumbnail") final MultipartFile thumbnail,
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(hidden = true) final Error error
@@ -79,7 +76,7 @@ public class MemberController {
 
     @Operation(summary = "회원 탈퇴", description = "토큰을 기반으로 사용자의 회원정보를 삭제한다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/user/setting/cancellation")
+    @DeleteMapping("/user/setting")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> cancellationUser(
             @AuthenticationPrincipal final CustomUserDetails userDetails

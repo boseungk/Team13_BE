@@ -28,7 +28,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
+    public Slice<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebResponse.FundingDTO> contents = queryFactory
                 .select(Projections.constructor(CelebResponse.FundingDTO.class,
@@ -40,9 +40,11 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         post.title,
                         post.introduction,
                         post.participants,
-                        post.targetPrice))
+                        post.targetPrice,
+                        post.thumbnail
+                ))
                 .from(post)
-                .where(eqPostCelebId(celebId), eqCelebApprovalStatus())
+                .where(eqPostCelebId(celebId), ltPostId(postId), eqCelebApprovalStatus())
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -53,7 +55,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     @Override
     public List<CelebResponse.ListDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
-        if(keyword != null){
+        if(null != keyword){
             return queryFactory
                     .selectDistinct(Projections.fields(CelebResponse.ListDTO.class,
                             celebrity.celebId,
@@ -71,8 +73,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                     .orderBy(celebrity.celebId.desc())
                     .limit(pageable.getPageSize())
                     .fetch();
-//            final boolean hasNext = contents.size() > pageable.getPageSize();
-//            return new SliceImpl<>(contents, pageable, hasNext);
         }
         return queryFactory
                 .select(Projections.constructor(CelebResponse.ListDTO.class,
@@ -91,15 +91,13 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-//        final boolean hasNext = contents.size() > pageable.getPageSize();
-//        return new SliceImpl<>(contents, pageable, hasNext);
     }
 
     @Override
-    public Slice<CelebResponse.ListDTO> findAllCelebForApproval(Long celebId, Pageable pageable) {
+    public Slice<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
         Objects.requireNonNull(celebId, "celebId must not be null");
-        final List<CelebResponse.ListDTO> contents = queryFactory
-                .select(Projections.constructor(CelebResponse.ListDTO.class,
+        final List<CelebResponse.ListForApprovalDTO> contents = queryFactory
+                .select(Projections.constructor(CelebResponse.ListForApprovalDTO.class,
                         celebrity.celebId,
                         celebrity.celebName,
                         celebrity.celebGender,
@@ -128,12 +126,18 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     }
 
     private BooleanExpression ltCelebId(final Long cursorId){
-        return cursorId != null ? celebrity.celebId.lt(cursorId) : null;
+        return null != cursorId ? celebrity.celebId.lt(cursorId) : null;
     }
-    private BooleanExpression nameCondition(String nameCond){
-        return nameCond != null ? celebrity.celebName.contains(nameCond) : null;
+
+    private BooleanExpression ltPostId(final Long cursorId){
+        return null != cursorId ? post.postId.lt(cursorId) : null;
     }
-    private BooleanExpression groupCondition(String nameCond){
-        return nameCond != null ? celebrity.celebGroup.contains(nameCond) : null;
+
+    private BooleanExpression nameCondition(final String nameCond){
+        return null != nameCond ? celebrity.celebName.contains(nameCond) : null;
+    }
+
+    private BooleanExpression groupCondition(final String nameCond){
+        return null != nameCond ? celebrity.celebGroup.contains(nameCond) : null;
     }
 }

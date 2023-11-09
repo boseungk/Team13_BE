@@ -17,7 +17,6 @@ import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CelebService {
     private static final int FOLLOW_COUNT_ZERO = 0;
@@ -44,12 +44,11 @@ public class CelebService {
     private final AWSS3Uploader awss3Uploader;
 
     @Transactional
-//    public void register(final CelebRequestDTO celebRequestDTO, final MultipartFile thumbnail) {
-    public void register(final CelebRequest.SaveDTO celebRequestDTO) {
+    public void register(final CelebRequest.SaveDTO celebRequestDTO, final MultipartFile thumbnail) {
         try {
-//            final String img = uploadImage(thumbnail);
+            final String img = uploadImage(thumbnail);
             final Celebrity celebrity = celebRequestDTO.mapToEntity();
-//            celebrity.updateProfileImage(img);
+            celebrity.updateProfileImage(img);
             celebRepository.save(celebrity);
         } catch (final RuntimeException e) {
             throw new Exception500("셀럽 등록 실패");
@@ -58,22 +57,30 @@ public class CelebService {
 
     @Transactional
     public void approvalCelebrity(final Long celebId) {
-        celebRepository.findById(celebId)
+        final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::approvalCelebrity)
                 .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
+        try{
+            celebRepository.save(celebrity);
+        } catch(final RuntimeException e){
+            throw new Exception500("셀럽 승인 실패");
+        }
     }
 
     @Transactional
     public void deleteCelebrity(final Long celebId) {
-        celebRepository.delete(
-                celebRepository.findById(celebId).orElseThrow(
-                        () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
-                )
-        );
+        final Celebrity celebrity = celebRepository.findById(celebId)
+                .map(Celebrity::rejectCelebrity)
+                .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
+        try{
+            celebRepository.save(celebrity);
+        } catch(final RuntimeException e){
+            throw new Exception500("셀럽 승인 거부 실패");
+        }
     }
 
-    public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
-        final var page = celebRepository.findAllPosting(celebId, pageable);
+    public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
+        final var page = celebRepository.findAllPosting(celebId, postId, pageable);
         return new PageResponse<>(page);
     }
 
@@ -109,7 +116,7 @@ public class CelebService {
         return new PageResponse<>(new SliceImpl<>(fundingList, pageable, hasNext));
     }
 
-    public PageResponse<CelebResponse.ListDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
+    public PageResponse<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
         final var page = celebRepository.findAllCelebForApproval(celebId, pageable);
         return new PageResponse<>(page);
     }
@@ -123,7 +130,6 @@ public class CelebService {
 
         final List<CelebResponse.ProfileDTO> responseDTO = new ArrayList<>();
         for (final Celebrity celebrity : celebrities) {
-            //celebrity의 followerCount와 같은 거 같아서 확인 후 리팩토링
             final int followCount = celebrity.getFollowerCount();
             final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebrity.getCelebId(), userId);
             responseDTO.add(CelebResponse.ProfileDTO.of(celebrity, followCount, isFollow));

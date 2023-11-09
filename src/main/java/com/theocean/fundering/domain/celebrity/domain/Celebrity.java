@@ -62,6 +62,11 @@ public class Celebrity extends AuditingFields {
         return this;
     }
 
+    public Celebrity rejectCelebrity() {
+        status = ApprovalStatus.PENDING;
+        return this;
+    }
+
     public void addFollowerCount() {
         followerCount += 1;
     }
@@ -70,13 +75,13 @@ public class Celebrity extends AuditingFields {
         followerCount -= 1;
     }
 
-    public void updateProfileImage(String thumbnail) {
+    public void updateProfileImage(final String thumbnail) {
         profileImage = thumbnail;
     }
 
     @Builder
-    public Celebrity(String celebName, CelebGender celebGender, CelebCategory celebCategory,
-                     String celebGroup, String profileImage) {
+    public Celebrity(final String celebName, final CelebGender celebGender, final CelebCategory celebCategory,
+                     final String celebGroup, final String profileImage) {
         this.celebName = celebName;
         this.celebGender = celebGender;
         this.celebCategory = celebCategory;
@@ -85,9 +90,9 @@ public class Celebrity extends AuditingFields {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Celebrity celebrity)) return false;
+        if (!(o instanceof final Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 

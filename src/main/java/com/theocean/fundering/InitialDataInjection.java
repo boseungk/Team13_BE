@@ -6,6 +6,7 @@ import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.evidence.repository.EvidenceRepository;
 import com.theocean.fundering.domain.heart.repository.HeartRepository;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.news.repository.NewsRepository;
 import com.theocean.fundering.domain.payment.repository.PaymentRepository;
@@ -27,7 +28,7 @@ public class InitialDataInjection {
     return args -> {
       if (celebRepository.count() == 0) {
         String query1 =
-                "INSERT INTO celebrity (follower_count, created_at, modified_at, name, celeb_group, approval_status, category, gender, profile_image) VALUES (2, '2023-09-30T12:00:00', CURRENT_TIMESTAMP, '손흥민', '토트넘 홋스퍼', 'APPROVED', 'SPORT', 'MALE', 'profile1.jpg')";
+                "INSERT INTO celebrity (follower_count, created_at, modified_at, name, celeb_group, approval_status, category, gender, profile_image) VALUES (2, '2023-09-30T12:00:00', CURRENT_TIMESTAMP, '손흥민', '토트넘 홋스퍼', 'PENDING', 'SPORT', 'MALE', 'profile1.jpg')";
         String query2 =
                 "INSERT INTO celebrity (follower_count, created_at, modified_at, name, celeb_group, approval_status, category, gender, profile_image) VALUES (1, '2023-09-30T12:00:00', CURRENT_TIMESTAMP, '태연', '소녀시대', 'APPROVED', 'SINGER', 'FEMALE', 'profile2.jpg')";
 
@@ -174,6 +175,19 @@ public class InitialDataInjection {
         String query1 = "INSERT INTO evidence (applicant_id, created_at, modified_at, post_id, withdrawal_id, url) VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, '증빙 자료url')";
 
         jdbcTemplate.update(query1);
+      }
+    };
+  }
+
+  @Bean
+  public CommandLineRunner initAdmin(AdminRepository adminRepository, JdbcTemplate jdbcTemplate) {
+    return args -> {
+      if (adminRepository.count() == 0) {
+        String query1 = "INSERT INTO admin(member_id, post_id) VALUES (1, 1)";
+        String query2 = "INSERT INTO admin(member_id, post_id) VALUES (1, 2)";
+
+        jdbcTemplate.update(query1);
+        jdbcTemplate.update(query2);
       }
     };
   }

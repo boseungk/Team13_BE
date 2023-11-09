@@ -8,16 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
 @Tag(name = "AWS S3 Uploader", description = "AWS S3 업로드 관련 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class ImageUploadController {
 
     private final AWSS3Uploader awss3Uploader;

@@ -5,10 +5,7 @@ import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.jmx.export.annotation.ManagedNotifications;
 
 import java.util.List;
@@ -53,10 +50,23 @@ public class CelebResponse {
         private final String content;
         private final int participants;
         private final int targetPrice;
+        private final String thumbnail;
     }
 
     @Getter
-    @AllArgsConstructor
+    @RequiredArgsConstructor
+    public static class ListForApprovalDTO {
+
+        private final Long celebId;
+        private final String celebName;
+        private final CelebGender celebGender;
+        private final CelebCategory celebCategory;
+        private final String celeGroup;
+        private final String profileImage;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public static class ListDTO {
 
         private final Long celebId;

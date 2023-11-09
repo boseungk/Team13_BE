@@ -1,9 +1,6 @@
 package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.member.dto.MyFundingFollowingCelebsDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
-import com.theocean.fundering.domain.member.dto.MyFundingWithdrawalResponseDTO;
+import com.theocean.fundering.domain.member.dto.*;
 import com.theocean.fundering.domain.member.service.MyFundingService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -29,7 +26,7 @@ public class MyFundingController {
     private final MyFundingService myFundingService;
 
     @Operation(summary = "주최한 펀딩 목록 조회", description = "사용자의 토큰으로 주최한 펀딩 목록을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingHostResponseDTO.class))),
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.HostDTO.class))),
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/host")
@@ -43,7 +40,7 @@ public class MyFundingController {
     }
 
     @Operation(summary = "후원한 펀딩 목록 조회", description = "사용자의 토큰으로 후원한 펀딩 목록을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingSupporterResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.SupporterDTO.class)))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/support")
@@ -63,12 +60,12 @@ public class MyFundingController {
     public ApiResult<?> getNickname(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
-        final String nickname = myFundingService.getNickname(userDetails.getId());
+        var nickname = myFundingService.getNickname(userDetails.getId());
         return ApiResult.success(nickname);
     }
 
     @Operation(summary = "팔로잉 한 셀럽 조회", description = "사용자의 토큰으로 팔로잉 한 셀럽을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingFollowingCelebsDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.FollowingCelebsDTO.class)))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/followers")
@@ -81,7 +78,7 @@ public class MyFundingController {
     }
 
     @Operation(summary = "출금 신청 목록 조회", description = "본인이 공동관리자인 펀딩의 출금 신청 목록을 조회한다", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingWithdrawalResponseDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.WithdrawalDTO.class)))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/withdrawal")
@@ -94,7 +91,7 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/myfunding/withdrawal/approval")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?>  approvalWithdrawal(
@@ -107,7 +104,7 @@ public class MyFundingController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/myfunding/withdrawal/rejection   ")
+    @PostMapping("/myfunding/withdrawal/rejection")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?>  rejectWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
