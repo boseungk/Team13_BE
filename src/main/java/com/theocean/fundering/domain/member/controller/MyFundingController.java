@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.member.controller;
 import com.theocean.fundering.domain.member.dto.MyFundingFollowingCelebsDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingHostResponseDTO;
 import com.theocean.fundering.domain.member.dto.MyFundingSupporterResponseDTO;
+import com.theocean.fundering.domain.member.dto.MyFundingWithdrawalResponseDTO;
 import com.theocean.fundering.domain.member.service.MyFundingService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -79,12 +80,15 @@ public class MyFundingController {
         return ApiResult.success(followingCelebs);
     }
 
+    @Operation(summary = "출금 신청 목록 조회", description = "본인이 공동관리자인 펀딩의 출금 신청 목록을 조회한다", responses = {
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingWithdrawalResponseDTO.class)))
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/withdrawal")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAwaitingApprovalWithdrawals(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            final Pageable pageable
+            @Parameter(hidden = true) final Pageable pageable
     ){
         final var page = myFundingService.findAwaitingApprovalWithdrawals(userDetails.getId(), pageable);
         return ApiResult.success(page);
