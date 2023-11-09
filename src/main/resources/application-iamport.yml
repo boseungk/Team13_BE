@@ -1,3 +1,0 @@
-iamport:
-  apiKey: ${IAMPORT_API_KEY}
-  apiSecret: ${IAMPORT_API_SECRET}

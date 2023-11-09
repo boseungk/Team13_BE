@@ -48,7 +48,6 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation platform('software.amazon.awssdk:bom:2.20.56')
 	implementation 'software.amazon.awssdk:s3'
 	implementation 'software.amazon.awssdk:apache-client'
