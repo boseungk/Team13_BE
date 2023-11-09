@@ -12,7 +12,6 @@ import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
-import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +44,10 @@ public class CelebService {
 
     @Transactional
     public void register(final CelebRequest.SaveDTO celebRequestDTO, final MultipartFile thumbnail) {
-        try {
-            final String img = uploadImage(thumbnail);
-            final Celebrity celebrity = celebRequestDTO.mapToEntity();
-            celebrity.updateProfileImage(img);
-            celebRepository.save(celebrity);
-        } catch (final RuntimeException e) {
-            throw new Exception500("셀럽 등록 실패");
-        }
+        final String img = uploadImage(thumbnail);
+        final Celebrity celebrity = celebRequestDTO.mapToEntity();
+        celebrity.updateProfileImage(img);
+        celebRepository.save(celebrity);
     }
 
     @Transactional
@@ -60,11 +55,7 @@ public class CelebService {
         final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::approvalCelebrity)
                 .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
-        try{
-            celebRepository.save(celebrity);
-        } catch(final RuntimeException e){
-            throw new Exception500("셀럽 승인 실패");
-        }
+        celebRepository.save(celebrity);
     }
 
     @Transactional
@@ -72,11 +63,7 @@ public class CelebService {
         final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::rejectCelebrity)
                 .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
-        try{
             celebRepository.save(celebrity);
-        } catch(final RuntimeException e){
-            throw new Exception500("셀럽 승인 거부 실패");
-        }
     }
 
     public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
@@ -97,19 +84,19 @@ public class CelebService {
     }
 
     public PageResponse<CelebResponse.FundingListDTO> findAllCeleb(final Long celebId, final CustomUserDetails member, final String keyword, final Pageable pageable) {
-        final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
-
-        final List<CelebResponse.FundingListDTO> fundingList = new ArrayList<>();
-        final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(celebId, keyword, pageable);
         int fundingAmount = FUNDING_AMOUNT_ZERO;
+        final List<CelebResponse.FundingListDTO> fundingList = new ArrayList<>();
+        final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
+        final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(celebId, keyword, pageable);
+        final int ongoingCount = postRepository.countByPostStatus(PostStatus.ONGOING);
+        final int followerRank = celebRepository.getFollowerRank(celebId);
+        final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, userId);
+
         for (final CelebResponse.ListDTO celebFunding : celebFundingList) {
             final Account account = accountRepository.findByPostId(celebFunding.getPostId()).orElseThrow(
                     () -> new Exception400("계좌를 찾을 수 없습니다.")
             );
             fundingAmount += account.getBalance();
-            final int ongoingCount = postRepository.countByPostStatus(PostStatus.ONGOING);
-            final int followerRank = celebRepository.getFollowerRank(celebId);
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebFunding.getCelebId(), userId);
             fundingList.add(CelebResponse.FundingListDTO.of(celebFunding, fundingAmount, ongoingCount, followerRank, isFollow));
         }
         final boolean hasNext = fundingList.size() > pageable.getPageSize();

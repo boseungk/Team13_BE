@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.celebrity.controller;
 
-import com.theocean.fundering.domain.celebrity.dto.*;
+import com.theocean.fundering.domain.celebrity.dto.CelebRequest;
+import com.theocean.fundering.domain.celebrity.dto.CelebResponse;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -10,11 +11,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +29,19 @@ public class CelebController {
     private final CelebService celebService;
 
     @Operation(summary = "셀럽 등록", description = "새로운 셀럽을 등록 신청한다.")
-    @PostMapping("/celebs")
+    @PostMapping(value = "/celebs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> registerCeleb(
-            @RequestBody @Valid final CelebRequest.SaveDTO celebRequestDTO,
-            @RequestPart(value = "thumbnail") MultipartFile thumbnail) {
+            @Parameter(description = "셀럽 게시물 작성 DTO, content-type: application/json")
+            @RequestPart("celebRequestDTO") final CelebRequest.SaveDTO celebRequestDTO,
+            @Parameter(description = "썸네일 이미지")
+            @RequestPart("thumbnail") final MultipartFile thumbnail) {
         celebService.register(celebRequestDTO, thumbnail);
         return ApiResult.success(null);
     }
 
     @Operation(summary = "셀럽 등록 요청 조회", description = "관리자 유저가 셀럽 등록 요청을 조회한다.")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/celebs/{celebId}/admin")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebForApproval(
@@ -50,7 +53,7 @@ public class CelebController {
     }
 
     @Operation(summary = "셀럽 승인", description = "관리자 유저가 셀럽 등록 요청을 승인한다.")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/celebs/{celebId}/admin")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> approvalCelebrity(
@@ -61,7 +64,7 @@ public class CelebController {
     }
 
     @Operation(summary = "셀럽 거절", description = "관리자 유저가 셀럽 등록 요청을 거절한다.")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/celebs/{celebId}/admin")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> rejectCelebrity(

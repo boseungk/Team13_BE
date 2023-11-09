@@ -19,7 +19,7 @@ public class PageResponse<T> {
         isLastPage = sliceContent.isLast();
     }
 
-    public static Slice<?> of(final List<?> content, final Pageable pageable, final boolean hasNext){
+    public static Slice<?> of(final List<?> content, final Pageable pageable, final boolean hasNext) {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 }

@@ -1,6 +1,6 @@
 package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.member.dto.*;
+import com.theocean.fundering.domain.member.dto.MyFundingResponse;
 import com.theocean.fundering.domain.member.service.MyFundingService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -91,13 +91,13 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
-//    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/myfunding/withdrawal/approval")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?>  approvalWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
-            @RequestParam final Long withdrawalId
+            @RequestParam("postId") final Long postId,
+            @RequestParam("withdrawalId") final Long withdrawalId
     ) {
         myFundingService.approvalWithdrawal(userDetails.getId(), postId, withdrawalId);
         return ApiResult.success(null);
@@ -108,8 +108,8 @@ public class MyFundingController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?>  rejectWithdrawal(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam final Long postId,
-            @RequestParam final Long withdrawalId
+            @RequestParam("postId") final Long postId,
+            @RequestParam("withdrawalId") final Long withdrawalId
     ) {
         myFundingService.rejectWithdrawal(userDetails.getId(), postId, withdrawalId);
         return ApiResult.success(null);

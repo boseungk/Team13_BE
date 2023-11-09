@@ -4,7 +4,7 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.member.dto.*;
+import com.theocean.fundering.domain.member.dto.MyFundingResponse;
 import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.member.repository.MyFundingRepository;
@@ -14,7 +14,6 @@ import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception400;
-import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,7 @@ public class MyFundingService {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         for (final Long postId : postIdList) {
             final List<Withdrawal> withdrawalList = withdrawalRepository.findWithdrawalByPostId(postId);
-            if(null != withdrawalList){
+            if (null != withdrawalList) {
                 //N+1 문제 발생 가능성 쿼리 수정 필요
                 final Post post = postRepository.findById(postId).orElseThrow(
                         () -> new Exception400("게시물을 찾을 수 없습니다.")
@@ -88,33 +87,25 @@ public class MyFundingService {
     public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if(!isAdmin)
+        if (!isAdmin)
             throw new Exception400("관리자가 아닙니다.");
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
                 () -> new Exception400("출금 신청을 찾을 수 없습니다.")
         );
-        try{
-            withdrawal.approveWithdrawal();
-            withdrawalRepository.save(withdrawal);
-        }catch (final RuntimeException e){
-            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
-        }
+        withdrawal.approveWithdrawal();
+        withdrawalRepository.save(withdrawal);
     }
 
     @Transactional
     public void rejectWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if(!isAdmin)
+        if (!isAdmin)
             throw new Exception400("관리자가 아닙니다.");
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
                 () -> new Exception400("출금 신청을 찾을 수 없습니다.")
         );
-        try{
-            withdrawal.denyWithdrawal();
-            withdrawalRepository.save(withdrawal);
-        }catch (final RuntimeException e){
-            throw new Exception500("출금 신청 중 오류가 발생했습니다.");
-        }
+        withdrawal.denyWithdrawal();
+        withdrawalRepository.save(withdrawal);
     }
 }

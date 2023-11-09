@@ -6,11 +6,7 @@ import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.global.utils.ApprovalStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -67,12 +63,14 @@ public class Celebrity extends AuditingFields {
         return this;
     }
 
-    public void addFollowerCount() {
+    public Celebrity addFollowerCount() {
         followerCount += 1;
+        return this;
     }
 
-    public void minusFollowerCount() {
+    public Celebrity minusFollowerCount() {
         followerCount -= 1;
+        return this;
     }
 
     public void updateProfileImage(final String thumbnail) {

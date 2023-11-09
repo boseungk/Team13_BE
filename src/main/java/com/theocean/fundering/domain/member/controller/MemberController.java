@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.member.controller;
 
-import com.theocean.fundering.domain.member.dto.*;
+import com.theocean.fundering.domain.member.dto.MemberRequest;
+import com.theocean.fundering.domain.member.dto.MemberResponse;
 import com.theocean.fundering.domain.member.service.MemberService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -62,10 +64,11 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정", description = "토큰을 기반으로 사용자의 회원정보를 수정한다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping("/user/setting")
+    @PutMapping(value = "/user/setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> updateUserSetting(
-            @RequestBody @Valid @Schema(implementation = MemberRequest.SettingDTO.class) final MemberRequest.SettingDTO requestDTO,
+            @Valid @Schema(implementation = MemberRequest.SettingDTO.class)
+            @RequestPart("requestDTO") final MemberRequest.SettingDTO requestDTO,
             @RequestPart("thumbnail") final MultipartFile thumbnail,
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(hidden = true) final Error error

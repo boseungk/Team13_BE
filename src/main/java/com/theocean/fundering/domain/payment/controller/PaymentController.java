@@ -8,7 +8,6 @@ import com.theocean.fundering.domain.payment.dto.PaymentRequest;
 import com.theocean.fundering.domain.payment.service.PaymentService;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
-import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,13 +26,12 @@ public class PaymentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/donate")
     public IamportResponse<Payment> verifyByImpUidAndDonate(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                                   @RequestBody final PaymentRequest.DonateDTO donateDTO,
-                                                   @PathVariable("postId") Long postId) {
+                                                            @RequestBody final PaymentRequest.DonateDTO donateDTO,
+                                                            @PathVariable("postId") final Long postId) {
         try {
             final String email = userDetails.getEmail();
             return paymentService.verifyByImpUidAndDonate(email, donateDTO, postId);
-        }
-        catch (final IamportResponseException | IOException e){
+        } catch (final IamportResponseException | IOException e) {
             throw new Exception400("결제 검증 실패");
         }
     }

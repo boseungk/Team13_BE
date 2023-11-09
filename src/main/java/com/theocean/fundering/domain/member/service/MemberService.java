@@ -5,7 +5,6 @@ import com.theocean.fundering.domain.member.dto.MemberRequest;
 import com.theocean.fundering.domain.member.dto.MemberResponse;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
-import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +25,7 @@ public class MemberService {
     public void signUp(final MemberRequest.SignUpDTO requestDTO) {
         sameCheckEmail(requestDTO.getEmail());
         requestDTO.encodePassword(passwordEncoder.encode(requestDTO.getPassword()));
-        try {
-            memberRepository.save(requestDTO.mapToEntity());
-        } catch (final RuntimeException e) {
-            throw new Exception500("회원가입 실패");
-        }
+        memberRepository.save(requestDTO.mapToEntity());
     }
 
     public void sameCheckEmail(final String email) {
@@ -54,11 +49,7 @@ public class MemberService {
         final String encodePassword = passwordEncoder.encode(requestDTO.getModifyPassword());
         final String img = uploadImage(thumbnail);
         member.updateUserSetting(requestDTO.getNickname(), encodePassword, requestDTO.getPhoneNumber(), img);
-        try{
-            memberRepository.save(member);
-        } catch (final RuntimeException e) {
-            throw new Exception500("회원 정보 수정에 실패했습니다.");
-        }
+        memberRepository.save(member);
     }
 
     @Transactional
@@ -66,13 +57,10 @@ public class MemberService {
         final Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new Exception400("회원을 찾을 수 없습니다.")
         );
-        try{
-            memberRepository.delete(member);
-        } catch (final RuntimeException e) {
-            throw new Exception500("회원 탈퇴에 실패했습니다.");
-        }
+        memberRepository.delete(member);
     }
-    private String uploadImage(final MultipartFile img){
+
+    private String uploadImage(final MultipartFile img) {
         return awss3Uploader.uploadToS3(img);
     }
 }

@@ -24,8 +24,8 @@ public class HeartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/heart")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> addHeart(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                 @PathVariable Long postId){
+    public ApiResult<?> addHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                 @PathVariable final Long postId) {
         heartService.addHeart(userDetails.getId(), postId);
         return ApiResult.success(null);
 
@@ -35,8 +35,8 @@ public class HeartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/posts/{postId}/unHeart")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> unHeart(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                @PathVariable Long postId){
+    public ApiResult<?> unHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                @PathVariable final Long postId) {
 
         heartService.unHeart(userDetails.getId(), postId);
         return ApiResult.success(null);
