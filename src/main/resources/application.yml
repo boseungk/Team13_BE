@@ -1,5 +1,5 @@
 spring:
   profiles:
-    include: cloud
+    include: cloud, iamport
     active:
       - local
