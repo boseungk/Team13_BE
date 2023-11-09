@@ -92,10 +92,12 @@ public class PostService {
         return postId;
     }
 
+    @Transactional
     public void deletePost(Long postId){
         postRepository.deleteById(postId);
     }
 
+    @Transactional
     public PageResponse<PostResponse.FindAllDTO> searchPostByKeyword(@Nullable Long postId, String keyword, Pageable pageable){
         var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
         return new PageResponse<>(postList);
