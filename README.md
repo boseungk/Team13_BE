@@ -23,8 +23,7 @@
 ### 펀더링 유스 케이스
 
 ---
-
-<img alt="server_design" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/a580547d-6e72-442b-abf7-068e0b432abc" width="100%">
+- [Fundering_UseCase_Diagram](https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/a580547d-6e72-442b-abf7-068e0b432abc)
 
 <br>
 <br>
