@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    @Query("SELECT p.member FROM Payment p WHERE p.post.postId = :postId ORDER BY p.amount DESC")
-    List<Member> findAllSupporterByPostId(@Param("postId") Long postId);
+    @Query("SELECT p.memberId FROM Payment p WHERE p.postId = :postId ORDER BY p.amount DESC")
+    List<Long> findAllSupporterByPostId(@Param("postId") Long postId);
 
 }
