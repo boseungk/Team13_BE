@@ -33,6 +33,10 @@ public class Account {
     @Column(name = "balance")
     private int balance;
 
+    public void updateBalance(int balance) {
+        this.balance = balance;
+    }
+
     @Builder
     public Account(final Long managerId, final Long postId) {
         this.managerId = managerId;

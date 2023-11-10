@@ -32,7 +32,7 @@ public class EvidenceController {
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                             schema = @Schema(type = "string", format = "binary"),
-                            encoding = @Encoding(name = "image", contentType = "image/jpeg")
+                            encoding = @Encoding(name = "image", contentType = "image/png")
                     )
             )
     )

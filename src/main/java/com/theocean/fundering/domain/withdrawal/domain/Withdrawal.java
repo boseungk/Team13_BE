@@ -69,8 +69,9 @@ public class Withdrawal extends AuditingFields {
         status = ApprovalStatus.PENDING;
     }
 
-    public void approveWithdrawal() {
+    public void approveWithdrawal(int balance) {
         status = ApprovalStatus.APPROVED;
+        this.balance = balance;
     }
 
     public void denyWithdrawal(){
