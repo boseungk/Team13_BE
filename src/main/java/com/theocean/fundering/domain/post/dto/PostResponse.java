@@ -14,8 +14,10 @@ public class PostResponse {
     @Setter
     public static class FindByPostIdDTO { // 게시글 열람 DTO
         private Long postId;
+        private Long writerId;
         private String writer;
         private String writerImg;
+        private Long celebId;
         private String celebrity;
         private String celebImg;
         private String title;
@@ -29,11 +31,14 @@ public class PostResponse {
         private int participant;
         private boolean eqWriter;
         private int heartCount;
+        private boolean isFollowed;
 
         public FindByPostIdDTO(final Post post) {
             postId = post.getPostId();
+            writerId = post.getWriter().getUserId();
             writer = post.getWriter().getNickname();
             writerImg = post.getWriter().getProfileImage();
+            celebId = post.getCelebrity().getCelebId();
             celebrity = post.getCelebrity().getCelebName();
             celebImg = post.getCelebrity().getProfileImage();
             title = post.getTitle();
@@ -47,6 +52,7 @@ public class PostResponse {
             participant = post.getParticipants();
             eqWriter = false;
             heartCount = post.getHeartCount();
+            isFollowed = false;
         }
     }
 

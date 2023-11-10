@@ -4,6 +4,8 @@ package com.theocean.fundering.domain.post.service;
 import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.domain.Follow;
+import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
@@ -33,6 +35,7 @@ public class PostService {
     private final CelebRepository celebRepository;
     private final MemberRepository memberRepository;
     private final AccountRepository accountRepository;
+    private final FollowRepository followRepository;
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
@@ -59,8 +62,15 @@ public class PostService {
                 () -> new Exception500("No matched post found")
         );
         PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
-        if (postPS.getWriter().getEmail().equals(email))
-            result.setEqWriter(true);
+
+        if (null != email){
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            final boolean isFollowed = 0 != followRepository.countByCelebIdAndFollowId(postPS.getCelebrity().getCelebId(), member.getUserId());
+            if (postPS.getWriter().getEmail().equals(email))
+                result.setEqWriter(true);
+            result.setFollowed(isFollowed);
+        }
+
         return result;
     }
 
@@ -111,10 +121,5 @@ public class PostService {
         ).getIntroduction();
     }
 
-//    @Scheduled(cron = "0 0 0 * * *")
-//    private void changeStatus(){
-//        var postList = postRepository.findAll();
-//
-//    }
 
 }

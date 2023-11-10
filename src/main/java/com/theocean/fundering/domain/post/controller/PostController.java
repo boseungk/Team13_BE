@@ -49,7 +49,6 @@ public class PostController {
     }
 
     @Operation(summary = "게시물 소개글 조회", description = "펀딩 게시물의 소개글을 조회합니다.")
-    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/posts/{postId}/introduction")
     public ApiResult<?> postIntroduction(@Parameter(description = "게시물 pk") @PathVariable final Long postId){
