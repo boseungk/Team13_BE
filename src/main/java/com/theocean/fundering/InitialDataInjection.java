@@ -20,7 +20,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class InitialDataInjection {
-
 //     @Autowired
 //     private JdbcTemplate jdbcTemplate;
 
