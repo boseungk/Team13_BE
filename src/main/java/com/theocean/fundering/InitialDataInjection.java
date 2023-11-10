@@ -42,9 +42,9 @@ public class InitialDataInjection {
     return args -> {
       if (memberRepository.count() == 0) {
         String query1 =
-            "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01012341234', '1번유저', 'test1@naver.com', 'test1234!', '프로필_URL_1', NULL, 'USER')";
+            "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01012341234', '1번유저', 'test1@naver.com', '{bcrypt}$2a$10$FkEVe6W5yp7dfMeyuK5j.O8EnIwRlHW0GlK8.xerwgb/NoZhyJInG', '프로필_URL_1', NULL, 'USER')";
         String query2 =
-            "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01043211234', '2번유저', 'test2@naver.com', 'test1234@', '프로필_URL_2', NULL, 'USER')";
+            "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01043211234', '2번유저', 'test2@naver.com', '{bcrypt}$2a$10$m.2s7slIMNhoa5jMcTSssOq4BEmCo1Cy0P5MpYITUrfmMCC3OvRLK', '프로필_URL_2', NULL, 'USER')";
 
         jdbcTemplate.update(query1);
         jdbcTemplate.update(query2);
