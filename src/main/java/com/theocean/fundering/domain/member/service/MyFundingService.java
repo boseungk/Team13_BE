@@ -95,9 +95,7 @@ public class MyFundingService {
     public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if (!isAdmin)
-
-            throw new Exception400("관리자가 아닙니다.");
+        if (!isAdmin) throw new Exception400("관리자가 아닙니다.");
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
                 () -> new Exception400("출금 신청을 찾을 수 없습니다.")
         );
