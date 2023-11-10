@@ -1,7 +1,7 @@
-package com.theocean.fundering.domain.heart.controller;
+package com.theocean.fundering.domain.post.controller;
 
 
-import com.theocean.fundering.domain.heart.service.HeartService;
+import com.theocean.fundering.domain.post.service.HeartService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
