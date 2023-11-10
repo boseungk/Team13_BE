@@ -94,10 +94,10 @@ public class CelebService {
         for (final CelebResponse.ListDTO celebFunding : celebFundingList) {
             final Integer followerRank = celebRepository.getFollowerRank(celebFunding.getCelebId());
             final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebFunding.getCelebId(), userId);
-            final List<Post> postList = postRepository.findPostByCelebId(celebFunding.getCelebId());
             // 각 셀럽의 id와 일치하는 펀딩 && 진행 중인 펀딩 개수 세어오기
             final int ongoingCount = postRepository.countByPostStatus(celebFunding.getCelebId(), PostStatus.ONGOING);
-            //한 셀럽에 여러 펀딩의 현재 금액들의 합
+            // 각 셀럽에 여러 펀딩의 현재 금액들의 합
+            final List<Post> postList = postRepository.findPostByCelebId(celebFunding.getCelebId());
             int fundingAmount = FUNDING_AMOUNT_ZERO;
             for (final Post post : postList) {
                 final Account account = accountRepository.findByPostId(post.getPostId()).orElseThrow(
