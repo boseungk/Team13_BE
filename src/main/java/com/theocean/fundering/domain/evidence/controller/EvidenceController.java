@@ -13,12 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "EVIDENCE", description = "증빙 관련 API")
@@ -37,20 +32,20 @@ public class EvidenceController {
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                             schema = @Schema(type = "string", format = "binary"),
-                            encoding = @Encoding(name = "image", contentType = "image/jpeg")
+                            encoding = @Encoding(name = "image", contentType = "image/png")
                     )
             )
     )
-    @PostMapping("/posts/{postId}/withdrawals/{withdrawalId}")
+    @PostMapping(value = "/posts/{postId}/withdrawals/{withdrawalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<String> evidenceUpload(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @Parameter(description = "이미지 파일", required = true) @RequestPart("image") final MultipartFile img,
+            @Parameter(description = "이미지 파일", required = true) @RequestPart("image") final MultipartFile image,
             @Parameter(description = "게시글의 PK") @PathVariable final long postId,
             @Parameter(description = "출금 PK") @PathVariable final long withdrawalId
     ){
         final Long memberId = userDetails.getId();
-        final String result = evidenceService.uploadEvidence(memberId, postId, withdrawalId, img);
+        final String result = evidenceService.uploadEvidence(memberId, postId, withdrawalId, image);
 
         return ApiResult.success(result);
     }

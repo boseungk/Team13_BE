@@ -51,15 +51,13 @@ public class Member extends AuditingFields {
     @Column(name = "user_role")
     private UserRole userRole;
 
-    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
-
     @Column(name = "refresh_token")
     private String refreshToken; // 리프레시 토큰
 
     @Column(name = "profile_image")
     private String profileImage; // 프로필 이미지
 
-    public void changeNickname(final String nickname){
+    private void changeNickname(final String nickname){
         this.nickname = nickname;
     }
 
@@ -67,16 +65,17 @@ public class Member extends AuditingFields {
         this.password = password;
     }
 
-    public void updateRefreshToken(final String updateRefreshToken) {
+    public Member updateRefreshToken(final String updateRefreshToken) {
         refreshToken = updateRefreshToken;
+        return this;
     }
 
-    public void changePhoneNumber(final String phoneNumber){
+    private void changePhoneNumber(final String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
 
 
-    public void changeProfileImage(String profileImage) {
+    private void changeProfileImage(final String profileImage) {
         this.profileImage = profileImage;
     }
 
@@ -103,9 +102,9 @@ public class Member extends AuditingFields {
     }
 
 
-    public void updateUserSetting(String nickname, String encodePassword, String phoneNumber, String profileImage) {
+    public void updateUserSetting(final String nickname, final String encodePassword, final String phoneNumber, final String profileImage) {
         changeNickname(nickname);
-        setPassword(encodePassword);
+        password = encodePassword;
         changePhoneNumber(phoneNumber);
         changeProfileImage(profileImage);
     }

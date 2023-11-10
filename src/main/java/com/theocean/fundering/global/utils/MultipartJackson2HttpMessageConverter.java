@@ -13,22 +13,22 @@ public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpM
     /**
      * "Content-Type: multipart/form-data" 헤더를 지원하는 HTTP 요청 변환기
      */
-    public MultipartJackson2HttpMessageConverter(ObjectMapper objectMapper) {
+    public MultipartJackson2HttpMessageConverter(final ObjectMapper objectMapper) {
         super(objectMapper, MediaType.APPLICATION_OCTET_STREAM);
     }
 
     @Override
-    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+    public boolean canWrite(final Class<?> clazz, final MediaType mediaType) {
         return false;
     }
 
     @Override
-    public boolean canWrite(Type type, Class<?> clazz, MediaType mediaType) {
+    public boolean canWrite(final Type type, final Class<?> clazz, final MediaType mediaType) {
         return false;
     }
 
     @Override
-    protected boolean canWrite(MediaType mediaType) {
+    protected boolean canWrite(final MediaType mediaType) {
         return false;
     }
 }

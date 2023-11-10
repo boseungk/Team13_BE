@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping("/posts")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAll(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
-                                @Parameter(description = "page, size, sort") final Pageable pageable){
+                                @Parameter(description = "page, size, sort") final Pageable pageable) {
         final var responseDTO = postService.findAll(postId, pageable);
         return ApiResult.success(responseDTO);
     }
@@ -38,7 +38,7 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findByPostId(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                     @Parameter(description = "게시물 id") @PathVariable final Long postId){
+                                     @Parameter(description = "게시물 id") @PathVariable final Long postId) {
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
@@ -51,7 +51,7 @@ public class PostController {
     @Operation(summary = "게시물 소개글 조회", description = "펀딩 게시물의 소개글을 조회합니다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/posts/{postId}/introduction")
-    public ApiResult<?> postIntroduction(@Parameter(description = "게시물 pk") @PathVariable final Long postId){
+    public ApiResult<?> postIntroduction(@Parameter(description = "게시물 pk") @PathVariable final Long postId) {
         final String introduction = postService.getIntroduction(postId);
         return ApiResult.success(introduction);
     }
@@ -61,8 +61,10 @@ public class PostController {
     @PostMapping(value = "/posts/write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> writePost(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                  @Parameter(description = "게시물 작성 DTO, content-type: application/json") @RequestPart(value = "dto") final PostRequest.PostWriteDTO postWriteDTO,
-                                  @Parameter(description = "썸네일 이미지") @RequestPart(value = "thumbnail") final MultipartFile thumbnail){
+                                  @Parameter(description = "게시물 작성 DTO, content-type: application/json")
+                                  @RequestPart("dto") final PostRequest.PostWriteDTO postWriteDTO,
+                                  @Parameter(description = "썸네일 이미지")
+                                      @RequestPart("thumbnail") final MultipartFile thumbnail) {
         final String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
         return ApiResult.success(null);
@@ -75,7 +77,7 @@ public class PostController {
     public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                  @PathVariable final Long postId,
                                  @Parameter(description = "게시물 수정 DTO, content-type: application/json") @RequestPart(value = "dto") final PostRequest.PostEditDTO postEditDTO,
-                                 @Parameter(description = "새로운 썸네일 이미지") @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail){
+                                 @Parameter(description = "새로운 썸네일 이미지") @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail) {
         final String memberEmail = userDetails.getEmail();
         final Long editedPost = postService.editPost(postId, memberEmail, postEditDTO, thumbnail);
         return ApiResult.success(editedPost);
@@ -85,7 +87,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> deletePost(@Parameter(description = "삭제 대상 게시물 pk") @PathVariable final Long postId){
+    public ApiResult<?> deletePost(@Parameter(description = "삭제 대상 게시물 pk") @PathVariable final Long postId) {
         postService.deletePost(postId);
         return ApiResult.success(null);
     }
@@ -95,7 +97,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> searchPostByKeyword(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                             @Parameter(description = "검색어") @RequestParam("keyword") final String keyword,
-                                            @Parameter(description = "page, size, sort") final Pageable pageable){
+                                            @Parameter(description = "page, size, sort") final Pageable pageable) {
         final var response = postService.searchPostByKeyword(postId, keyword, pageable);
         return ApiResult.success(response);
     }
@@ -105,7 +107,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> searchPostByNickname(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
-                                             @Parameter(description = "page, size, sort") final Pageable pageable){
+                                             @Parameter(description = "page, size, sort") final Pageable pageable) {
         final var response = postService.findAllByWriterName(postId, nickname, pageable);
         return ApiResult.success(response);
     }
