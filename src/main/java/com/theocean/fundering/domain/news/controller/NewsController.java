@@ -39,7 +39,6 @@ public class NewsController {
     ){
         final Long writerId = userDetails.getId();
         createNewsService.createNews(writerId, postId, request);
-
         return ApiResult.success(null);
     }
 
@@ -55,7 +54,6 @@ public class NewsController {
             @Parameter(hidden = true) @RequestParam(required = false, defaultValue = "6") final int pageSize
     ){
         final var response = readNewsService.getNews(postId, cursor, pageSize);
-
         return ApiResult.success(response);
     }
 }

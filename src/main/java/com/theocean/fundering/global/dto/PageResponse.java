@@ -1,7 +1,9 @@
 package com.theocean.fundering.global.dto;
 
 import lombok.Getter;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class PageResponse<T> {
         content = sliceContent.getContent();
         currentPage = sliceContent.getNumber() + 1;
         isLastPage = sliceContent.isLast();
+    }
 
+    public static Slice<?> of(final List<?> content, final Pageable pageable, final boolean hasNext) {
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 }

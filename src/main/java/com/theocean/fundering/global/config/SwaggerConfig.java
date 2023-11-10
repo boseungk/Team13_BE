@@ -29,6 +29,6 @@ public class SwaggerConfig {
                         .description("펀더링 프로젝트 Swagger UI")
                         .version("1.0.0"))
                 .addServersItem(new Server().url("/"));
-    };
+    }
 
 }

@@ -1,14 +1,15 @@
 package com.theocean.fundering.domain.celebrity.repository;
 
-import com.theocean.fundering.domain.celebrity.dto.CelebFundingResponseDTO;
-import com.theocean.fundering.domain.celebrity.dto.CelebListResponseDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
+
 public interface CelebRepositoryCustom {
-    Slice<CelebFundingResponseDTO> findAllPosting(Long celebId, Pageable pageable);
+    Slice<CelebResponse.FundingDTO> findAllPosting(Long celebId, final Long postId, Pageable pageable);
 
-    Slice<CelebListResponseDTO> findAllCeleb(Long celebId, String keyword, Pageable pageable);
+    List<CelebResponse.ListDTO> findAllCeleb(Long celebId, String keyword, Pageable pageable);
 
-    Slice<CelebListResponseDTO> findAllCelebForApproval(Long celebId, Pageable pageable);
+    Slice<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(Long celebId, Pageable pageable);
 }

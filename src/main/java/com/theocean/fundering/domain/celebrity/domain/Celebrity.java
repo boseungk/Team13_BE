@@ -2,23 +2,13 @@ package com.theocean.fundering.domain.celebrity.domain;
 
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
+import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.global.utils.ApprovalStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -35,6 +25,9 @@ public class Celebrity extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long celebId;
+
+    @OneToMany(mappedBy = "celebrity")
+    private List<Post> post;
 
     @Column(nullable = false, length = 15, name = "name")
     private String celebName;
@@ -65,21 +58,28 @@ public class Celebrity extends AuditingFields {
         return this;
     }
 
-    public void addFollowerCount() {
+    public Celebrity rejectCelebrity() {
+        status = ApprovalStatus.PENDING;
+        return this;
+    }
+
+    public Celebrity addFollowerCount() {
         followerCount += 1;
+        return this;
     }
 
-    public void minusFollowerCount() {
+    public Celebrity minusFollowerCount() {
         followerCount -= 1;
+        return this;
     }
 
-    public void updateProfileImage(String thumbnail) {
+    public void updateProfileImage(final String thumbnail) {
         profileImage = thumbnail;
     }
 
     @Builder
-    public Celebrity(String celebName, CelebGender celebGender, CelebCategory celebCategory,
-                     String celebGroup, String profileImage) {
+    public Celebrity(final String celebName, final CelebGender celebGender, final CelebCategory celebCategory,
+                     final String celebGroup, final String profileImage) {
         this.celebName = celebName;
         this.celebGender = celebGender;
         this.celebCategory = celebCategory;
@@ -88,9 +88,9 @@ public class Celebrity extends AuditingFields {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Celebrity celebrity)) return false;
+        if (!(o instanceof final Celebrity celebrity)) return false;
         return Objects.equals(celebId, celebrity.celebId);
     }
 
