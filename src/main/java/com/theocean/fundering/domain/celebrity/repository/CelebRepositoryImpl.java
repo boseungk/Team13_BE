@@ -58,8 +58,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                             celebrity.celebCategory,
                             celebrity.celebGroup,
                             celebrity.profileImage,
-                            celebrity.followerCount,
-                            post.postId
+                            celebrity.followerCount
                     ))
                     .from(celebrity)
                     .leftJoin(celebrity.post, post)
@@ -76,8 +75,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebCategory,
                         celebrity.celebGroup,
                         celebrity.profileImage,
-                        celebrity.followerCount,
-                        post.postId
+                        celebrity.followerCount
                 ))
                 .from(celebrity)
                 .leftJoin(celebrity.post, post)
