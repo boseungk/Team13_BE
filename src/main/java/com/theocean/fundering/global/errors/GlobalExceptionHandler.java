@@ -6,6 +6,8 @@ import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.utils.ApiResult;
+import jdk.jshell.spi.ExecutionControl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -44,6 +47,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(final Exception500 e) {
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(e.body(), e.status());
     }
 
@@ -66,18 +70,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<?> handleDataIntegrityViolationException(final DataIntegrityViolationException ex) {
-        return ApiResult.error("잘못된 요청값입니다.", HttpStatus.BAD_REQUEST);
+        return ApiResult.error("ER07", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResult<?> accessDeniedError(final AccessDeniedException e) {
-        return ApiResult.error("접근 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        return ApiResult.error("ER06", HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResult<?> unknownServerError(final Exception e) {
+    public ApiResult<?> unknownServerError(final RuntimeException e) {
+        log.error(e.getMessage(), e);
         return ApiResult.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

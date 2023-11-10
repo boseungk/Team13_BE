@@ -192,12 +192,10 @@ public class InitialDataInjection {
         String query1 = "INSERT INTO admin (post_id, member_id) VALUES (1, 1)";
         String query2 = "INSERT INTO admin (post_id, member_id) VALUES (1, 2)";
         String query3 = "INSERT INTO admin (post_id, member_id) VALUES (1, 3)";
-        String query4 = "INSERT INTO admin (post_id, member_id) VALUES (1, 4)";
 
         jdbcTemplate.update(query1);
         jdbcTemplate.update(query2);
         jdbcTemplate.update(query3);
-        jdbcTemplate.update(query4);
       }
     };
   }
