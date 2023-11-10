@@ -27,7 +27,7 @@ public class AdminContorller {
 
     private final AdminService adminService;
 
-    @Operation(summary = "공동 관리자 조회", description = "해당 postId에 해당하는 게시글의 공동관리자들을 조회한다.", responses = {
+    @Operation(summary = "공동 관리자 조회", description = "해당 postId에 대응되는 게시글의 공동관리자들을 조회한다.", responses = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = AdminResponse.FindAllDTO.class)))
     })
     @GetMapping("/posts/{postId}/admins")
