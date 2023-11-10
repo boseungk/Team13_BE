@@ -1,10 +1,6 @@
 package com.theocean.fundering.domain.post.service;
 
-<<<<<<< HEAD:src/main/java/com/theocean/fundering/domain/post/service/HeartService.java
 import com.theocean.fundering.domain.post.repository.HeartRepository;
-=======
-import com.theocean.fundering.domain.heart.repository.HeartRepository;
->>>>>>> 96e9f507e12586585985b0053a2b57f58d097acb:src/main/java/com/theocean/fundering/domain/heart/service/HeartService.java
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
