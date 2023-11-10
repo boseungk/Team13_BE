@@ -28,11 +28,6 @@ public class PostController {
     @Operation(summary = "전체 게시물 조회", description = "전체 펀딩 게시물을 조회합니다.")
     @GetMapping("/posts")
     @ResponseStatus(HttpStatus.OK)
-<<<<<<< HEAD
-    public ApiResult<?> findAll(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
-                                @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var responseDTO = postService.findAll(postId, pageable);
-=======
     public ApiResult<?> findAll(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                 @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                 @Parameter(description = "page, size, sort") final Pageable pageable){
@@ -40,7 +35,6 @@ public class PostController {
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
         final var responseDTO = postService.findAll(memberEmail, postId, pageable);
->>>>>>> feat
         return ApiResult.success(responseDTO);
     }
 
@@ -108,16 +102,11 @@ public class PostController {
     public ApiResult<?> searchPostByKeyword(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                             @Parameter(description = "검색어") @RequestParam("keyword") final String keyword,
-<<<<<<< HEAD
-                                            @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var response = postService.searchPostByKeyword(postId, keyword, pageable);
-=======
                                             @Parameter(description = "page, size, sort") final Pageable pageable){
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
         final var response = postService.findAllByKeyword(memberEmail, postId, keyword, pageable);
->>>>>>> feat
         return ApiResult.success(response);
     }
 
@@ -127,16 +116,11 @@ public class PostController {
     public ApiResult<?> searchPostByNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
-<<<<<<< HEAD
-                                             @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var response = postService.findAllByWriterName(postId, nickname, pageable);
-=======
                                              @Parameter(description = "page, size, sort") final Pageable pageable){
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
         final var response = postService.findAllByWriterName(memberEmail, postId, nickname, pageable);
->>>>>>> feat
         return ApiResult.success(response);
     }
 
