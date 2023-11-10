@@ -34,13 +34,11 @@ public class Payment extends AuditingFields {
     @Column(name = "id")
     private Long paymentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name="member_id", insertable = false, updatable = false)
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @Column(name="post_id", insertable = false, updatable = false)
+    private Long postId;
 
     // 결제금액
     @Column(nullable = false, name = "amount")
@@ -51,9 +49,9 @@ public class Payment extends AuditingFields {
 
     // 생성자
     @Builder
-    public Payment(final Member member, final Post post, final String impUid, final Integer amount) {
-        this.member = member;
-        this.post = post;
+    public Payment(final Long memberId, final Long postId, final String impUid, final Integer amount) {
+        this.memberId = memberId;
+        this.postId = postId;
         this.impUid = impUid;
         this.amount = amount;
     }

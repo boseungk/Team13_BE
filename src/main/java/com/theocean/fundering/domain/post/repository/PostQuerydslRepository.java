@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface PostQuerydslRepository {
-    Slice<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable);
+    Slice<PostResponse.FindAllDTO> findAllInfiniteScroll(@Nullable Long postId, Pageable pageable);
 
     Slice<PostResponse.FindAllDTO> findAllByWriterName(@Nullable Long postId, String nickname, Pageable pageable);
 
