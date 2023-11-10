@@ -17,9 +17,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 @Component
 public class JwtProvider {
     private static final String ACCESS_HEADER = "Authorization";
-
     private static final String ACCESS_TOKEN = "AccessToken";
-
     private static final String REFRESH_TOKEN = "RefreshToken";
     private static final Long ACCESS_EXP = 1000L * 60 * 60; // 1시간
     private static final Long REFRESH_EXP = 1000L * 60 * 60 * 24 * 14; // 2주
