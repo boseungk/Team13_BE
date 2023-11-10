@@ -71,7 +71,7 @@ public class PostController {
 
     @Operation(summary = "펀딩 게시물 수정", description = "작성한 펀딩 게시물을 수정합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping(value = "/posts/{postId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                  @PathVariable final Long postId,
@@ -84,7 +84,7 @@ public class PostController {
 
     @Operation(summary = "펀딩 게시물 삭제", description = "펀딩 게시물을 삭제합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/posts/{postId}/delete")
+    @DeleteMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> deletePost(@Parameter(description = "삭제 대상 게시물 pk") @PathVariable final Long postId){
         postService.deletePost(postId);

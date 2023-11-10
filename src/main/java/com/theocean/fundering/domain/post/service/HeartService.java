@@ -1,7 +1,6 @@
-package com.theocean.fundering.domain.heart.service;
+package com.theocean.fundering.domain.post.service;
 
-import com.theocean.fundering.domain.heart.repository.HeartRepository;
-import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;

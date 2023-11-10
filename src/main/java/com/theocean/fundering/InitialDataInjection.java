@@ -5,7 +5,7 @@ import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.evidence.repository.EvidenceRepository;
-import com.theocean.fundering.domain.heart.repository.HeartRepository;
+import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.news.repository.NewsRepository;
 import com.theocean.fundering.domain.payment.repository.PaymentRepository;
