@@ -24,7 +24,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAll(@Nullable final Long postId, final Pageable pageable) {
+    public Slice<PostResponse.FindAllDTO> findAllInfiniteScroll(@Nullable final Long postId, final Pageable pageable) {
         final OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory

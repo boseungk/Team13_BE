@@ -32,6 +32,7 @@ public class PostResponse {
         private boolean eqWriter;
         private int heartCount;
         private boolean isFollowed;
+        private boolean isHeart;
 
         public FindByPostIdDTO(final Post post) {
             postId = post.getPostId();
@@ -53,6 +54,7 @@ public class PostResponse {
             eqWriter = false;
             heartCount = post.getHeartCount();
             isFollowed = false;
+            isHeart = false;
         }
     }
 
@@ -74,6 +76,7 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private int heartCount;
+        private boolean isHeart;
 
         public FindAllDTO(final Post post) {
             postId = post.getPostId();
@@ -90,6 +93,7 @@ public class PostResponse {
             createdAt = post.getCreatedAt();
             modifiedAt = post.getModifiedAt();
             heartCount = post.getHeartCount();
+            isHeart = false;
         }
     }
 
