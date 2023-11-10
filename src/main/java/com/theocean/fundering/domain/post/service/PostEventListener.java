@@ -26,7 +26,7 @@ public class PostEventListener{
             var supporterList = paymentRepository.findAllSupporterByPostId(post.getPostId());
             for(int i = 0; i < 3; i++) {
                 adminRepository.save(Admin.builder()
-                        .memberId(supporterList.get(i).getUserId())
+                        .memberId(supporterList.get(i))
                         .postId(post.getPostId())
                         .build());
             }

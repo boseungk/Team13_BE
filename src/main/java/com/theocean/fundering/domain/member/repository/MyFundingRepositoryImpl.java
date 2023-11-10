@@ -61,7 +61,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                                 post.createdAt
                         ))
                         .from(post)
-                        .leftJoin(payment).on(payment.member.userId.eq(post.postId))
+                        .leftJoin(payment).on(payment.memberId.eq(post.postId))
                         .where(eqPostSupporterId(userId))
                         .orderBy(post.postId.desc())
                         .limit(pageable.getPageSize())
@@ -112,7 +112,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     private BooleanExpression eqPostSupporterId(final Long userId){
-        return payment.member.userId.eq(userId);
+        return payment.memberId.eq(userId);
     }
 
 }

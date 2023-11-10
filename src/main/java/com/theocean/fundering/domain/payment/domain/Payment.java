@@ -34,10 +34,10 @@ public class Payment extends AuditingFields {
     @Column(name = "id")
     private Long paymentId;
 
-    @Column
+    @Column(name="member_id", insertable = false, updatable = false)
     private Long memberId;
 
-    @Column
+    @Column(name="post_id", insertable = false, updatable = false)
     private Long postId;
 
     // 결제금액
