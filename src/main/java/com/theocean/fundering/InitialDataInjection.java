@@ -6,6 +6,7 @@ import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.evidence.repository.EvidenceRepository;
 import com.theocean.fundering.domain.heart.repository.HeartRepository;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.news.repository.NewsRepository;
 import com.theocean.fundering.domain.payment.repository.PaymentRepository;
@@ -45,9 +46,15 @@ public class InitialDataInjection {
             "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01012341234', '1번유저', 'test1@naver.com', '{bcrypt}$2a$10$FkEVe6W5yp7dfMeyuK5j.O8EnIwRlHW0GlK8.xerwgb/NoZhyJInG', '프로필_URL_1', NULL, 'USER')";
         String query2 =
             "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01043211234', '2번유저', 'test2@naver.com', '{bcrypt}$2a$10$m.2s7slIMNhoa5jMcTSssOq4BEmCo1Cy0P5MpYITUrfmMCC3OvRLK', '프로필_URL_2', NULL, 'USER')";
+        String query3 =
+                "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01043211234', '3번유저', 'test3@naver.com', '{bcrypt}$2a$10$m.2s7slIMNhoa5jMcTSssOq4BEmCo1Cy0P5MpYITUrfmMCC3OvRLK', '프로필_URL_3', NULL, 'USER')";
+        String query4 =
+                "INSERT INTO member (created_at, modified_at, phone_number, nickname, email, password, profile_image, refresh_token, user_role) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '01043211234', '4번유저', 'test4@naver.com', '{bcrypt}$2a$10$m.2s7slIMNhoa5jMcTSssOq4BEmCo1Cy0P5MpYITUrfmMCC3OvRLK', '프로필_URL_4', NULL, 'USER')";
 
         jdbcTemplate.update(query1);
         jdbcTemplate.update(query2);
+        jdbcTemplate.update(query3);
+        jdbcTemplate.update(query4);
       }
     };
   }
@@ -174,6 +181,23 @@ public class InitialDataInjection {
         String query1 = "INSERT INTO evidence (applicant_id, created_at, modified_at, post_id, withdrawal_id, url) VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, '증빙 자료url')";
 
         jdbcTemplate.update(query1);
+      }
+    };
+  }
+
+  @Bean
+  public CommandLineRunner initAdmins(AdminRepository adminRepository, JdbcTemplate jdbcTemplate) {
+    return args -> {
+      if (adminRepository.count() == 0) {
+        String query1 = "INSERT INTO admin (post_id, member_id) VALUES (1, 1)";
+        String query2 = "INSERT INTO admin (post_id, member_id) VALUES (1, 2)";
+        String query3 = "INSERT INTO admin (post_id, member_id) VALUES (1, 3)";
+        String query4 = "INSERT INTO admin (post_id, member_id) VALUES (1, 4)";
+
+        jdbcTemplate.update(query1);
+        jdbcTemplate.update(query2);
+        jdbcTemplate.update(query3);
+        jdbcTemplate.update(query4);
       }
     };
   }
