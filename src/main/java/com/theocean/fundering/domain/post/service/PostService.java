@@ -111,4 +111,10 @@ public class PostService {
         ).getIntroduction();
     }
 
+//    @Scheduled(cron = "0 0 0 * * *")
+//    private void changeStatus(){
+//        var postList = postRepository.findAll();
+//
+//    }
+
 }
