@@ -78,6 +78,8 @@ public class PostService {
 
     @Transactional
     public PageResponse<PostResponse.FindAllDTO> findAll(String email, @Nullable Long postId, Pageable pageable){
+        if (null == postId)
+            postId = postRepository.findLastPostId();
         var postList = postRepository.findAllInfiniteScroll(postId, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
@@ -89,6 +91,8 @@ public class PostService {
 
     @Transactional
     public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(String email, @Nullable Long postId, String nickname, Pageable pageable){
+        if (null == postId)
+            postId = postRepository.findLastPostId();
         var postList = postRepository.findAllByWriterName(postId, nickname, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
@@ -120,6 +124,8 @@ public class PostService {
 
     @Transactional
     public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(String email, @Nullable Long postId, String keyword, Pageable pageable){
+        if (null == postId)
+            postId = postRepository.findLastPostId();
         var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();

@@ -1,5 +1,6 @@
 package com.theocean.fundering.domain.post.service;
 
+import com.theocean.fundering.domain.member.domain.Admin;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
@@ -16,18 +17,18 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PostEventListener{
-    private MemberRepository memberRepository;
-    private PostRepository postRepository;
     private AdminRepository adminRepository;
     private PaymentRepository paymentRepository;
 
     @PostUpdate
-    public void event(final Post post){
-        List<Long> paymentRank = new LinkedList<>();
+    public void addAdminEvent(final Post post){
         if (PostStatus.COMPLETE == post.getPostStatus()){
             var supporterList = paymentRepository.findAllSupporterByPostId(post.getPostId());
-            for (Member m : supporterList){
-
+            for(int i = 0; i < 3; i++) {
+                adminRepository.save(Admin.builder()
+                        .memberId(supporterList.get(i).getUserId())
+                        .postId(post.getPostId())
+                        .build());
             }
         }
     }

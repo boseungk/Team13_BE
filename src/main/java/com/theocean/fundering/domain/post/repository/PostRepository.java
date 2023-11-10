@@ -16,4 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostQuerydslR
 
     @Query("SELECT COUNT(*) FROM Post p WHERE p.postStatus = :postStatus")
     int countByPostStatus(@Param("postStatus") PostStatus postStatus);
+
+    @Query("SELECT MAX(p.postId) FROM Post p")
+    Long findLastPostId();
 }

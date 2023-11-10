@@ -44,7 +44,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(gtPostId(postId))
+                .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -72,7 +72,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(gtPostId(postId), eqWriter(nickname))
+                .where(ltPostId(postId), eqWriter(nickname))
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -99,7 +99,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(gtPostId(postId), containKeyword(keyword))
+                .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -122,9 +122,9 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
         return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
     }
 
-    private BooleanExpression gtPostId(@Nullable final Long postId) {
+    private BooleanExpression ltPostId(@Nullable final Long postId) {
         if (null == postId) return null;
-        return post.postId.gt(postId);
+        return post.postId.lt(postId);
     }
 
     private BooleanExpression eqWriter(final String nickname) {
