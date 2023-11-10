@@ -2,8 +2,12 @@ package com.theocean.fundering.global.jwt.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.JwtProvider;
+import com.theocean.fundering.global.jwt.dto.LoginResponse;
 import com.theocean.fundering.global.utils.ApiResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Slf4j
@@ -21,6 +26,7 @@ import java.io.IOException;
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final MemberRepository memberRepository;
+    private final AdminRepository adminRepository;
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
 
@@ -32,21 +38,28 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         final String accessToken = jwtProvider.createAccessToken(email);
         final String refreshToken = jwtProvider.createRefreshToken(email);
 
-        jwtProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        jwtProvider.sendAccess(response, accessToken);
 
-        memberRepository.findByEmail(email)
-                .ifPresent(user -> {
-                    user.updateRefreshToken(refreshToken);
-                    memberRepository.saveAndFlush(user);
-                });
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
-        final String result = objectMapper.writeValueAsString(ApiResult.success(null));
-        response.getWriter().write(result);
+        final Member member = memberRepository.findByEmail(email).orElseThrow(
+                () -> new Exception400("일치하는 사용자가 없습니다.")
+        );
+        member.updateRefreshToken(refreshToken);
+        memberRepository.saveAndFlush(member);
+
+        final boolean isAdmin = adminRepository.findByUserId(member.getUserId()).stream().anyMatch(id -> id.equals(member.getUserId()));
+        final var responseDTO = LoginResponse.SuccessDTO.of(member.getProfileImage(), member.getNickname(), isAdmin, refreshToken);
+        createResponse(response, responseDTO);
     }
 
     private String extractUsername(final Authentication authentication) {
         final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return userDetails.getUsername();
+    }
+
+    private void createResponse(final HttpServletResponse response, final LoginResponse.SuccessDTO responseDTO) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        final String result = objectMapper.writeValueAsString(ApiResult.success(responseDTO));
+        response.getWriter().write(result);
     }
 }

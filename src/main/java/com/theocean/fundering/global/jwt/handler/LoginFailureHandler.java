@@ -1,5 +1,6 @@
 package com.theocean.fundering.global.jwt.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.global.errors.exception.Exception401;
 import com.theocean.fundering.global.utils.ApiResult;
@@ -22,6 +23,9 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
                                         final AuthenticationException exception) throws IOException {
+        createResponse(response);
+    }
+    private void createResponse(final HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

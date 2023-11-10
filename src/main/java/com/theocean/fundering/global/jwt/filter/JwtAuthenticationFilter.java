@@ -45,27 +45,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
+        // refresh token 만료 시 /token/refresh 에서 요청
+        checkAccessTokenAndAuthentication(request, response, chain);
 
-        final String refreshToken = jwtProvider.extractRefreshToken(request).orElse(null);
-        try {
-            // 원래 리소스 접근 시 refreshToken 없고 accessToken만 존재
-            // accessToken 으로 이메일 비교 후 성공하면 인증 성공, 실패하면 다음 필터에서 인증 오류
-            if (null == refreshToken) {
-                checkAccessTokenAndAuthentication(request, response, chain);
-            }
-            // refreshToken 있으면 AccessToken 재발급 하기 위한 것!
-            // refreshToken DB에서 비교 후 성공하면 accessToken refreshToken 재발급, but 인증은 안됨
-            else {
-                checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-            }
-            // 두 토큰 다 실패하면 다음 필터에서 403 에러
-        } catch (final Exception e) {
-            forbidden(response, new Exception403("권한이 없습니다."));
-        }
     }
 
-    private void checkAccessTokenAndAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-                                                   final FilterChain filterChain) throws ServletException, IOException {
+    private void checkAccessTokenAndAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         jwtProvider.extractAccessToken(request)
                 .filter(jwtProvider::isAccessTokenValid)
                 .ifPresent(accessToken -> jwtProvider.verifyAccessTokenAndExtractEmail(accessToken)
@@ -73,24 +58,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                                 .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
-    }
-
-    private void checkRefreshTokenAndReIssueAccessToken(final HttpServletResponse response, final String refreshToken) {
-        memberRepository.findByRefreshToken(refreshToken)
-                .ifPresent(member -> {
-                    final String reIssuedRefreshToken = reIssueRefreshToken(member);
-                    jwtProvider.sendAccessAndRefreshToken(
-                            response,
-                            jwtProvider.createAccessToken(member.getEmail()),
-                            reIssuedRefreshToken);
-                });
-    }
-
-    private String reIssueRefreshToken(final Member member) {
-        final String reIssuedRefreshToken = jwtProvider.createRefreshToken(member.getEmail());
-        member.updateRefreshToken(reIssuedRefreshToken);
-        memberRepository.saveAndFlush(member);
-        return reIssuedRefreshToken;
     }
 
     private void saveAuthentication(final Member myUser) {
@@ -115,13 +82,5 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private void forbidden(final HttpServletResponse resp, final Exception403 e) throws IOException {
-        resp.setStatus(e.status().value());
-        resp.setContentType("application/json; charset=utf-8");
-        final ObjectMapper om = new ObjectMapper();
-        final String responseBody = om.writeValueAsString(e.body());
-        resp.getWriter().println(responseBody);
     }
 }
