@@ -1,8 +1,7 @@
-package com.theocean.fundering.domain.heart.domain;
+package com.theocean.fundering.domain.post.domain;
 
 
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.post.domain.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

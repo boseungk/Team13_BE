@@ -131,4 +131,8 @@ public class Post extends AuditingFields {
     public void minusHeartCount() {
         heartCount -= 1;
     }
+
+    public void changeStatus(PostStatus postStatus){
+        this.postStatus = postStatus;
+    }
 }

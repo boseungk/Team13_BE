@@ -1,6 +1,6 @@
-package com.theocean.fundering.domain.heart.repository;
+package com.theocean.fundering.domain.post.repository;
 
-import com.theocean.fundering.domain.heart.domain.Heart;
+import com.theocean.fundering.domain.post.domain.Heart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
