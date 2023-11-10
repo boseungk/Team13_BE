@@ -13,4 +13,7 @@ import java.util.List;
 public interface AdminRepository extends JpaRepository<Admin, Admin.PK> {
     @Query("SELECT a.postId FROM Admin a WHERE a.memberId = :userId")
     List<Long> findByUserId(@Param("userId")Long userId);
+
+    @Query(value = "INSERT INTO admin(member_id, post_id) VALUES(:memberId, :postId)", nativeQuery = true)
+    void saveCoAdmin(@Param("memberId") Long memberId, @Param("postId") Long postId);
 }
