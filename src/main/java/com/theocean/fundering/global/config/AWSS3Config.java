@@ -4,9 +4,6 @@ package com.theocean.fundering.global.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
-import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.http.SdkHttpClient;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.http.apache.ProxyConfiguration;
@@ -20,9 +17,9 @@ public class AWSS3Config {
 
     @Bean
     public S3Client s3Client() {
-        SdkHttpClient sdkHttpClient = ApacheHttpClient.builder()
+        final SdkHttpClient sdkHttpClient = ApacheHttpClient.builder()
                 .proxyConfiguration(ProxyConfiguration.builder().endpoint(URI.create("http://krmp-proxy.9rum.cc:3128"))
-                .build())
+                        .build())
                 .build();
         return S3Client.builder()
                 .region(Region.AP_NORTHEAST_2)

@@ -1,6 +1,7 @@
 package com.theocean.fundering.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.jwt.filter.JwtAuthenticationFilter;
@@ -35,6 +36,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SpringSecurityConfig {
     private final MemberRepository memberRepository;
+    private final AdminRepository adminRepository;
     private final ObjectMapper objectMapper;
     private final LoginService loginService;
     private final JwtProvider jwtProvider;
@@ -106,7 +108,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(memberRepository, objectMapper, jwtProvider);
+        return new LoginSuccessHandler(memberRepository, adminRepository, objectMapper, jwtProvider);
     }
 
     @Bean
