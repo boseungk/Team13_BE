@@ -78,6 +78,25 @@ public class MyFundingResponse {
 
     @Getter
     @RequiredArgsConstructor
+    public static class HeartPostingDTO{
+        private final Long postId;
+        private final Long writerId;
+        private final String nickName;
+        private final Long celebId;
+        private final String celebName;
+        private final String celebImg;
+        private final String title;
+        private final String thumbnail;
+        private final int targetPrice;
+        private final int currentAmount;
+        private final LocalDateTime deadline;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime modifiedAt;
+        private final int heartCount;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
     public static class WithdrawalDTO {
 
         private final Long withdrawalId; // 출금 신청 id

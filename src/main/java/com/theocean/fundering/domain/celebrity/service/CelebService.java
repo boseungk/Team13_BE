@@ -75,7 +75,7 @@ public class CelebService {
         final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
         final int followerCount = celebrity.getFollowerCount();
-        final int followerRank = celebRepository.getFollowerRank(celebId);
+        final Integer followerRank = celebRepository.getFollowerRank(celebId);
         final List<Post> postsByCelebId = postRepository.findPostByCelebId(celebId);
         if (null == postsByCelebId)
             throw new Exception400("관련 포스팅을 찾을 수 없습니다.");
@@ -89,7 +89,7 @@ public class CelebService {
         final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
         final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(celebId, keyword, pageable);
         final int ongoingCount = postRepository.countByPostStatus(PostStatus.ONGOING);
-        final int followerRank = celebRepository.getFollowerRank(celebId);
+        final Integer followerRank = celebRepository.getFollowerRank(celebId);
         final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, userId);
 
         for (final CelebResponse.ListDTO celebFunding : celebFundingList) {

@@ -45,6 +45,11 @@ public class MyFundingService {
         return new PageResponse<>(page);
     }
 
+    public PageResponse<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Long postId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingByHeart(userId, postId, pageable);
+        return new PageResponse<>(page);
+    }
+
     public MyFundingResponse.EmailDTO getNickname(final Long id) {
         final Member member = memberRepository.findById(id).orElseThrow(
                 () -> new Exception400("회원을 찾을 수 없습니다.")
@@ -108,4 +113,5 @@ public class MyFundingService {
         withdrawal.denyWithdrawal();
         withdrawalRepository.save(withdrawal);
     }
+
 }

@@ -92,9 +92,9 @@ public class CelebResponse {
         private final int fundingAmount;
         private final int ongoingFundingCount;
         private final boolean isFollowing;
-        private final int celebRank;
+        private final Integer celebRank;
 
-        private FundingListDTO(CelebResponse.ListDTO fundingDTO, int totalFunding, int ongoingCount, int celebRanking, boolean Following) {
+        private FundingListDTO(final CelebResponse.ListDTO fundingDTO, final int totalFunding, final int ongoingCount, final Integer celebRanking, final boolean Following) {
             celebId = fundingDTO.celebId;
             celebName = fundingDTO.celebName;
             celebGender = fundingDTO.celebGender;
@@ -107,7 +107,7 @@ public class CelebResponse {
             isFollowing = Following;
         }
 
-        public static FundingListDTO of(CelebResponse.ListDTO fundingDTO, int totalFunding, int ongoingCount, int celebRanking, boolean Following) {
+        public static FundingListDTO of(final CelebResponse.ListDTO fundingDTO, final int totalFunding, final int ongoingCount, final Integer celebRanking, final boolean Following) {
             return new FundingListDTO(fundingDTO, totalFunding, ongoingCount, celebRanking, Following);
         }
     }

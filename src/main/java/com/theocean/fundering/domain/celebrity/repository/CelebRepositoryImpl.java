@@ -3,9 +3,6 @@ package com.theocean.fundering.domain.celebrity.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.theocean.fundering.domain.account.domain.QAccount;
-import com.theocean.fundering.domain.celebrity.domain.QCelebrity;
-import com.theocean.fundering.domain.celebrity.domain.QFollow;
 import com.theocean.fundering.domain.celebrity.dto.CelebResponse;
 import com.theocean.fundering.global.utils.ApprovalStatus;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +14,7 @@ import org.springframework.data.domain.SliceImpl;
 import java.util.List;
 import java.util.Objects;
 
-import static com.theocean.fundering.domain.account.domain.QAccount.*;
 import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.celebrity;
-import static com.theocean.fundering.domain.celebrity.domain.QFollow.*;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
 
 @RequiredArgsConstructor
@@ -54,7 +49,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
 
     @Override
     public List<CelebResponse.ListDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
-        Objects.requireNonNull(celebId, "celebId must not be null");
         if(null != keyword){
             return queryFactory
                     .selectDistinct(Projections.fields(CelebResponse.ListDTO.class,
@@ -69,7 +63,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                     ))
                     .from(celebrity)
                     .leftJoin(celebrity.post, post)
-                    .where(ltCelebId(celebId), eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
+                    .where(gtCelebId(celebId), eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
                     .orderBy(celebrity.celebId.desc())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -87,7 +81,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 ))
                 .from(celebrity)
                 .leftJoin(celebrity.post, post)
-                .where(ltCelebId(celebId), eqCelebApprovalStatus())
+                .where(gtCelebId(celebId), eqCelebApprovalStatus())
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -95,7 +89,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
 
     @Override
     public Slice<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
-        Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebResponse.ListForApprovalDTO> contents = queryFactory
                 .select(Projections.constructor(CelebResponse.ListForApprovalDTO.class,
                         celebrity.celebId,
@@ -105,7 +98,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebGroup,
                         celebrity.profileImage))
                 .from(celebrity)
-                .where(ltCelebId(celebId), eqCelebPendingStatus())
+                .where(gtCelebId(celebId), eqCelebPendingStatus())
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -125,12 +118,12 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
         return post.celebrity.celebId.eq(celebId);
     }
 
-    private BooleanExpression ltCelebId(final Long cursorId){
-        return null != cursorId ? celebrity.celebId.lt(cursorId) : null;
+    private BooleanExpression gtCelebId(final Long cursorId){
+        return null != cursorId ? celebrity.celebId.gt(cursorId) : null;
     }
 
     private BooleanExpression ltPostId(final Long cursorId){
-        return null != cursorId ? post.postId.lt(cursorId) : null;
+        return null != cursorId ? post.postId.gt(cursorId) : null;
     }
 
     private BooleanExpression nameCondition(final String nameCond){

@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.member.controller;
 
 import com.theocean.fundering.domain.member.dto.MyFundingResponse;
 import com.theocean.fundering.domain.member.service.MyFundingService;
+import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,9 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class MyFundingController {
     private final MyFundingService myFundingService;
 
-    @Operation(summary = "주최한 펀딩 목록 조회", description = "사용자의 토큰으로 주최한 펀딩 목록을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.HostDTO.class))),
-    })
+    @Operation(summary = "주최한 펀딩 목록 조회", description = "사용자의 토큰으로 주최한 펀딩 목록을 조회한다.", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.HostDTO.class))))
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/host")
     @ResponseStatus(HttpStatus.OK)
@@ -39,9 +38,7 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
-    @Operation(summary = "후원한 펀딩 목록 조회", description = "사용자의 토큰으로 후원한 펀딩 목록을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.SupporterDTO.class)))
-    })
+    @Operation(summary = "후원한 펀딩 목록 조회", description = "사용자의 토큰으로 후원한 펀딩 목록을 조회한다.", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.SupporterDTO.class))))
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/support")
     @ResponseStatus(HttpStatus.OK)
@@ -53,6 +50,18 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/myfunding/heart")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> findAllPostingByHeart(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @RequestParam("postId") final Long postId,
+            @Parameter(hidden = true) @PageableDefault final Pageable pageable
+    ){
+        final var page = myFundingService.findAllPostingByHeart(userDetails.getId(), postId, pageable);
+        return ApiResult.success(page);
+    }
+
     @Operation(summary = "닉네임 조회", description = "사용자의 토큰으로 닉네임을 조회한다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/nickname")
@@ -60,13 +69,11 @@ public class MyFundingController {
     public ApiResult<?> getNickname(
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ){
-        var nickname = myFundingService.getNickname(userDetails.getId());
+        final var nickname = myFundingService.getNickname(userDetails.getId());
         return ApiResult.success(nickname);
     }
 
-    @Operation(summary = "팔로잉 한 셀럽 조회", description = "사용자의 토큰으로 팔로잉 한 셀럽을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.FollowingCelebsDTO.class)))
-    })
+    @Operation(summary = "팔로잉 한 셀럽 조회", description = "사용자의 토큰으로 팔로잉 한 셀럽을 조회한다.", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.FollowingCelebsDTO.class))))
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/followers")
     @ResponseStatus(HttpStatus.OK)
@@ -77,9 +84,7 @@ public class MyFundingController {
         return ApiResult.success(followingCelebs);
     }
 
-    @Operation(summary = "출금 신청 목록 조회", description = "본인이 공동관리자인 펀딩의 출금 신청 목록을 조회한다", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.WithdrawalDTO.class)))
-    })
+    @Operation(summary = "출금 신청 목록 조회", description = "본인이 공동관리자인 펀딩의 출금 신청 목록을 조회한다", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.WithdrawalDTO.class))))
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/withdrawal")
     @ResponseStatus(HttpStatus.OK)
@@ -114,4 +119,5 @@ public class MyFundingController {
         myFundingService.rejectWithdrawal(userDetails.getId(), postId, withdrawalId);
         return ApiResult.success(null);
     }
+
 }
