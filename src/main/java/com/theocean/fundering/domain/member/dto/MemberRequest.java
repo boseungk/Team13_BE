@@ -40,8 +40,8 @@ public class MemberRequest {
     }
 
     @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)// 테스트 에러 방지
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)// 테스트 에러 방지
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SignUpDTO {
         @NotEmpty
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
