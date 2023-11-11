@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.jwt.dto.LoginResponse;
@@ -41,7 +42,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         jwtProvider.sendAccess(response, accessToken);
 
         final Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new Exception400("일치하는 사용자가 없습니다.")
+                () -> new Exception400(ErrorCode.ER01)
         );
         member.updateRefreshToken(refreshToken);
         memberRepository.saveAndFlush(member);

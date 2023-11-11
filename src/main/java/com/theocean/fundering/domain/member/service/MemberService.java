@@ -4,6 +4,7 @@ import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.dto.MemberRequest;
 import com.theocean.fundering.domain.member.dto.MemberResponse;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
 import jakarta.validation.Valid;
@@ -30,13 +31,13 @@ public class MemberService {
 
     public void sameCheckEmail(final String email) {
         memberRepository.findByEmail(email).ifPresent(n -> {
-            throw new Exception400("이메일이 존재합니다.");
+            throw new Exception400(ErrorCode.ER16);
         });
     }
 
     public MemberResponse.SettingDTO findAllUserSetting(final Long id) {
         final Member member = memberRepository.findById(id).orElseThrow(
-                () -> new Exception400("회원을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER01)
         );
         return MemberResponse.SettingDTO.from(member);
     }
@@ -44,7 +45,7 @@ public class MemberService {
     @Transactional
     public void updateUserSetting(@Valid final MemberRequest.SettingDTO requestDTO, final Long id, MultipartFile thumbnail) {
         final Member member = memberRepository.findById(id).orElseThrow(
-                () -> new Exception400("회원을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER01)
         );
         final String encodePassword = passwordEncoder.encode(requestDTO.getModifyPassword());
         final String img = uploadImage(thumbnail);
@@ -55,7 +56,7 @@ public class MemberService {
     @Transactional
     public void cancellationUser(final Long userId) {
         final Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new Exception400("회원을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER01)
         );
         memberRepository.delete(member);
     }

@@ -6,6 +6,7 @@ import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +29,15 @@ public class AdminService {
     public List<AdminResponse.FindAllDTO> getAdmins(final Long postId){
 
         final Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) throw new Exception404("ER03");
+        if (post.isEmpty()) throw new Exception404(ErrorCode.ER03);
 
         final List<Long> adminIdList = adminRepository.findByPostId(postId);
-        if (adminIdList.size() > 3) throw new Exception500("ER05");
+        if (adminIdList.size() > 3) throw new Exception500(ErrorCode.ER05);
         final List<AdminResponse.FindAllDTO> adminDetails = new ArrayList<>(3);
 
         for(final Long adminId : adminIdList) {
             final Member member = memberRepository.findById(adminId)
-                    .orElseThrow(() -> new Exception404("ER01"));
+                    .orElseThrow(() -> new Exception404(ErrorCode.ER01));
 
             final AdminResponse.FindAllDTO dto = AdminResponse.FindAllDTO.fromEntity(
                     adminId,

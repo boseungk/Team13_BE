@@ -66,13 +66,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResult<?> handleDataIntegrityViolationException(final DataIntegrityViolationException ex) {
-        return ApiResult.error("ER07", HttpStatus.BAD_REQUEST);
+        return ApiResult.error(ErrorCode.ER07, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResult<?> accessDeniedError(final AccessDeniedException e) {
-        return ApiResult.error("ER06", HttpStatus.UNAUTHORIZED);
+        return ApiResult.error(ErrorCode.ER06, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(RuntimeException.class)

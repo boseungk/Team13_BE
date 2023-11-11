@@ -11,6 +11,7 @@ import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.dto.PageResponse;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
@@ -54,7 +55,7 @@ public class CelebService {
     public void approvalCelebrity(final Long celebId) {
         final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::approvalCelebrity)
-                .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception400(ErrorCode.ER02));
         celebRepository.save(celebrity);
     }
 
@@ -62,7 +63,7 @@ public class CelebService {
     public void deleteCelebrity(final Long celebId) {
         final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::rejectCelebrity)
-                .orElseThrow(() -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception400(ErrorCode.ER02));
             celebRepository.save(celebrity);
     }
 
@@ -73,12 +74,12 @@ public class CelebService {
 
     public CelebResponse.DetailsDTO findByCelebId(final Long celebId) {
         final Celebrity celebrity = celebRepository.findByCelebId(celebId).orElseThrow(
-                () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
+                () -> new Exception400(ErrorCode.ER02));
         final int followerCount = celebrity.getFollowerCount();
         final Integer followerRank = celebRepository.getFollowerRank(celebId);
         final List<Post> postsByCelebId = postRepository.findPostByCelebId(celebId);
         if (null == postsByCelebId)
-            throw new Exception400("관련 포스팅을 찾을 수 없습니다.");
+            throw new Exception400(ErrorCode.ER03);
         // postsByCelebId에서 총 펀딩금액, 펀딩 금액 등수, 진행 중인 펀딩 개수 추출하는 로직
         return CelebResponse.DetailsDTO.of(celebrity, followerCount, followerRank, postsByCelebId);
     }
@@ -101,7 +102,7 @@ public class CelebService {
             int fundingAmount = FUNDING_AMOUNT_ZERO;
             for (final Post post : postList) {
                 final Account account = accountRepository.findByPostId(post.getPostId()).orElseThrow(
-                        () -> new Exception400("계좌를 찾을 수 없습니다.")
+                        () -> new Exception400(ErrorCode.ER08)
                 );
                 fundingAmount += account.getBalance();
             }
@@ -120,7 +121,7 @@ public class CelebService {
 
         final List<Celebrity> celebrities = celebRepository.findAllRandom();
         if (null == celebrities)
-            throw new Exception400("해당 셀럽을 찾을 수 없습니다.");
+            throw new Exception400(ErrorCode.ER02);
 
         final List<CelebResponse.ProfileDTO> responseDTO = new ArrayList<>();
         for (final Celebrity celebrity : celebrities) {
