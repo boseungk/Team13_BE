@@ -19,12 +19,13 @@ import java.util.List;
 public class PostEventListener{
     private AdminRepository adminRepository;
     private PaymentRepository paymentRepository;
+    private static final int PAYMENT_TOP_3 = 3;
 
     @PostUpdate
     public void addAdminEvent(final Post post){
         if (PostStatus.COMPLETE == post.getPostStatus()){
             var supporterList = paymentRepository.findAllSupporterByPostId(post.getPostId());
-            for(int i = 0; i < 3; i++) {
+            for(int i = 0; i < PAYMENT_TOP_3; i++) {
                 adminRepository.save(Admin.builder()
                         .memberId(supporterList.get(i))
                         .postId(post.getPostId())
