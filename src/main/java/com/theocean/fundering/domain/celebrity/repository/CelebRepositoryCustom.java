@@ -7,7 +7,7 @@ import org.springframework.data.domain.Slice;
 import java.util.List;
 
 public interface CelebRepositoryCustom {
-    Slice<CelebResponse.FundingDTO> findAllPosting(Long celebId, Pageable pageable);
+    Slice<CelebResponse.FundingDataDTO> findAllPosting(Long celebId, Pageable pageable);
 
     List<CelebResponse.ListDTO> findAllCeleb(String keyword, Pageable pageable);
 

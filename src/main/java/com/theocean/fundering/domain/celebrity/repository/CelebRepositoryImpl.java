@@ -22,19 +22,25 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
-        final List<CelebResponse.FundingDTO> contents = queryFactory
-                .select(Projections.constructor(CelebResponse.FundingDTO.class,
+    public Slice<CelebResponse.FundingDataDTO> findAllPosting(final Long celebId, final Pageable pageable) {
+        final List<CelebResponse.FundingDataDTO> contents = queryFactory
+                .select(Projections.constructor(CelebResponse.FundingDataDTO.class,
                         post.postId,
                         post.writer.userId,
                         post.writer.nickname,
+                        post.writer.profileImage,
                         post.celebrity.celebId,
                         post.celebrity.celebName,
+                        post.celebrity.profileImage,
                         post.title,
                         post.introduction,
-                        post.participants,
+                        post.thumbnail,
                         post.targetPrice,
-                        post.thumbnail
+                        post.deadline,
+                        post.createdAt,
+                        post.modifiedAt,
+                        post.participants,
+                        post.heartCount
                 ))
                 .from(post)
                 .where(eqPostCelebId(celebId), eqCelebApprovalStatus())
@@ -62,7 +68,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                     .from(celebrity)
                     .where(eqCelebApprovalStatus(), nameCondition(keyword))
                     .offset(pageable.getOffset())
-                    .orderBy(celebrity.celebId.desc())
+                    .orderBy(celebrity.followerCount.asc())
                     .limit(pageable.getPageSize())
                     .fetch();
         }

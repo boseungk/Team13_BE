@@ -29,6 +29,7 @@ public class CelebController {
     private final CelebService celebService;
 
     @Operation(summary = "셀럽 등록", description = "새로운 셀럽을 등록 신청한다.")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(value = "/celebs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> registerCeleb(
@@ -74,15 +75,16 @@ public class CelebController {
     }
 
     @Operation(summary = "셀럽의 펀딩 조회", description = "셀럽의 id를 기반으로 펀딩을 조회한다.", responses = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.FundingDTO.class)))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = CelebResponse.FundingDataDTO.class)))
     })
     @GetMapping("/celebs/{celebId}/posts")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllPosting(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
     ) {
-        final var page = celebService.findAllPosting(celebId, pageable);
+        final var page = celebService.findAllPosting(celebId, userDetails, pageable);
         return ApiResult.success(page);
     }
 
@@ -92,9 +94,10 @@ public class CelebController {
     @GetMapping("/celebs/{celebId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findByCelebId(
-            @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId
+            @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
+            @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
-        final var responseDTO = celebService.findByCelebId(celebId);
+        final var responseDTO = celebService.findByCelebId(celebId, userDetails);
         return ApiResult.success(responseDTO);
     }
 
