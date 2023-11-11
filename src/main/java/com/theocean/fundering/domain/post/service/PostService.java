@@ -15,6 +15,7 @@ import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.dto.PageResponse;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
@@ -44,10 +45,10 @@ public class PostService {
     public void writePost(final String email, final PostRequest.PostWriteDTO dto, final MultipartFile thumbnail) {
         final String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
         final Member writer = memberRepository.findByEmail(email).orElseThrow(
-                () -> new Exception500("No matched member found")
+                () -> new Exception500(ErrorCode.ER01)
         );
         final Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
-                () -> new Exception500("No matched celebrity found")
+                () -> new Exception500(ErrorCode.ER02)
         );
         final LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline());
         final Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, deadline, PostStatus.ONGOING));
@@ -63,7 +64,7 @@ public class PostService {
     @Transactional
     public PostResponse.FindByPostIdDTO findByPostId(final String email, final Long postId) {
         final Post postPS = postRepository.findById(postId).orElseThrow(
-                () -> new Exception500("No matched post found")
+                () -> new Exception500(ErrorCode.ER03)
         );
         final PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
 
@@ -105,7 +106,7 @@ public class PostService {
     public Long editPost(final Long postId, final String email, final PostRequest.PostEditDTO dto, @Nullable final MultipartFile thumbnail) {
         String newThumbnail = null;
         final Post postPS = postRepository.findById(postId).orElseThrow(
-                () -> new Exception500("No matched post found")
+                () -> new Exception500(ErrorCode.ER03)
         );
         if (null != thumbnail)
             newThumbnail = awss3Uploader.uploadToS3(thumbnail);
@@ -135,7 +136,7 @@ public class PostService {
 
     public String getIntroduction(final Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new Exception500("No mathced post found")
+                () -> new Exception500(ErrorCode.ER03)
         ).getIntroduction();
     }
 

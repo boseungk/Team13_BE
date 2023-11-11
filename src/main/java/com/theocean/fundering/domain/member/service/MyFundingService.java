@@ -15,6 +15,7 @@ import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
 import com.theocean.fundering.global.dto.PageResponse;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class MyFundingService {
 
     public MyFundingResponse.EmailDTO getNickname(final Long id) {
         final Member member = memberRepository.findById(id).orElseThrow(
-                () -> new Exception400("회원을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER01)
         );
         return MyFundingResponse.EmailDTO.from(member.getNickname());
     }
@@ -65,7 +66,7 @@ public class MyFundingService {
         final List<Long> allFollowingCelebId = followRepository.findAllFollowingCelebById(userId);
         for (final Long celebId : allFollowingCelebId) {
             final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
-                    () -> new Exception400("셀럽을 찾을 수 없습니다.")
+                    () -> new Exception400(ErrorCode.ER02)
             );
             final int followerCount = followRepository.countByCelebId(celebId);
             responseDTO.add(MyFundingResponse.FollowingCelebsDTO.of(celebrity, followerCount));
@@ -81,7 +82,7 @@ public class MyFundingService {
             if (null != withdrawalList) {
                 //N+1 문제 발생 가능성 쿼리 수정 필요
                 final Post post = postRepository.findById(postId).orElseThrow(
-                        () -> new Exception400("게시물을 찾을 수 없습니다.")
+                        () -> new Exception400(ErrorCode.ER03)
                 );
                 withdrawalList.stream()
                         .map(withdrawal -> MyFundingResponse.WithdrawalDTO.of(withdrawal, post))
@@ -95,12 +96,12 @@ public class MyFundingService {
     public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if (!isAdmin) throw new Exception400("관리자가 아닙니다.");
+        if (!isAdmin) throw new Exception400(ErrorCode.ER17);
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
-                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER14)
         );
         final Account account = accountRepository.findByPostId(postId).orElseThrow(
-                () -> new Exception400("")
+                () -> new Exception400(ErrorCode.ER08)
         );
         final int balanceAfterWithdrawal = account.getBalance() - withdrawal.getWithdrawalAmount();
         withdrawal.approveWithdrawal(balanceAfterWithdrawal);
@@ -114,9 +115,9 @@ public class MyFundingService {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
         if (!isAdmin)
-            throw new Exception400("관리자가 아닙니다.");
+            throw new Exception400(ErrorCode.ER17);
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
-                () -> new Exception400("출금 신청을 찾을 수 없습니다.")
+                () -> new Exception400(ErrorCode.ER14)
         );
         withdrawal.denyWithdrawal();
         withdrawalRepository.save(withdrawal);

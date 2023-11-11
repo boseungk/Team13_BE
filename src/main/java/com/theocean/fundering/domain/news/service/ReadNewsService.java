@@ -4,6 +4,7 @@ import com.theocean.fundering.domain.news.domain.News;
 import com.theocean.fundering.domain.news.dto.NewsResponse;
 import com.theocean.fundering.domain.news.repository.CustomNewsRepositoryImpl;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,9 @@ public class ReadNewsService {
         validatePostExistence(postId);
 
         List<News> updates;
-        try {
-            updates = customNewsRepository.getNewsList(postId, cursor, pageSize + 1);
-        } catch (final RuntimeException e) {
-            throw new Exception500("업데이트 글 조회 도중에 문제가 발생했습니다.");
-        }
+
+
+        updates = customNewsRepository.getNewsList(postId, cursor, pageSize + 1);
 
         // findAllDTO의 isLastPage - pageSize와 가져온 업데이트 글 수가 일치할 때를 대비해 위에서 하나 더 조회한 상태이다
         final boolean isLastPage = updates.size() <= pageSize;
@@ -54,7 +53,7 @@ public class ReadNewsService {
 
     private void validatePostExistence(final long postId) {
         if (!postRepository.existsById(postId)) {
-            throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
+            throw new Exception404(ErrorCode.ER03);
         }
     }
 

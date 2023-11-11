@@ -10,6 +10,7 @@ import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import com.theocean.fundering.domain.withdrawal.dto.WithdrawalRequest;
 import com.theocean.fundering.domain.withdrawal.dto.WithdrawalResponse;
 import com.theocean.fundering.domain.withdrawal.repository.WithdrawalRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,9 @@ public class WithdrawalService {
     public void applyWithdrawal(final Long memberId, final Long postId, final WithdrawalRequest.SaveDTO request) {
 
         final Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) throw new Exception404("게시글이 존재하지 않습니다.");
+        if (post.isEmpty()) throw new Exception404(ErrorCode.ER03);
         final Long ownerId = post.get().getWriter().getUserId();
-        if (!ownerId.equals(memberId)) throw new Exception403("출금신청 권한이 존재하지 않습니다.");
+        if (!ownerId.equals(memberId)) throw new Exception403(ErrorCode.ER15);
 
         final Withdrawal withdrawal = Withdrawal.builder()
                 .applicantId(memberId)
@@ -54,7 +55,7 @@ public class WithdrawalService {
 
     public WithdrawalResponse.FindAllDTO getWithdrawals(final Long postId, final Pageable pageable) {
         final Account account = accountRepository.findByPostId(postId)
-                .orElseThrow(() -> new Exception404("계좌가 존재하지 않습니다."));
+                .orElseThrow(() -> new Exception404(ErrorCode.ER08));
 
         final Page<Withdrawal> withdrawalPage = withdrawalRepository.getWithdrawalPage(postId, pageable);
         final List<Withdrawal> withdrawals = withdrawalPage.getContent();

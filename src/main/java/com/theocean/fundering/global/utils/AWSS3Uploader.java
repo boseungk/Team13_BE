@@ -2,6 +2,7 @@ package com.theocean.fundering.global.utils;
 
 
 import com.theocean.fundering.global.config.AWSS3Config;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class AWSS3Uploader {
                     .build();
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(mFile.getInputStream(), mFile.getInputStream().available()));
         } catch (final IOException e) {
-            throw new Exception500("file upload error");
+            throw new Exception500(ErrorCode.ER04);
         }
         return s3Client.utilities().getUrl(GetUrlRequest.builder()
                 .bucket(bucket)
