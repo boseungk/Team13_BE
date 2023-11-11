@@ -25,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @RequiredArgsConstructor
 @Service
@@ -41,6 +44,7 @@ public class PostService {
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
         String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
         Member writer =  memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
@@ -48,7 +52,8 @@ public class PostService {
         Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
-        Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, PostStatus.ONGOING));
+        LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline(), timeFormatter);
+        Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, deadline, PostStatus.ONGOING));
 
         Account account = Account.builder()
                 .managerId(writer.getUserId())
@@ -101,6 +106,7 @@ public class PostService {
 
     @Transactional
     public Long editPost(Long postId, String email, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
         String newThumbnail = null;
         Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
@@ -111,7 +117,7 @@ public class PostService {
             newThumbnail = postPS.getThumbnail();
         if (!postPS.getWriter().getEmail().equals(email))
             throw new Exception403("");
-        postPS.update(dto.getTitle(), dto.getIntroduction(), newThumbnail, dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
+        postPS.update(dto.getTitle(), dto.getIntroduction(), newThumbnail, dto.getTargetPrice(), LocalDateTime.parse(dto.getDeadline(), timeFormatter), dto.getModifiedAt());
         return postId;
     }
 

@@ -19,10 +19,10 @@ public class PostRequest {
         private String title;
         private String introduction;
         private int targetPrice;
-        private LocalDateTime deadline;
+        private String deadline;
         private LocalDateTime createdAt;
 
-        public Post toEntity(Member writer, Celebrity celebrity, String thumbnail, PostStatus postStatus){
+        public Post toEntity(Member writer, Celebrity celebrity, String thumbnail, LocalDateTime deadline, PostStatus postStatus){
             return Post.builder()
                     .writer(writer)
                     .celebrity(celebrity)
@@ -36,7 +36,7 @@ public class PostRequest {
         }
 
         @Builder
-        public PostWriteDTO(Long celebId, String title, String introduction, int targetPrice, LocalDateTime deadline){
+        public PostWriteDTO(Long celebId, String title, String introduction, int targetPrice, String deadline){
             this.celebId = celebId;
             this.title = title;
             this.introduction = introduction;
@@ -55,10 +55,10 @@ public class PostRequest {
         private String title;
         private String introduction;
         private int targetPrice;
-        private LocalDateTime deadline;
+        private String deadline;
         private LocalDateTime modifiedAt;
 
-        public Post toEntity(){
+        public Post toEntity(LocalDateTime deadline){
             return Post.builder()
                     .title(title)
                     .introduction(introduction)
@@ -67,7 +67,7 @@ public class PostRequest {
                     .build();
         }
         @Builder
-        public PostEditDTO(String title, String introduction, int targetPrice, LocalDateTime deadline){
+        public PostEditDTO(String title, String introduction, int targetPrice, String deadline){
             this.title = title;
             this.introduction = introduction;
             this.targetPrice = targetPrice;
