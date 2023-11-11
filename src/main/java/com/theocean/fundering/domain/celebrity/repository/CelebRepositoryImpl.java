@@ -50,7 +50,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     public List<CelebResponse.ListDTO> findAllCeleb(final String keyword, final Pageable pageable) {
         if(null != keyword){
             return queryFactory
-                    .selectDistinct(Projections.fields(CelebResponse.ListDTO.class,
+                    .selectDistinct(Projections.constructor(CelebResponse.ListDTO.class,
                             celebrity.celebId,
                             celebrity.celebName,
                             celebrity.celebGender,
@@ -60,7 +60,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                             celebrity.followerCount
                     ))
                     .from(celebrity)
-                    .where(eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
+                    .where(eqCelebApprovalStatus(), nameCondition(keyword))
                     .offset(pageable.getOffset())
                     .orderBy(celebrity.celebId.desc())
                     .limit(pageable.getPageSize())

@@ -45,8 +45,7 @@ public class CelebController {
     @GetMapping("/celebs/{celebId}/admin")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebForApproval(
-            @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
-            @Parameter(hidden = true) @PageableDefault final Pageable pageable
+            @PageableDefault final Pageable pageable
     ) {
         final var page = celebService.findAllCelebForApproval(pageable);
         return ApiResult.success(page);
