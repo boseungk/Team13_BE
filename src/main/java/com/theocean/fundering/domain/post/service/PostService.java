@@ -36,6 +36,8 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final FollowRepository followRepository;
     private final HeartRepository heartRepository;
+    private static final int FOLLOW_COUNT_ZERO = 0;
+    private static final int HEART_COUNT_ZERO = 0;
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
@@ -65,8 +67,8 @@ public class PostService {
 
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
-            final boolean isFollowed = 0 != followRepository.countByCelebIdAndFollowId(postPS.getCelebrity().getCelebId(), member.getUserId());
-            final boolean isHeart = 0 != heartRepository.countByPostIdAndHeartId(postPS.getPostId(), member.getUserId());
+            final boolean isFollowed = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(postPS.getCelebrity().getCelebId(), member.getUserId());
+            final boolean isHeart = HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(postPS.getPostId(), member.getUserId());
             if (postPS.getWriter().getEmail().equals(email))
                 result.setEqWriter(true);
             result.setFollowed(isFollowed);
@@ -81,7 +83,7 @@ public class PostService {
         var postList = postRepository.findAllInfiniteScroll(pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
-            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+            postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
 
@@ -92,7 +94,7 @@ public class PostService {
         var postList = postRepository.findAllByWriterName(nickname, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
-            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+            postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
     }
@@ -123,7 +125,7 @@ public class PostService {
         var postList = postRepository.findAllByKeyword(keyword, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
-            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+            postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
 
