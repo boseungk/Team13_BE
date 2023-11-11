@@ -140,5 +140,3 @@ public class Post extends AuditingFields {
     }
 
 }
-
-

@@ -36,11 +36,11 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                         ))
                         .from(post)
                         .where(eqPostWriterId(userId))
+                        .offset(pageable.getOffset())
                         .orderBy(post.postId.desc())
                         .limit(pageable.getPageSize())
                         .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     @Override
@@ -63,44 +63,47 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                         .from(post)
                         .leftJoin(payment).on(payment.memberId.eq(post.postId))
                         .where(eqPostSupporterId(userId))
+                        .offset(pageable.getOffset())
                         .orderBy(post.postId.desc())
                         .limit(pageable.getPageSize())
                         .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     @Override
-    public Slice<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Long postId, final Pageable pageable) {
+    public Slice<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Pageable pageable) {
         final List<MyFundingResponse.HeartPostingDTO> contents =
                 queryFactory.select(Projections.constructor(MyFundingResponse.HeartPostingDTO.class,
-                        post.postId,
-                        post.writer.userId,
-                        post.writer.nickname,
-                        post.celebrity.celebId,
-                        post.celebrity.celebName,
-                        post.celebrity.profileImage,
-                        post.title,
-                        post.thumbnail,
-                        post.targetPrice,
-                        post.account.balance,
-                        post.deadline,
-                        post.createdAt,
-                        post.modifiedAt,
-                        post.heartCount))
-                .from(post)
-                .leftJoin(heart).on(heart.memberId.eq(userId))
-                .where(ltPostId(postId), eqHeart(userId))
-                .orderBy(post.postId.desc())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+                                post.postId,
+                                post.writer.userId,
+                                post.writer.nickname,
+                                post.celebrity.celebId,
+                                post.celebrity.celebName,
+                                post.celebrity.profileImage,
+                                post.title,
+                                post.thumbnail,
+                                post.targetPrice,
+                                post.account.balance,
+                                post.deadline,
+                                post.createdAt,
+                                post.modifiedAt,
+                                post.heartCount))
+                        .from(post)
+                        .leftJoin(heart).on(heart.memberId.eq(userId))
+                        .where(eqHeart(userId))
+                        .offset(pageable.getOffset())
+                        .orderBy(post.postId.desc())
+                        .limit(pageable.getPageSize())
+                        .fetch();
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
-    private BooleanExpression ltPostId(final Long cursorId){
-        return null != cursorId ? post.postId.lt(cursorId) : null;
+    private boolean hasNext(List<?> contents, Pageable pageable){
+        if (contents.size() > pageable.getPageSize()) {
+            contents.remove(contents.size() - 1);
+            return true;
+        }
+        return false;
     }
 
     private BooleanExpression eqHeart(final Long userId){

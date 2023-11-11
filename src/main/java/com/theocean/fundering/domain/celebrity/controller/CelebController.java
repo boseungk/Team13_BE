@@ -48,7 +48,7 @@ public class CelebController {
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
     ) {
-        final var page = celebService.findAllCelebForApproval(celebId, pageable);
+        final var page = celebService.findAllCelebForApproval(pageable);
         return ApiResult.success(page);
     }
 
@@ -81,10 +81,9 @@ public class CelebController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllPosting(
             @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
-            @Parameter(description = "cursor postId") @RequestParam final Long postId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
     ) {
-        final var page = celebService.findAllPosting(celebId, postId, pageable);
+        final var page = celebService.findAllPosting(celebId, pageable);
         return ApiResult.success(page);
     }
 
@@ -106,14 +105,12 @@ public class CelebController {
     @GetMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebs(
-            @Parameter(description = "cursor 셀럽 Id, Id가 커질수록 많은 데이터 조회")
-            @RequestParam(value = "celebId", required = false) final Long celebId,
             @Parameter(description = "검색 keyword 입력 시 검색 결과, 셀럽 이름이랑 셀럽 그룹 검색 가능")
             @RequestParam(value = "keyword", required = false) final String keyword,
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @Parameter(hidden = true) @PageableDefault final Pageable pageable
+            @Parameter @PageableDefault final Pageable pageable
     ) {
-        final var page = celebService.findAllCeleb(celebId, userDetails, keyword, pageable);
+        final var page = celebService.findAllCeleb(userDetails, keyword, pageable);
         return ApiResult.success(page);
     }
 

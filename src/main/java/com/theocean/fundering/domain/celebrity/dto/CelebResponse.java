@@ -76,7 +76,6 @@ public class CelebResponse {
         private final String celeGroup;
         private final String profileImage;
         private final int followerCount;
-        private final Long postId;
     }
 
     @Getter

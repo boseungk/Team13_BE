@@ -50,15 +50,15 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
+    @Operation(summary = "찜한 셀럽 조회", description = "사용자의 토큰으로 찜한 셀럽을 조회한다.", responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MyFundingResponse.HeartPostingDTO.class))))
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/myfunding/heart")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllPostingByHeart(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam("postId") final Long postId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
     ){
-        final var page = myFundingService.findAllPostingByHeart(userDetails.getId(), postId, pageable);
+        final var page = myFundingService.findAllPostingByHeart(userDetails.getId(), pageable);
         return ApiResult.success(page);
     }
 
@@ -96,6 +96,7 @@ public class MyFundingController {
         return ApiResult.success(page);
     }
 
+    @Operation(summary = "출금 신청 승인", description = "본인이 공동관리자인 펀딩의 출금 신청을 승인한다")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/myfunding/withdrawal/approval")
     @ResponseStatus(HttpStatus.OK)
@@ -108,6 +109,7 @@ public class MyFundingController {
         return ApiResult.success(null);
     }
 
+    @Operation(summary = "출금 신청 거부", description = "본인이 공동관리자인 펀딩의 출금 신청을 거부한다")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/myfunding/withdrawal/rejection")
     @ResponseStatus(HttpStatus.OK)
