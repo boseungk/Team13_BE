@@ -14,7 +14,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "POST", description = "펀딩 게시물 관련 API")
@@ -29,7 +38,7 @@ public class PostController {
     @GetMapping("/posts")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAll(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                @Parameter(description = "page, size, sort") final Pageable pageable){
+                                @Parameter(description = "page, size, sort") final Pageable pageable) {
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
@@ -67,7 +76,7 @@ public class PostController {
                                   @Parameter(description = "게시물 작성 DTO, content-type: application/json")
                                   @RequestPart("dto") final PostRequest.PostWriteDTO postWriteDTO,
                                   @Parameter(description = "썸네일 이미지")
-                                      @RequestPart("thumbnail") final MultipartFile thumbnail) {
+                                  @RequestPart("thumbnail") final MultipartFile thumbnail) {
         final String writerEmail = userDetails.getEmail();
         postService.writePost(writerEmail, postWriteDTO, thumbnail);
         return ApiResult.success(null);
@@ -79,7 +88,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                  @PathVariable final Long postId,
-                                 @Parameter(description = "게시물 수정 DTO, content-type: application/json") @RequestPart(value = "dto") final PostRequest.PostEditDTO postEditDTO,
+                                 @Parameter(description = "게시물 수정 DTO, content-type: application/json") @RequestPart("dto") final PostRequest.PostEditDTO postEditDTO,
                                  @Parameter(description = "새로운 썸네일 이미지") @RequestPart(value = "thumbnail", required = false) final MultipartFile thumbnail) {
         final String memberEmail = userDetails.getEmail();
         final Long editedPost = postService.editPost(postId, memberEmail, postEditDTO, thumbnail);
@@ -98,9 +107,9 @@ public class PostController {
     @Operation(summary = "펀딩 게시물 검색", description = "검색어를 기반으로 펀딩 게시물을 검색합니다.")
     @GetMapping("/posts/search/keyword")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> searchPostByKeyword(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ApiResult<?> searchPostByKeyword(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                             @Parameter(description = "검색어") @RequestParam("keyword") final String keyword,
-                                            @Parameter(description = "page, size, sort") final Pageable pageable){
+                                            @Parameter(description = "page, size, sort") final Pageable pageable) {
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
@@ -111,9 +120,9 @@ public class PostController {
     @Operation(summary = "펀딩 게시물 검색", description = "사용자 닉네임을 기반으로 펀딩 게시물을 검색합니다.")
     @GetMapping("/posts/search/nickname")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> searchPostByNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ApiResult<?> searchPostByNickname(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
-                                             @Parameter(description = "page, size, sort") final Pageable pageable){
+                                             @Parameter(description = "page, size, sort") final Pageable pageable) {
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();

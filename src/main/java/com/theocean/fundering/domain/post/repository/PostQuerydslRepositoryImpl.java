@@ -136,7 +136,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
         return post.title.contains(keyword);
     }
 
-    private boolean hasNext(List<?> contents, Pageable pageable){
+    private boolean hasNext(final List<?> contents, final Pageable pageable) {
         if (contents.size() > pageable.getPageSize()) {
             contents.remove(contents.size() - 1);
             return true;

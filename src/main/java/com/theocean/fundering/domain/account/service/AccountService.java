@@ -15,7 +15,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public int getBalance(final long postId) {
-        final Account account = accountRepository.findByPostId(postId).orElseThrow(() -> new Exception404("존재하지 않는 게시글입니다" + postId));
+        final Account account = accountRepository.findByPostId(postId).orElseThrow(() -> new Exception404("ER03" + postId));
 
         return account.getBalance();
     }
