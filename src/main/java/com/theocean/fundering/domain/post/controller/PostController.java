@@ -29,12 +29,11 @@ public class PostController {
     @GetMapping("/posts")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAll(@AuthenticationPrincipal final CustomUserDetails userDetails,
-                                @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                 @Parameter(description = "page, size, sort") final Pageable pageable){
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
-        final var responseDTO = postService.findAll(memberEmail, postId, pageable);
+        final var responseDTO = postService.findAll(memberEmail, pageable);
         return ApiResult.success(responseDTO);
     }
 
@@ -100,13 +99,12 @@ public class PostController {
     @GetMapping("/posts/search/keyword")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> searchPostByKeyword(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                             @Parameter(description = "검색어") @RequestParam("keyword") final String keyword,
                                             @Parameter(description = "page, size, sort") final Pageable pageable){
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
-        final var response = postService.findAllByKeyword(memberEmail, postId, keyword, pageable);
+        final var response = postService.findAllByKeyword(memberEmail, keyword, pageable);
         return ApiResult.success(response);
     }
 
@@ -114,13 +112,12 @@ public class PostController {
     @GetMapping("/posts/search/nickname")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> searchPostByNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
                                              @Parameter(description = "page, size, sort") final Pageable pageable){
         String memberEmail = null;
         if (null != userDetails)
             memberEmail = userDetails.getEmail();
-        final var response = postService.findAllByWriterName(memberEmail, postId, nickname, pageable);
+        final var response = postService.findAllByWriterName(memberEmail, nickname, pageable);
         return ApiResult.success(response);
     }
 

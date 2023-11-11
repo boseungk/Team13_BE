@@ -77,10 +77,8 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAll(String email, @Nullable Long postId, Pageable pageable){
-        if (null == postId)
-            postId = postRepository.findLastPostId();
-        var postList = postRepository.findAllInfiniteScroll(postId, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAll(String email, Pageable pageable){
+        var postList = postRepository.findAllInfiniteScroll(pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
@@ -90,10 +88,8 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(String email, @Nullable Long postId, String nickname, Pageable pageable){
-        if (null == postId)
-            postId = postRepository.findLastPostId();
-        var postList = postRepository.findAllByWriterName(postId, nickname, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(String email, String nickname, Pageable pageable){
+        var postList = postRepository.findAllByWriterName(nickname, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
@@ -123,10 +119,8 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(String email, @Nullable Long postId, String keyword, Pageable pageable){
-        if (null == postId)
-            postId = postRepository.findLastPostId();
-        var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(String email, String keyword, Pageable pageable){
+        var postList = postRepository.findAllByKeyword(keyword, pageable);
         if (null != email){
             Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));

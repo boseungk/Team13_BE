@@ -16,7 +16,7 @@ public class PageResponse<T> {
     public PageResponse(final Slice<T> sliceContent) {
         content = sliceContent.getContent();
         currentPage = sliceContent.getNumber() + 1;
-        isLastPage = sliceContent.isLast();
+        isLastPage = !sliceContent.hasNext();
     }
 
     public static Slice<?> of(final List<?> content, final Pageable pageable, final boolean hasNext) {
