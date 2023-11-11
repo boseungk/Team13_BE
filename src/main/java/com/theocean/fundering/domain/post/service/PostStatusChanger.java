@@ -18,8 +18,8 @@ public class PostStatusChanger {
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
-    public void changePostStatus(){
-        var postList = postRepository.findAll();
+    public void changePostStatus() {
+        final var postList = postRepository.findAll();
         postList.stream()
                 .filter(p -> (p.getDeadline().toEpochSecond(ZoneOffset.UTC) <= LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) && (p.getAccount().getBalance() >= p.getTargetPrice()))
                 .forEach(p -> p.changeStatus(PostStatus.COMPLETE));

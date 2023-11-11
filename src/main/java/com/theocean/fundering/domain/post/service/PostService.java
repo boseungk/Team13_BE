@@ -4,17 +4,17 @@ package com.theocean.fundering.domain.post.service;
 import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
-import com.theocean.fundering.domain.post.domain.constant.PostStatus;
-import com.theocean.fundering.domain.post.repository.HeartRepository;
-import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
+import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
+import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import com.theocean.fundering.global.utils.AWSS3Uploader;
@@ -32,6 +32,8 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 @Service
 public class PostService {
+    private static final int FOLLOW_COUNT_ZERO = 0;
+    private static final int HEART_COUNT_ZERO = 0;
     private final PostRepository postRepository;
     private final AWSS3Uploader awss3Uploader;
     private final CelebRepository celebRepository;
@@ -39,23 +41,21 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final FollowRepository followRepository;
     private final HeartRepository heartRepository;
-    private static final int FOLLOW_COUNT_ZERO = 0;
-    private static final int HEART_COUNT_ZERO = 0;
 
     @Transactional
-    public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
-        String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
-        Member writer =  memberRepository.findByEmail(email).orElseThrow(
+    public void writePost(final String email, final PostRequest.PostWriteDTO dto, final MultipartFile thumbnail) {
+        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+        final String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
+        final Member writer = memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
         );
-        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
+        final Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
-        LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline(), timeFormatter);
-        Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, deadline, PostStatus.ONGOING));
+        final LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline(), timeFormatter);
+        final Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, deadline, PostStatus.ONGOING));
 
-        Account account = Account.builder()
+        final Account account = Account.builder()
                 .managerId(writer.getUserId())
                 .postId(newPost.getPostId())
                 .build();
@@ -64,14 +64,14 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse.FindByPostIdDTO findByPostId(String email, Long postId){
-        Post postPS = postRepository.findById(postId).orElseThrow(
+    public PostResponse.FindByPostIdDTO findByPostId(final String email, final Long postId) {
+        final Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
-        PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
+        final PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
 
-        if (null != email){
-            Member member = memberRepository.findByEmail(email).orElseThrow();
+        if (null != email) {
+            final Member member = memberRepository.findByEmail(email).orElseThrow();
             final boolean isFollowed = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(postPS.getCelebrity().getCelebId(), member.getUserId());
             final boolean isHeart = HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(postPS.getPostId(), member.getUserId());
             if (postPS.getWriter().getEmail().equals(email))
@@ -84,10 +84,10 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAll(String email, Pageable pageable){
-        var postList = postRepository.findAllInfiniteScroll(pageable);
-        if (null != email){
-            Member member = memberRepository.findByEmail(email).orElseThrow();
+    public PageResponse<PostResponse.FindAllDTO> findAll(final String email, final Pageable pageable) {
+        final var postList = postRepository.findAllInfiniteScroll(pageable);
+        if (null != email) {
+            final Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
@@ -95,23 +95,23 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(String email, String nickname, Pageable pageable){
-        var postList = postRepository.findAllByWriterName(nickname, pageable);
-        if (null != email){
-            Member member = memberRepository.findByEmail(email).orElseThrow();
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(final String email, final String nickname, final Pageable pageable) {
+        final var postList = postRepository.findAllByWriterName(nickname, pageable);
+        if (null != email) {
+            final Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
     }
 
     @Transactional
-    public Long editPost(Long postId, String email, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+    public Long editPost(final Long postId, final String email, final PostRequest.PostEditDTO dto, @Nullable final MultipartFile thumbnail) {
+        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
         String newThumbnail = null;
-        Post postPS = postRepository.findById(postId).orElseThrow(
+        final Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
         );
-        if (thumbnail != null)
+        if (null != thumbnail)
             newThumbnail = awss3Uploader.uploadToS3(thumbnail);
         else
             newThumbnail = postPS.getThumbnail();
@@ -122,22 +122,22 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId){
+    public void deletePost(final Long postId) {
         postRepository.deleteById(postId);
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(String email, String keyword, Pageable pageable){
-        var postList = postRepository.findAllByKeyword(keyword, pageable);
-        if (null != email){
-            Member member = memberRepository.findByEmail(email).orElseThrow();
+    public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(final String email, final String keyword, final Pageable pageable) {
+        final var postList = postRepository.findAllByKeyword(keyword, pageable);
+        if (null != email) {
+            final Member member = memberRepository.findByEmail(email).orElseThrow();
             postList.stream().filter(p -> HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
         }
         return new PageResponse<>(postList);
 
     }
 
-    public String getIntroduction(Long postId){
+    public String getIntroduction(final Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No mathced post found")
         ).getIntroduction();

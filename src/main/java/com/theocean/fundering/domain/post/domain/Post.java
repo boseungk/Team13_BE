@@ -5,8 +5,8 @@ import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
-import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.service.PostEventListener;
+import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,51 +41,40 @@ import java.util.Objects;
 @DynamicUpdate
 public class Post extends AuditingFields {
 
+    @Column(name = "heartCount")
+    @Min(0)
+    int heartCount;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Member writer;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "celeb_id")
     private Celebrity celebrity;
-
     @Column(nullable = false, length = 100, name = "title")
     private String title;
-
     @Column(nullable = false, columnDefinition = "TEXT", name = "introduction")
     private String introduction;
-
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "account_id")
     private Account account;
-
     @Column(nullable = false, name = "thumbnail")
     private String thumbnail;
-
     @Column(nullable = false, name = "targetPrice")
     @Min(1000)
     private int targetPrice;
-
     @Column(name = "participants")
     @Min(0)
     private int participants;
-
     @Column(nullable = false, name = "deadline")
     @DateTimeFormat
     private LocalDateTime deadline;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "post_status")
     private PostStatus postStatus;
-
-    @Column(name = "heartCount")
-    @Min(0)
-    int heartCount;
 
 
     @Builder
@@ -123,7 +112,7 @@ public class Post extends AuditingFields {
         this.modifiedAt = modifiedAt;
     }
 
-    public void registerAccount(final Account account){
+    public void registerAccount(final Account account) {
         this.account = account;
     }
 
@@ -135,7 +124,7 @@ public class Post extends AuditingFields {
         heartCount -= 1;
     }
 
-    public void changeStatus(final PostStatus postStatus){
+    public void changeStatus(final PostStatus postStatus) {
         this.postStatus = postStatus;
     }
 
