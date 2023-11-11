@@ -44,7 +44,6 @@ public class PostService {
 
     @Transactional
     public void writePost(final String email, final PostRequest.PostWriteDTO dto, final MultipartFile thumbnail) {
-        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
         final String thumbnailURL = awss3Uploader.uploadToS3(thumbnail);
         final Member writer = memberRepository.findByEmail(email).orElseThrow(
                 () -> new Exception500("No matched member found")
@@ -52,7 +51,7 @@ public class PostService {
         final Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow(
                 () -> new Exception500("No matched celebrity found")
         );
-        final LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline(), timeFormatter);
+        final LocalDateTime deadline = LocalDateTime.parse(dto.getDeadline());
         final Post newPost = postRepository.save(dto.toEntity(writer, celebrity, thumbnailURL, deadline, PostStatus.ONGOING));
 
         final Account account = Account.builder()
@@ -106,7 +105,6 @@ public class PostService {
 
     @Transactional
     public Long editPost(final Long postId, final String email, final PostRequest.PostEditDTO dto, @Nullable final MultipartFile thumbnail) {
-        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-mm-dd");
         String newThumbnail = null;
         final Post postPS = postRepository.findById(postId).orElseThrow(
                 () -> new Exception500("No matched post found")
@@ -117,7 +115,7 @@ public class PostService {
             newThumbnail = postPS.getThumbnail();
         if (!postPS.getWriter().getEmail().equals(email))
             throw new Exception403("");
-        postPS.update(dto.getTitle(), dto.getIntroduction(), newThumbnail, dto.getTargetPrice(), LocalDateTime.parse(dto.getDeadline(), timeFormatter), dto.getModifiedAt());
+        postPS.update(dto.getTitle(), dto.getIntroduction(), newThumbnail, dto.getTargetPrice(), LocalDateTime.parse(dto.getDeadline()), dto.getModifiedAt());
         return postId;
     }
 
