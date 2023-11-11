@@ -66,13 +66,13 @@ public class CelebService {
             celebRepository.save(celebrity);
     }
 
-    public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
-        final var page = celebRepository.findAllPosting(celebId, postId, pageable);
+    public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
+        final var page = celebRepository.findAllPosting(celebId, pageable);
         return new PageResponse<>(page);
     }
 
     public CelebResponse.DetailsDTO findByCelebId(final Long celebId) {
-        final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
+        final Celebrity celebrity = celebRepository.findByCelebId(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
         final int followerCount = celebrity.getFollowerCount();
         final Integer followerRank = celebRepository.getFollowerRank(celebId);
@@ -83,12 +83,12 @@ public class CelebService {
         return CelebResponse.DetailsDTO.of(celebrity, followerCount, followerRank, postsByCelebId);
     }
 
-    public PageResponse<CelebResponse.FundingListDTO> findAllCeleb(final Long cursorId, final CustomUserDetails member, final String keyword, final Pageable pageable) {
+    public PageResponse<CelebResponse.FundingListDTO> findAllCeleb(final CustomUserDetails member, final String keyword, final Pageable pageable) {
 
         final List<CelebResponse.FundingListDTO> fundingList = new ArrayList<>();
         final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
         // cursor -> 셀럽 리스트 조회
-        final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(cursorId, keyword, pageable);
+        final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(keyword, pageable);
 
         // 각 셀럽의 id -> 각 셀럽의 여러 펀딩 가져오기
         for (final CelebResponse.ListDTO celebFunding : celebFundingList) {
@@ -107,12 +107,11 @@ public class CelebService {
             }
             fundingList.add(CelebResponse.FundingListDTO.of(celebFunding, fundingAmount, ongoingCount, followerRank, isFollow));
         }
-        final boolean hasNext = fundingList.size() > pageable.getPageSize();
-        return new PageResponse<>(new SliceImpl<>(fundingList, pageable, hasNext));
+        return new PageResponse<>(new SliceImpl<>(fundingList, pageable, hasNext(fundingList, pageable)));
     }
 
-    public PageResponse<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
-        final var page = celebRepository.findAllCelebForApproval(celebId, pageable);
+    public PageResponse<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Pageable pageable) {
+        final var page = celebRepository.findAllCelebForApproval(pageable);
         return new PageResponse<>(page);
     }
 
@@ -134,5 +133,13 @@ public class CelebService {
 
     private String uploadImage(final MultipartFile img) {
         return awss3Uploader.uploadToS3(img);
+    }
+
+    private boolean hasNext(List<?> contents, Pageable pageable){
+        if (contents.size() > pageable.getPageSize()) {
+            contents.remove(contents.size() - 1);
+            return true;
+        }
+        return false;
     }
 }
