@@ -12,6 +12,7 @@ import com.theocean.fundering.domain.payment.repository.PaymentRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.config.PaymentConfig;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,10 @@ public class PaymentService {
         IamportResponse<Payment> iamportResponse = paymentConfig.iamportClient().paymentByImpUid(dto.getImpUid());
         if (iamportResponse.getResponse().getAmount().intValue() == dto.getAmount()){
             final Member member = memberRepository.findByEmail(email).orElseThrow(
-                    () -> new Exception500("No matched member found")
+                    () -> new Exception500(ErrorCode.ER01)
             );
             final Post post = postRepository.findById(postId).orElseThrow(
-                    () -> new Exception500("No matched post found")
+                    () -> new Exception500(ErrorCode.ER03)
             );
             paymentRepository.save(dto.toEntity(member, post));
         }

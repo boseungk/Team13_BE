@@ -5,6 +5,7 @@ import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.repository.CustomCommentRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,7 +54,7 @@ public class ReadCommentService {
         final Member writer =
                 memberRepository
                         .findById(comment.getWriterId())
-                        .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
+                        .orElseThrow(() -> new Exception404(ErrorCode.ER01));
 
         final int replyCount =
                 commentValidator.getReplyCount(comment.getPostId(), comment.getCommentOrder());

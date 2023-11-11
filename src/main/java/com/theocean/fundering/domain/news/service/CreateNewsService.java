@@ -5,6 +5,7 @@ import com.theocean.fundering.domain.news.dto.NewsRequest;
 import com.theocean.fundering.domain.news.repository.NewsRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +32,10 @@ public class CreateNewsService {
         final Post post =
                 postRepository
                         .findById(postId)
-                        .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다: " + postId));
+                        .orElseThrow(() -> new Exception404(ErrorCode.ER03));
 
         if (!post.getWriter().getUserId().equals(writerId))
-            throw new Exception403("주최자만 업데이트 글을 작성할 수 있습니다.");
+            throw new Exception403(ErrorCode.ER15);
 
         // News 엔터티를 생성합니다.
         final News news =
