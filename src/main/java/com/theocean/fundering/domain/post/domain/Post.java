@@ -131,7 +131,7 @@ public class Post extends AuditingFields {
         heartCount += 1;
     }
 
-    public void minusHeartCount() {
+    public void subtractHeartCount() {
         heartCount -= 1;
     }
 
