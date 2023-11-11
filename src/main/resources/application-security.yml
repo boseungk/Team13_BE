@@ -1,0 +1,5 @@
+jwt:
+  access-secret: ${JWT_ACCESS_SECRET}
+  refresh-secret: ${JWT_REFRESH_SECRET}
+  access-token-expiration : 7200000 # 2시간
+  refresh-token-expiration : 1209600000 # 2주

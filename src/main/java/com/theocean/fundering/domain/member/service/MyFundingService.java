@@ -80,7 +80,6 @@ public class MyFundingService {
         for (final Long postId : postIdList) {
             final List<Withdrawal> withdrawalList = withdrawalRepository.findWithdrawalByPostId(postId);
             if (null != withdrawalList) {
-                //N+1 문제 발생 가능성 쿼리 수정 필요
                 final Post post = postRepository.findById(postId).orElseThrow(
                         () -> new Exception400(ErrorCode.ER03)
                 );
