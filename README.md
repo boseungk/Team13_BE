@@ -20,10 +20,11 @@
 
 <br>
 
-### 펀더링 유스 케이스
+### 펀더링 ERD
 
 ---
-- [Fundering_UseCase_Diagram](https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/a580547d-6e72-442b-abf7-068e0b432abc)
+
+<img alt="ERD" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/aa0f19b4-bf97-4322-b5df-5c2803e76fa5" width="100%">
 
 <br>
 <br>
@@ -58,7 +59,7 @@
 ### 🔗 관련 링크
 
 ---
-
+* [UseCase](https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/a580547d-6e72-442b-abf7-068e0b432abc)
 * [API docs](https://www.notion.so/joowon-kyung/API-d54c1c7596044024b4d9da51ffdc4512)
 * [Wireframe](https://www.figma.com/file/i7F7yPt3mECxI85NwQhKu3/13%EC%A1%B0_%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%84?node-id=0%3A1&mode=dev)
 * [Market Research](https://www.notion.so/joowon-kyung/d9b7e16ab73a46c6bf92402a8f5ff8d7)
