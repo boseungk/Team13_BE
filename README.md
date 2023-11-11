@@ -24,7 +24,7 @@
 
 ---
 
-<img alt="ERD" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/b61d0f5b-af8b-4bde-a479-52bfbf86d00d" width="100%">
+<img alt="ERD" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/aa53812f-0b5b-4318-842f-d2f70ddd51d9" width="100%">
 
 <br>
 <br>
