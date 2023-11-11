@@ -48,8 +48,8 @@ public class MyFundingService {
         return new PageResponse<>(page);
     }
 
-    public PageResponse<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Long postId, final Pageable pageable) {
-        final var page = myFundingRepository.findAllPostingByHeart(userId, postId, pageable);
+    public PageResponse<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingByHeart(userId, pageable);
         return new PageResponse<>(page);
     }
 

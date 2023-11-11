@@ -9,6 +9,6 @@ public interface MyFundingRepository {
     Slice<MyFundingResponse.HostDTO> findAllPostingByHost(Long userId, Pageable pageable);
     Slice<MyFundingResponse.SupporterDTO> findAllPostingBySupporter(Long userId, Pageable pageable);
 
-    Slice<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(Long userId, Long postId, Pageable pageable);
+    Slice<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(Long userId, Pageable pageable);
 
 }

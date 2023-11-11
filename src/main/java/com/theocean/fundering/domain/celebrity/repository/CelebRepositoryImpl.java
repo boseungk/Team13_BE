@@ -12,7 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.celebrity;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
@@ -23,8 +22,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
-        Objects.requireNonNull(celebId, "celebId must not be null");
+    public Slice<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
         final List<CelebResponse.FundingDTO> contents = queryFactory
                 .select(Projections.constructor(CelebResponse.FundingDTO.class,
                         post.postId,
@@ -39,16 +37,17 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         post.thumbnail
                 ))
                 .from(post)
-                .where(eqPostCelebId(celebId), ltPostId(postId), eqCelebApprovalStatus())
+                .where(eqPostCelebId(celebId), eqCelebApprovalStatus())
+                .offset(pageable.getOffset())
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     @Override
-    public List<CelebResponse.ListDTO> findAllCeleb(final Long celebId, final String keyword, final Pageable pageable) {
+    public List<CelebResponse.ListDTO> findAllCeleb(final String keyword, final Pageable pageable) {
         if(null != keyword){
             return queryFactory
                     .selectDistinct(Projections.fields(CelebResponse.ListDTO.class,
@@ -61,7 +60,8 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                             celebrity.followerCount
                     ))
                     .from(celebrity)
-                    .where(gtCelebId(celebId), eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
+                    .where(eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
+                    .offset(pageable.getOffset())
                     .orderBy(celebrity.celebId.desc())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -77,14 +77,15 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.followerCount
                 ))
                 .from(celebrity)
-                .where(gtCelebId(celebId), eqCelebApprovalStatus())
+                .where(eqCelebApprovalStatus())
+                .offset(pageable.getOffset())
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
     }
 
     @Override
-    public Slice<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Long celebId, final Pageable pageable) {
+    public Slice<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Pageable pageable) {
         final List<CelebResponse.ListForApprovalDTO> contents = queryFactory
                 .select(Projections.constructor(CelebResponse.ListForApprovalDTO.class,
                         celebrity.celebId,
@@ -94,12 +95,20 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebGroup,
                         celebrity.profileImage))
                 .from(celebrity)
-                .where(gtCelebId(celebId), eqCelebPendingStatus())
+                .where(eqCelebPendingStatus())
+                .offset(pageable.getOffset())
                 .orderBy(celebrity.celebId.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
+    }
+
+    private boolean hasNext(List<?> contents, Pageable pageable){
+        if (contents.size() > pageable.getPageSize()) {
+            contents.remove(contents.size() - 1);
+            return true;
+        }
+        return false;
     }
 
     private BooleanExpression eqCelebApprovalStatus() {
@@ -114,13 +123,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
         return post.celebrity.celebId.eq(celebId);
     }
 
-    private BooleanExpression gtCelebId(final Long cursorId){
-        return null != cursorId ? celebrity.celebId.gt(cursorId) : null;
-    }
-
-    private BooleanExpression ltPostId(final Long cursorId){
-        return null != cursorId ? post.postId.gt(cursorId) : null;
-    }
 
     private BooleanExpression nameCondition(final String nameCond){
         return null != nameCond ? celebrity.celebName.contains(nameCond) : null;

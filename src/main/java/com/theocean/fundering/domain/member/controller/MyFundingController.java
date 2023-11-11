@@ -56,10 +56,9 @@ public class MyFundingController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllPostingByHeart(
             @AuthenticationPrincipal final CustomUserDetails userDetails,
-            @RequestParam("postId") final Long postId,
             @Parameter(hidden = true) @PageableDefault final Pageable pageable
     ){
-        final var page = myFundingService.findAllPostingByHeart(userDetails.getId(), postId, pageable);
+        final var page = myFundingService.findAllPostingByHeart(userDetails.getId(), pageable);
         return ApiResult.success(page);
     }
 
