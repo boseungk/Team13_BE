@@ -9,11 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
-
-import static com.theocean.fundering.domain.heart.domain.QHeart.heart;
 import static com.theocean.fundering.domain.payment.domain.QPayment.payment;
+import static com.theocean.fundering.domain.post.domain.QHeart.heart;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
 
 @RequiredArgsConstructor
@@ -63,7 +61,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                                 post.createdAt
                         ))
                         .from(post)
-                        .leftJoin(payment).on(payment.member.userId.eq(post.postId))
+                        .leftJoin(payment).on(payment.memberId.eq(post.postId))
                         .where(eqPostSupporterId(userId))
                         .offset(pageable.getOffset())
                         .orderBy(post.postId.desc())
@@ -91,7 +89,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
                                 post.modifiedAt,
                                 post.heartCount))
                         .from(post)
-                        .leftJoin(heart).on(heart.member.userId.eq(userId))
+                        .leftJoin(heart).on(heart.memberId.eq(userId))
                         .where(eqHeart(userId))
                         .offset(pageable.getOffset())
                         .orderBy(post.postId.desc())
@@ -109,7 +107,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     private BooleanExpression eqHeart(final Long userId){
-        return heart.member.userId.eq(userId);
+        return heart.memberId.eq(userId);
     }
 
     private BooleanExpression eqPostWriterId(final Long userId){
@@ -117,7 +115,7 @@ public class MyFundingRepositoryImpl implements MyFundingRepository{
     }
 
     private BooleanExpression eqPostSupporterId(final Long userId){
-        return payment.member.userId.eq(userId);
+        return payment.memberId.eq(userId);
     }
 
 }

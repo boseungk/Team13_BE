@@ -7,7 +7,7 @@
 <p align="center">
   "크라우드 펀딩에서 모임통장까지"
   <br>
-  펀더링은 불특정 다수의 자금 투명성을 보장해주는 모임 통장 플랫폼입니다.
+  펀더링은 불특정 다수를 대상으로 한 그룹의 자금 투명성을 보장해주는 모임 통장 플랫폼입니다.
 </p>
 
 <br>
@@ -20,19 +20,19 @@
 
 <br>
 
-### 기술적 이슈와 해결 과정
+### 펀더링 유스 케이스
 
 ---
+- [Fundering_UseCase_Diagram](https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/a580547d-6e72-442b-abf7-068e0b432abc)
 
-* 추후 추가 예정
-
+<br>
 <br>
 
 ### 펀더링 서버 구조도
 
 ---
 
-<img alt="server_design" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/b7af2598-c828-45b0-9e9e-a70fef6fa28d" width="100%">
+<img alt="server_design" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/d0e21d9a-df28-46c7-ab3c-e3a5e42dc69d" width="100%">
 
 <br>
 <br>
@@ -50,7 +50,7 @@
 
 ---
 
-<img alt="skillset" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/604f415b-496d-45df-ba71-02c0b449fe13" width="100%">
+<img alt="skillset" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/f8d2f5b4-7fe5-4ebc-b6b2-0b77c92e2c29" width="100%">
 
 <br>
 <br>
@@ -59,9 +59,10 @@
 
 ---
 
-* [API 문서]()
-* [와이어프레임]()
-* [마켓 리서치]()
+* [API docs](https://www.notion.so/joowon-kyung/API-d54c1c7596044024b4d9da51ffdc4512)
+* [Wireframe](https://www.figma.com/file/i7F7yPt3mECxI85NwQhKu3/13%EC%A1%B0_%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%84?node-id=0%3A1&mode=dev)
+* [Market Research](https://www.notion.so/joowon-kyung/d9b7e16ab73a46c6bf92402a8f5ff8d7)
+* [Team Convention](https://www.notion.so/joowon-kyung/8229e762303744a4ab5be961e2537ae7)
 
 
 <br>

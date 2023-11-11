@@ -16,4 +16,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostQuerydslR
 
     @Query("SELECT COUNT(*) FROM Post p WHERE p.celebrity.celebId = :celebId and p.postStatus = :postStatus")
     int countByPostStatus(@Param("celebId") Long celebId, @Param("postStatus") PostStatus postStatus);
+
 }

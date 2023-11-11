@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.member.domain;
 import com.theocean.fundering.domain.account.domain.Account;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,5 +30,11 @@ public class Admin{
     public static class PK implements Serializable {
         Long memberId;
         Long postId;
+    }
+
+    @Builder
+    public Admin(Long memberId, Long postId){
+        this.memberId = memberId;
+        this.postId = postId;
     }
 }

@@ -1,7 +1,7 @@
-package com.theocean.fundering.domain.heart.controller;
+package com.theocean.fundering.domain.post.controller;
 
 
-import com.theocean.fundering.domain.heart.service.HeartService;
+import com.theocean.fundering.domain.post.service.HeartService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,12 +33,11 @@ public class HeartController {
 
     @Operation(summary = "찜하기 취소", description = "펀딩 id를 기반으로 펀딩 찜을 취소한다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/posts/{postId}/unHeart")
+    @PostMapping("/posts/{postId}/unHeart")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> unHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
+    public ApiResult<?> subtractHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                 @PathVariable final Long postId) {
-
-        heartService.unHeart(userDetails.getId(), postId);
+        heartService.subtractHeart(userDetails.getId(), postId);
         return ApiResult.success(null);
     }
 }

@@ -28,8 +28,8 @@ public class PaymentRequest {
 
         public Payment toEntity(final Member member, final Post post) {
             return Payment.builder()
-                    .member(member)
-                    .post(post)
+                    .memberId(member.getUserId())
+                    .postId(post.getPostId())
                     .impUid(impUid)
                     .amount(amount)
                     .build();

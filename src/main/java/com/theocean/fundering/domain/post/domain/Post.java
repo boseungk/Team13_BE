@@ -6,6 +6,7 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
+import com.theocean.fundering.domain.post.service.PostEventListener;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,8 +36,9 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, PostEventListener.class})
 @Table(name = "post")
+@DynamicUpdate
 public class Post extends AuditingFields {
 
     @Id
@@ -120,7 +123,7 @@ public class Post extends AuditingFields {
         this.modifiedAt = modifiedAt;
     }
 
-    public void registerAccount(Account account){
+    public void registerAccount(final Account account){
         this.account = account;
     }
 
@@ -128,7 +131,12 @@ public class Post extends AuditingFields {
         heartCount += 1;
     }
 
-    public void minusHeartCount() {
+    public void subtractHeartCount() {
         heartCount -= 1;
     }
+
+    public void changeStatus(final PostStatus postStatus){
+        this.postStatus = postStatus;
+    }
+
 }

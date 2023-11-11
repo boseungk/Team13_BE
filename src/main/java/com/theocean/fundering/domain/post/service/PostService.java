@@ -4,7 +4,9 @@ package com.theocean.fundering.domain.post.service;
 import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
+import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.member.domain.Member;
@@ -32,6 +34,8 @@ public class PostService {
     private final CelebRepository celebRepository;
     private final MemberRepository memberRepository;
     private final AccountRepository accountRepository;
+    private final FollowRepository followRepository;
+    private final HeartRepository heartRepository;
 
     @Transactional
     public void writePost(String email, PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
@@ -58,21 +62,38 @@ public class PostService {
                 () -> new Exception500("No matched post found")
         );
         PostResponse.FindByPostIdDTO result = new PostResponse.FindByPostIdDTO(postPS);
-        if (postPS.getWriter().getEmail().equals(email))
-            result.setEqWriter(true);
+
+        if (null != email){
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            final boolean isFollowed = 0 != followRepository.countByCelebIdAndFollowId(postPS.getCelebrity().getCelebId(), member.getUserId());
+            final boolean isHeart = 0 != heartRepository.countByPostIdAndHeartId(postPS.getPostId(), member.getUserId());
+            if (postPS.getWriter().getEmail().equals(email))
+                result.setEqWriter(true);
+            result.setFollowed(isFollowed);
+            result.setHeart(isHeart);
+        }
+
         return result;
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable){
-        var postList = postRepository.findAll(postId, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAll(String email, Pageable pageable){
+        var postList = postRepository.findAllInfiniteScroll(pageable);
+        if (null != email){
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+        }
         return new PageResponse<>(postList);
 
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(@Nullable Long postId, String nickname, Pageable pageable){
-        var postList = postRepository.findAllByWriterName(postId, nickname, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByWriterName(String email, String nickname, Pageable pageable){
+        var postList = postRepository.findAllByWriterName(nickname, pageable);
+        if (null != email){
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+        }
         return new PageResponse<>(postList);
     }
 
@@ -98,8 +119,12 @@ public class PostService {
     }
 
     @Transactional
-    public PageResponse<PostResponse.FindAllDTO> searchPostByKeyword(@Nullable Long postId, String keyword, Pageable pageable){
-        var postList = postRepository.findAllByKeyword(postId, keyword, pageable);
+    public PageResponse<PostResponse.FindAllDTO> findAllByKeyword(String email, String keyword, Pageable pageable){
+        var postList = postRepository.findAllByKeyword(keyword, pageable);
+        if (null != email){
+            Member member = memberRepository.findByEmail(email).orElseThrow();
+            postList.stream().filter(p -> 0 != heartRepository.countByPostIdAndHeartId(p.getPostId(), member.getUserId())).forEach(p -> p.setHeart(true));
+        }
         return new PageResponse<>(postList);
 
     }
@@ -109,5 +134,6 @@ public class PostService {
                 () -> new Exception500("No mathced post found")
         ).getIntroduction();
     }
+
 
 }

@@ -13,4 +13,8 @@ import java.util.List;
 public interface AdminRepository extends JpaRepository<Admin, Admin.PK> {
     @Query("SELECT a.postId FROM Admin a WHERE a.memberId = :userId")
     List<Long> findByUserId(@Param("userId")Long userId);
+
+    @Query("SELECT a.memberId FROM Admin a WHERE a.postId = :postId")
+    List<Long> findByPostId(@Param("postId")Long postId);
+
 }

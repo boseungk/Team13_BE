@@ -24,7 +24,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAll(@Nullable final Long postId, final Pageable pageable) {
+    public Slice<PostResponse.FindAllDTO> findAllInfiniteScroll(final Pageable pageable) {
         final OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
@@ -44,17 +44,16 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(ltPostId(postId))
+                .offset(pageable.getOffset())
                 .orderBy(orderSpecifiers)
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAllByWriterName(@Nullable final Long postId, final String nickname, final Pageable pageable) {
+    public Slice<PostResponse.FindAllDTO> findAllByWriterName(final String nickname, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.postId.as("postId"),
@@ -72,16 +71,17 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(ltPostId(postId), eqWriter(nickname))
+                .where(eqWriter(nickname))
+                .offset(pageable.getOffset())
                 .orderBy(post.postId.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable final Long postId, final String keyword, final Pageable pageable) {
+    public Slice<PostResponse.FindAllDTO> findAllByKeyword(final String keyword, final Pageable pageable) {
         final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.postId.as("postId"),
@@ -99,12 +99,13 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
                         post.modifiedAt.as("modifiedAt"),
                         post.heartCount.as("heartCount")))
                 .from(post)
-                .where(ltPostId(postId), containKeyword(keyword))
+                .where(containKeyword(keyword))
+                .offset(pageable.getOffset())
                 .orderBy(post.postId.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
-        final boolean hasNext = contents.size() > pageable.getPageSize();
-        return new SliceImpl<>(contents, pageable, hasNext);
+
+        return new SliceImpl<>(contents, pageable, hasNext(contents, pageable));
     }
 
     private OrderSpecifier[] createOrderSpecifier(final Sort sort) {
@@ -133,6 +134,14 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
 
     private BooleanExpression containKeyword(final String keyword) {
         return post.title.contains(keyword);
+    }
+
+    private boolean hasNext(List<?> contents, Pageable pageable){
+        if (contents.size() > pageable.getPageSize()) {
+            contents.remove(contents.size() - 1);
+            return true;
+        }
+        return false;
     }
 
 }

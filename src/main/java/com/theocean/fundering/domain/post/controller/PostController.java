@@ -28,9 +28,12 @@ public class PostController {
     @Operation(summary = "전체 게시물 조회", description = "전체 펀딩 게시물을 조회합니다.")
     @GetMapping("/posts")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAll(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
-                                @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var responseDTO = postService.findAll(postId, pageable);
+    public ApiResult<?> findAll(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                @Parameter(description = "page, size, sort") final Pageable pageable){
+        String memberEmail = null;
+        if (null != userDetails)
+            memberEmail = userDetails.getEmail();
+        final var responseDTO = postService.findAll(memberEmail, pageable);
         return ApiResult.success(responseDTO);
     }
 
@@ -49,7 +52,6 @@ public class PostController {
     }
 
     @Operation(summary = "게시물 소개글 조회", description = "펀딩 게시물의 소개글을 조회합니다.")
-    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/posts/{postId}/introduction")
     public ApiResult<?> postIntroduction(@Parameter(description = "게시물 pk") @PathVariable final Long postId) {
@@ -73,7 +75,7 @@ public class PostController {
 
     @Operation(summary = "펀딩 게시물 수정", description = "작성한 펀딩 게시물을 수정합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping(value = "/posts/{postId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> editPost(@AuthenticationPrincipal final CustomUserDetails userDetails,
                                  @PathVariable final Long postId,
@@ -86,7 +88,7 @@ public class PostController {
 
     @Operation(summary = "펀딩 게시물 삭제", description = "펀딩 게시물을 삭제합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/posts/{postId}/delete")
+    @DeleteMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> deletePost(@Parameter(description = "삭제 대상 게시물 pk") @PathVariable final Long postId) {
         postService.deletePost(postId);
@@ -96,20 +98,26 @@ public class PostController {
     @Operation(summary = "펀딩 게시물 검색", description = "검색어를 기반으로 펀딩 게시물을 검색합니다.")
     @GetMapping("/posts/search/keyword")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> searchPostByKeyword(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
+    public ApiResult<?> searchPostByKeyword(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @Parameter(description = "검색어") @RequestParam("keyword") final String keyword,
-                                            @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var response = postService.searchPostByKeyword(postId, keyword, pageable);
+                                            @Parameter(description = "page, size, sort") final Pageable pageable){
+        String memberEmail = null;
+        if (null != userDetails)
+            memberEmail = userDetails.getEmail();
+        final var response = postService.findAllByKeyword(memberEmail, keyword, pageable);
         return ApiResult.success(response);
     }
 
     @Operation(summary = "펀딩 게시물 검색", description = "사용자 닉네임을 기반으로 펀딩 게시물을 검색합니다.")
     @GetMapping("/posts/search/nickname")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> searchPostByNickname(@Parameter(description = "무한 스크롤 기준점") @RequestParam(value = "postId", required = false) final Long postId,
+    public ApiResult<?> searchPostByNickname(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @Parameter(description = "사용자 닉네임") @RequestParam("nickname") final String nickname,
-                                             @Parameter(description = "page, size, sort") final Pageable pageable) {
-        final var response = postService.findAllByWriterName(postId, nickname, pageable);
+                                             @Parameter(description = "page, size, sort") final Pageable pageable){
+        String memberEmail = null;
+        if (null != userDetails)
+            memberEmail = userDetails.getEmail();
+        final var response = postService.findAllByWriterName(memberEmail, nickname, pageable);
         return ApiResult.success(response);
     }
 

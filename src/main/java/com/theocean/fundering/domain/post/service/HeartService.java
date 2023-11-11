@@ -1,6 +1,6 @@
-package com.theocean.fundering.domain.heart.service;
+package com.theocean.fundering.domain.post.service;
 
-import com.theocean.fundering.domain.heart.repository.HeartRepository;
+import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
@@ -20,16 +20,17 @@ public class HeartService {
         final Post post = postRepository.findById(postId).orElseThrow(
                 () -> new Exception400("")
         );
-        heartRepository.saveHeart(memberId, post.getPostId());
+        heartRepository.addHeart(memberId, post.getPostId());
         post.addHeartCount();
+
     }
 
     @Transactional
-    public void unHeart(final Long memberId, final Long postId) {
+    public void subtractHeart(final Long memberId, final Long postId) {
         final Post post = postRepository.findById(postId).orElseThrow(
                 () -> new Exception400("")
         );
-        heartRepository.saveUnHeart(memberId, post.getPostId());
-        post.minusHeartCount();
+        heartRepository.subtractHeart(memberId, post.getPostId());
+        post.subtractHeartCount();
     }
 }
