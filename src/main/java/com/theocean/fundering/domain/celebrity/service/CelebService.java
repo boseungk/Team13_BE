@@ -79,7 +79,7 @@ public class CelebService {
         for (final CelebResponse.FundingDataDTO fundingDataDTO : fundingDataDTOS) {
             final boolean isHeart = HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(fundingDataDTO.getPostId(), memberId);
             final Account account = accountRepository.findByPostId(fundingDataDTO.getPostId()).orElseThrow(
-                    () -> new Exception400("계좌가 존재하지 않습니다.")
+                    () -> new Exception400(ErrorCode.ER08)
             );
             final boolean isWriter = fundingDataDTO.getWriterId().equals(memberId) ;
             final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, memberId);
@@ -93,7 +93,6 @@ public class CelebService {
         final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
         final Celebrity celebrity = celebRepository.findByCelebId(celebId).orElseThrow(
                 () -> new Exception400(ErrorCode.ER02));
-        final int followerCount = celebrity.getFollowerCount();
         final Integer followerRank = celebRepository.getFollowerRank(celebId);
         final List<Post> postsByCelebId = postRepository.findPostByCelebId(celebId);
         final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, memberId);
@@ -104,7 +103,7 @@ public class CelebService {
         int fundingAmount = FUNDING_AMOUNT_ZERO;
         for (final Post post : postsByCelebId) {
             final Account account = accountRepository.findByPostId(post.getPostId()).orElseThrow(
-                    () -> new Exception400("계좌를 찾을 수 없습니다.")
+                    () -> new Exception400(ErrorCode.ER08)
             );
             fundingAmount += account.getBalance();
         }
