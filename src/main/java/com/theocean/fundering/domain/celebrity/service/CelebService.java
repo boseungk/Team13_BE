@@ -113,7 +113,7 @@ public class CelebService {
 
     public PageResponse<CelebResponse.FundingListDTO> findAllCeleb(final CustomUserDetails member, final String keyword, final Pageable pageable) {
         final List<CelebResponse.FundingListDTO> fundingList = new ArrayList<>();
-        final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
+        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
         // cursor -> 셀럽 리스트 조회
         final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(keyword, pageable);
 
@@ -121,7 +121,7 @@ public class CelebService {
         for (final CelebResponse.ListDTO celebFunding : celebFundingList) {
             final Integer followerRank = celebRepository.getFollowerRank(celebFunding.getCelebId());
             final int followerCount = celebFunding.getFollowerCount();
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebFunding.getCelebId(), userId);
+            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebFunding.getCelebId(), memberId);
             // 각 셀럽의 id와 일치하는 펀딩 && 진행 중인 펀딩 개수 세어오기
             final int ongoingCount = postRepository.countByPostStatus(celebFunding.getCelebId(), PostStatus.ONGOING);
             // 각 셀럽에 여러 펀딩의 현재 금액들의 합
@@ -144,7 +144,7 @@ public class CelebService {
     }
 
     public List<CelebResponse.ProfileDTO> recommendCelebs(final CustomUserDetails member) {
-        final Long userId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
+        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
 
         final List<Celebrity> celebrities = celebRepository.findAllRandom();
         if (null == celebrities)
@@ -153,7 +153,7 @@ public class CelebService {
         final List<CelebResponse.ProfileDTO> responseDTO = new ArrayList<>();
         for (final Celebrity celebrity : celebrities) {
             final int followCount = celebrity.getFollowerCount();
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebrity.getCelebId(), userId);
+            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebrity.getCelebId(), memberId);
             responseDTO.add(CelebResponse.ProfileDTO.of(celebrity, followCount, isFollow));
         }
         return responseDTO;
