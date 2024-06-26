@@ -47,10 +47,11 @@ public class MemberService {
         final Member member = memberRepository.findById(id).orElseThrow(
                 () -> new Exception400(ErrorCode.ER01)
         );
-        final String encodePassword = passwordEncoder.encode(requestDTO.getModifyPassword());
-        final String img = uploadImage(thumbnail);  
-
-        member.updateMemberSetting(requestDTO.getNickname(), encodePassword, requestDTO.getPhoneNumber(), img);
+        member.updateMemberSetting(
+                requestDTO.getNickname(),
+                passwordEncoder.encode(requestDTO.getModifyPassword()),
+                requestDTO.getPhoneNumber(),
+                uploadImage(thumbnail));
         memberRepository.save(member);
     }
 
