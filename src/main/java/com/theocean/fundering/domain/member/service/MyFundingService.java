@@ -22,8 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -62,64 +62,86 @@ public class MyFundingService {
     }
 
     public List<MyFundingResponse.FollowingCelebsDTO> findFollowingCelebs(final Long userId) {
-        final List<MyFundingResponse.FollowingCelebsDTO> responseDTO = new ArrayList<>();
-        final List<Long> allFollowingCelebId = followRepository.findAllFollowingCelebById(userId);
-        for (final Long celebId : allFollowingCelebId) {
-            final Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
-                    () -> new Exception400(ErrorCode.ER02)
-            );
-            final int followerCount = followRepository.countByCelebId(celebId);
-            responseDTO.add(MyFundingResponse.FollowingCelebsDTO.of(celebrity, followerCount));
-        }
-        return responseDTO;
+        return followRepository.findAllFollowingCelebById(userId)
+                .stream()
+                .map(celebId -> MyFundingResponse.FollowingCelebsDTO.of(getCelebrity(celebId), getFollowerCount(celebId)))
+                .collect(Collectors.toList());
+    }
+
+    private Celebrity getCelebrity(final Long celebId) {
+        return celebRepository.findById(celebId).orElseThrow(
+                () -> new Exception400(ErrorCode.ER02)
+        );
+    }
+
+    private int getFollowerCount(final Long celebId) {
+        return followRepository.countByCelebId(celebId);
     }
 
     public List<MyFundingResponse.WithdrawalDTO> findAwaitingApprovalWithdrawals(final Long userId, final Pageable pageable) {
-        final List<MyFundingResponse.WithdrawalDTO> responseDTO = new ArrayList<>();
-        final List<Long> postIdList = adminRepository.findByMemberId(userId);
-        for (final Long postId : postIdList) {
-            final List<Withdrawal> withdrawalList = withdrawalRepository.findWithdrawalByPostId(postId);
-            if (null != withdrawalList) {
-                final Post post = postRepository.findById(postId).orElseThrow(
-                        () -> new Exception400(ErrorCode.ER03)
-                );
-                withdrawalList.stream()
-                        .map(withdrawal -> MyFundingResponse.WithdrawalDTO.of(withdrawal, post))
-                        .forEachOrdered(responseDTO::add);
-            }
-        }
-        return responseDTO;
+        return adminRepository.findByMemberId(userId).stream()
+                .map(this::getWithdrawalDTOsByPostId)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<MyFundingResponse.WithdrawalDTO> getWithdrawalDTOsByPostId(final Long postId) {
+        if (null == getWithdrawalByPostId(postId))
+            return Collections.emptyList();
+        return getWithdrawalByPostId(postId).stream()
+                .map(withdrawal -> MyFundingResponse.WithdrawalDTO.of(withdrawal, getPost(postId)))
+                .collect(Collectors.toList());
+    }
+
+    private List<Withdrawal> getWithdrawalByPostId(final Long postId) {
+        return withdrawalRepository.findWithdrawalByPostId(postId);
+    }
+
+
+    private Post getPost(final Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> new Exception400(ErrorCode.ER03)
+        );
     }
 
     @Transactional
     public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByMemberId(userId);
-        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if (!isAdmin) throw new Exception400(ErrorCode.ER17);
-        final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
+        if (!isAdmin(postId, postIdList))
+            throw new Exception400(ErrorCode.ER17);
+        final int balanceAfterWithdrawal = calculateBalanceAfterWithdrawal(postId, withdrawalId);
+        getWithdrawal(withdrawalId).approveWithdrawal(balanceAfterWithdrawal);
+        getAccount(postId).updateBalance(balanceAfterWithdrawal);
+    }
+
+    private int calculateBalanceAfterWithdrawal(Long postId, Long withdrawalId) {
+        return getAccount(postId).getBalance() - getWithdrawal(withdrawalId).getWithdrawalAmount();
+    }
+
+    private Withdrawal getWithdrawal(Long withdrawalId) {
+        return withdrawalRepository.findById(withdrawalId).orElseThrow(
                 () -> new Exception400(ErrorCode.ER14)
         );
-        final Account account = accountRepository.findByPostId(postId).orElseThrow(
+    }
+
+    private Account getAccount(Long postId) {
+        return accountRepository.findByPostId(postId).orElseThrow(
                 () -> new Exception400(ErrorCode.ER08)
         );
-        final int balanceAfterWithdrawal = account.getBalance() - withdrawal.getWithdrawalAmount();
-        withdrawal.approveWithdrawal(balanceAfterWithdrawal);
-        withdrawalRepository.save(withdrawal);
-        account.updateBalance(balanceAfterWithdrawal);
-        accountRepository.save(account);
     }
 
     @Transactional
     public void rejectWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByMemberId(userId);
-        final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if (!isAdmin)
+        if (!isAdmin(postId, postIdList))
             throw new Exception400(ErrorCode.ER17);
-        final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
-                () -> new Exception400(ErrorCode.ER14)
-        );
+        final Withdrawal withdrawal = getWithdrawal(withdrawalId);
         withdrawal.denyWithdrawal();
         withdrawalRepository.save(withdrawal);
+    }
+
+    private boolean isAdmin(final Long postId, final List<Long> postIdList) {
+        return postIdList.stream().anyMatch(id -> id.equals(postId));
     }
 
 }
