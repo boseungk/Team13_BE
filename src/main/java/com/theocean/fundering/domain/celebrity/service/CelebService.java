@@ -11,7 +11,6 @@ import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.domain.constant.PostStatus;
 import com.theocean.fundering.domain.post.repository.HeartRepository;
 import com.theocean.fundering.domain.post.repository.PostRepository;
-import com.theocean.fundering.domain.post.service.PostService;
 import com.theocean.fundering.global.dto.PageResponse;
 import com.theocean.fundering.global.errors.exception.ErrorCode;
 import com.theocean.fundering.global.errors.exception.Exception400;
@@ -24,8 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,7 +32,6 @@ import java.util.List;
 public class CelebService {
     private static final int FOLLOW_COUNT_ZERO = 0;
     private static final int HEART_COUNT_ZERO = 0;
-    private static final int FUNDING_AMOUNT_ZERO = 0;
     private static final long DEFAULT_MEMBER_ID = 0;
 
     private final CelebRepository celebRepository;
@@ -73,68 +71,96 @@ public class CelebService {
     }
 
     public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final CustomUserDetails member, final Pageable pageable) {
-        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
-        final var fundingDataDTOS = celebRepository.findAllPosting(celebId, pageable);
-        final List<CelebResponse.FundingDTO> fundingDtoList = new ArrayList<>();
-        for (final CelebResponse.FundingDataDTO fundingDataDTO : fundingDataDTOS) {
-            final boolean isHeart = HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(fundingDataDTO.getPostId(), memberId);
-            final Account account = accountRepository.findByPostId(fundingDataDTO.getPostId()).orElseThrow(
-                    () -> new Exception400(ErrorCode.ER08)
-            );
-            final boolean isWriter = fundingDataDTO.getWriterId().equals(memberId) ;
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, memberId);
-
-            fundingDtoList.add(CelebResponse.FundingDTO.of(fundingDataDTO, account.getBalance(), isWriter, isFollow, isHeart));
-        }
+        final List<CelebResponse.FundingDTO> fundingDtoList = celebRepository.findAllPosting(celebId, pageable)
+                .stream()
+                .map(fundingDataDTO -> CelebResponse.FundingDTO.of(
+                        fundingDataDTO,
+                        findAccountByPostId(fundingDataDTO.getPostId()).getBalance(),
+                        isMemberTheWriter(fundingDataDTO, getMemberIdOrDefault(member)),
+                        isMemberFollowingCeleb(celebId, getMemberIdOrDefault(member)),
+                        isMemberGivenHeart(fundingDataDTO, getMemberIdOrDefault(member))))
+                .collect(Collectors.toList());
         return new PageResponse<>(new SliceImpl<>(fundingDtoList, pageable, hasNext(fundingDtoList, pageable)));
     }
 
+    private long getMemberIdOrDefault(final CustomUserDetails member) {
+        return (null == member) ? DEFAULT_MEMBER_ID : member.getId();
+    }
+
+    private Account findAccountByPostId(final Long fundingDataDTO) {
+        return accountRepository.findByPostId(fundingDataDTO).orElseThrow(
+                () -> new Exception400(ErrorCode.ER08)
+        );
+    }
+
+    private boolean isMemberTheWriter(final CelebResponse.FundingDataDTO fundingDataDTO, final Long memberId) {
+        return fundingDataDTO.getWriterId().equals(memberId);
+    }
+
+    private boolean isMemberFollowingCeleb(final Long celebId, final Long memberId) {
+        return FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, memberId);
+    }
+
+    private boolean isMemberGivenHeart(final CelebResponse.FundingDataDTO fundingDataDTO, final Long memberId) {
+        return HEART_COUNT_ZERO != heartRepository.countByPostIdAndHeartId(fundingDataDTO.getPostId(), memberId);
+    }
+
     public CelebResponse.DetailsDTO findByCelebId(final Long celebId, final CustomUserDetails member) {
-        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
-        final Celebrity celebrity = celebRepository.findByCelebId(celebId).orElseThrow(
-                () -> new Exception400(ErrorCode.ER02));
-        final Integer followerRank = celebRepository.getFollowerRank(celebId);
-        final List<Post> postsByCelebId = postRepository.findPostByCelebId(celebId);
-        final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebId, memberId);
-        final int ongoingCount = postRepository.countByPostStatus(celebId, PostStatus.ONGOING);
-        if (null == postsByCelebId)
+        if (null == getPostByCelebId(celebId))
             throw new Exception400(ErrorCode.ER03);
-        // postsByCelebId에서 총 펀딩금액, 펀딩 금액 등수, 진행 중인 펀딩 개수 추출하는 로직
-        int fundingAmount = FUNDING_AMOUNT_ZERO;
-        for (final Post post : postsByCelebId) {
-            final Account account = accountRepository.findByPostId(post.getPostId()).orElseThrow(
-                    () -> new Exception400(ErrorCode.ER08)
-            );
-            fundingAmount += account.getBalance();
-        }
-        return CelebResponse.DetailsDTO.of(celebrity, fundingAmount, ongoingCount, followerRank, isFollow);
+        return CelebResponse.DetailsDTO.of(
+                getCelebrity(celebId),
+                countOngoingFunding(getPostByCelebId(celebId)),
+                getOngoingPostCount(celebId),
+                getFollowerRank(celebId),
+                isMemberFollowingCeleb(celebId, getMemberIdOrDefault(member))
+        );
+    }
+
+    private List<Post> getPostByCelebId(final Long celebId) {
+        return postRepository.findPostByCelebId(celebId);
+    }
+
+    private Celebrity getCelebrity(final Long celebId) {
+        return celebRepository.findByCelebId(celebId).orElseThrow(
+                () -> new Exception400(ErrorCode.ER02));
+    }
+
+    private int countOngoingFunding(final List<Post> postsByCelebId) {
+        return postsByCelebId.stream()
+                .map(post -> findAccountByPostId(post.getPostId()))
+                .mapToInt(Account::getBalance)
+                .reduce(0, Integer::sum);
+    }
+
+    private Integer getFollowerRank(final Long celebId) {
+        return celebRepository.getFollowerRank(celebId);
+    }
+
+    private int getOngoingPostCount(final Long celebId) {
+        return postRepository.countByPostStatus(celebId, PostStatus.ONGOING);
     }
 
     public PageResponse<CelebResponse.FundingListDTO> findAllCeleb(final CustomUserDetails member, final String keyword, final Pageable pageable) {
-        final List<CelebResponse.FundingListDTO> fundingList = new ArrayList<>();
-        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
-        // cursor -> 셀럽 리스트 조회
-        final List<CelebResponse.ListDTO> celebFundingList = celebRepository.findAllCeleb(keyword, pageable);
-
-        // 각 셀럽의 id -> 각 셀럽의 여러 펀딩 가져오기
-        for (final CelebResponse.ListDTO celebFunding : celebFundingList) {
-            final Integer followerRank = celebRepository.getFollowerRank(celebFunding.getCelebId());
-            final int followerCount = celebFunding.getFollowerCount();
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebFunding.getCelebId(), memberId);
-            // 각 셀럽의 id와 일치하는 펀딩 && 진행 중인 펀딩 개수 세어오기
-            final int ongoingCount = postRepository.countByPostStatus(celebFunding.getCelebId(), PostStatus.ONGOING);
-            // 각 셀럽에 여러 펀딩의 현재 금액들의 합
-            final List<Post> postList = postRepository.findPostByCelebId(celebFunding.getCelebId());
-            int fundingAmount = FUNDING_AMOUNT_ZERO;
-            for (final Post post : postList) {
-                final Account account = accountRepository.findByPostId(post.getPostId()).orElseThrow(
-                        () -> new Exception400(ErrorCode.ER08)
-                );
-                fundingAmount += account.getBalance();
-            }
-            fundingList.add(CelebResponse.FundingListDTO.of(celebFunding, fundingAmount, ongoingCount, followerRank, isFollow, followerCount));
-        }
+        final List<CelebResponse.FundingListDTO> fundingList = celebRepository.findAllCeleb(keyword, pageable)
+                .stream()
+                .map(celebFunding -> CelebResponse.FundingListDTO.of(
+                                celebFunding,
+                                sumTotalFundingForCeleb(celebFunding),
+                                getOngoingPostCount(celebFunding.getCelebId()),
+                                getFollowerRank(celebFunding.getCelebId()),
+                                isMemberFollowingCeleb(celebFunding.getCelebId(), getMemberIdOrDefault(member)),
+                                celebFunding.getFollowerCount()
+                        )
+                ).collect(Collectors.toList());
         return new PageResponse<>(new SliceImpl<>(fundingList, pageable, hasNext(fundingList, pageable)));
+    }
+
+    private int sumTotalFundingForCeleb(final CelebResponse.ListDTO celebFunding) {
+        return getPostByCelebId(celebFunding.getCelebId()).stream()
+                .map(post -> findAccountByPostId(post.getPostId()))
+                .mapToInt(Account::getBalance)
+                .reduce(0, Integer::sum);
     }
 
     public PageResponse<CelebResponse.ListForApprovalDTO> findAllCelebForApproval(final Pageable pageable) {
@@ -143,19 +169,19 @@ public class CelebService {
     }
 
     public List<CelebResponse.ProfileDTO> recommendCelebs(final CustomUserDetails member) {
-        final Long memberId = (null == member) ? DEFAULT_MEMBER_ID : member.getId();
-
-        final List<Celebrity> celebrities = celebRepository.findAllRandom();
-        if (null == celebrities)
+        if (null == getCelebAllRandom())
             throw new Exception400(ErrorCode.ER02);
+        return getCelebAllRandom().stream()
+                .map(celebrity -> CelebResponse.ProfileDTO.of(
+                                celebrity,
+                                celebrity.getFollowerCount(),
+                                isMemberFollowingCeleb(celebrity.getCelebId(), getMemberIdOrDefault(member))
+                        )
+                ).collect(Collectors.toList());
+    }
 
-        final List<CelebResponse.ProfileDTO> responseDTO = new ArrayList<>();
-        for (final Celebrity celebrity : celebrities) {
-            final int followCount = celebrity.getFollowerCount();
-            final boolean isFollow = FOLLOW_COUNT_ZERO != followRepository.countByCelebIdAndFollowId(celebrity.getCelebId(), memberId);
-            responseDTO.add(CelebResponse.ProfileDTO.of(celebrity, followCount, isFollow));
-        }
-        return responseDTO;
+    private List<Celebrity> getCelebAllRandom() {
+        return celebRepository.findAllRandom();
     }
 
     private String uploadImage(final MultipartFile img) {
