@@ -24,7 +24,7 @@ public class FollowController {
     @PostMapping("/celebs/{celebId}/follow")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> followCelebs(
-            @Parameter(description = "셀럽의 PK") @PathVariable final Long celebId,
+            @Parameter(description = "셀럽의 PK") @PathVariable("celebId") Long celebId,
             @AuthenticationPrincipal final CustomUserDetails userDetails
     ) {
         followService.followCelebs(celebId, userDetails.getId());
