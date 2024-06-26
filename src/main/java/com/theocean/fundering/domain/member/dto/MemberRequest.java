@@ -52,8 +52,8 @@ public class MemberRequest {
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!~`<>,./?;:'\"\\[\\]{}\\\\()|_-])\\S*$", message = "영문, 숫자, 특수문자가 포함되어야하고 공백이 포함될 수 없습니다.")
         private String password;
 
-        @Size(min = 3, max = 45, message = "3에서 45자 이내여야 합니다.")
         @NotEmpty
+        @Size(min = 3, max = 45, message = "3에서 45자 이내여야 합니다.")
         private String nickname;
 
         public static SignUpDTO of(final String email, final String password, final String nickname){
@@ -65,7 +65,7 @@ public class MemberRequest {
                     .email(email)
                     .nickname(nickname)
                     .password(password)
-                    .userRole(MemberRole.USER)
+                    .memberRole(MemberRole.USER)
                     .build();
         }
         public void encodePassword(final String encodePassword){

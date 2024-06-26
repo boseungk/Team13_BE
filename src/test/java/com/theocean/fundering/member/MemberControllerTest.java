@@ -58,11 +58,11 @@ class MemberControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        private PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @BeforeEach
     void beforeEach() {
-        final Member member = Member.builder().email(EMAIL).password(delegatingPasswordEncoder.encode(PASSWORD)).nickname(NICKNAME).userRole(MemberRole.USER).build();
+        final Member member = Member.builder().email(EMAIL).password(delegatingPasswordEncoder.encode(PASSWORD)).nickname(NICKNAME).memberRole(MemberRole.USER).build();
         memberRepository.save(member);
         clear();
     }
