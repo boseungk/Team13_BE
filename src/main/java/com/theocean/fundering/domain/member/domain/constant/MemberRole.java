@@ -26,19 +26,6 @@ public enum MemberRole {
         return type;
     }
 
-    public class CelebTypeToStringConverter implements AttributeConverter<CelebGender, String> {
-
-        @Override
-        public String convertToDatabaseColumn(final CelebGender attribute) {
-            return attribute.getType();
-        }
-
-        @Override
-        public CelebGender convertToEntityAttribute(final String dbData) {
-            return CelebGender.fromString(dbData);
-        }
-    }
-
     public class MemberRoleToStringConverter implements AttributeConverter<MemberRole, String> {
 
         @Override
