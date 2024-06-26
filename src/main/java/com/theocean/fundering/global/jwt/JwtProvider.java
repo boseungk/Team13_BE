@@ -2,36 +2,29 @@ package com.theocean.fundering.global.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.theocean.fundering.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Optional;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
-    @Getter
-    @Value("${jwt.access-secret}")
-    private String ACCESS_SECRET;
-    @Getter
-    @Value("${jwt.refresh-secret}")
-    private String REFRESH_SECRET;
-    private static Long ACCESS_EXP = 7200000L;
-    private static Long REFRESH_EXP = 1209600000L;
     private static final String ACCESS_HEADER = "Authorization";
+
     private static final String ACCESS_TOKEN = "AccessToken";
     private static final String REFRESH_TOKEN = "RefreshToken";
-
+    private static final Long ACCESS_EXP = 1000L * 60 * 60; // 1시간
+    private static final Long REFRESH_EXP = 1000L * 60 * 60 * 24 * 14; // 2주
     private static final String EMAIL_CLAIM = "email";
     private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String ACCESS_SECRET = "MyAccessSecretKey1234";
+    private static final String REFRESH_SECRET = "MyRefreshSecretKey1234";
+
+
 
     public String createAccessToken(final String email) {
         final String jwt = JWT.create()
@@ -68,7 +61,6 @@ public class JwtProvider {
             JWT.require(Algorithm.HMAC512(ACCESS_SECRET)).build().verify(token);
             return true;
         } catch (final RuntimeException e) {
-            log.error("유효하지 않은 토큰입니다. {}", new String[]{e.getMessage()});
             return false;
         }
     }
@@ -81,7 +73,6 @@ public class JwtProvider {
                     .getClaim(EMAIL_CLAIM) // claim(Email) 가져오기
                     .asString());
         } catch (final RuntimeException e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
     }

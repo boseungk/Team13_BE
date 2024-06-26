@@ -3,10 +3,7 @@ package com.theocean.fundering.domain.celebrity.dto;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 public class CelebRequest {
     @Getter
@@ -17,6 +14,7 @@ public class CelebRequest {
         private CelebGender celebGender;
         private CelebCategory celebCategory;
         private String celebGroup;
+        @Builder
         public Celebrity mapToEntity() {
             return Celebrity.builder()
                     .celebName(celebName)
