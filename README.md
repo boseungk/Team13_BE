@@ -10,11 +10,6 @@
   펀더링은 불특정 다수를 대상으로 한 그룹의 자금 투명성을 보장해주는 모임 통장 플랫폼입니다.
 </p>
 
-<br>
-
-## 펀더링 인스턴스 주소
-
-https://k8188ddddcf83a.user-app.krampoline.com/
 
 <br>
 
@@ -45,19 +40,23 @@ https://k8188ddddcf83a.user-app.krampoline.com/
 2. 팔로우 기능
 3. JWT 기반 인증, 인가 기능
 
-- 무한 스크롤 구현
+- **무한 스크롤 구현** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/blob/develop/src/main/java/com/theocean/fundering/domain/celebrity/service/CelebService.java)**
   - Offset 기반의 페이지네이션은 DB에 많은 부하가 걸리기 때문에 효율적인 게시물 목록을 조회를 위해 No Offset 방식의 페이지네이션을 적용하여 무한 스크롤이 가능하도록 구현하였습니다. 로직에 사용되는 동적 쿼리는 QueryDSL을 사용하여 구현하였습니다.
 
 <br>
 
-- 복합 키를 이용한 팔로우 기능
+- **복합 키를 이용한 팔로우 기능** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/blob/develop/src/main/java/com/theocean/fundering/domain/celebrity/service/FollowService.java)**
   - 처음에는 셀럽과 사용자의 관계, 펀딩과 사용자의 관계를 객체의 관점에서 연관 관계를 통해 구현하고자 했습니다. 하지만 팔로우, 찜 기능은 객체라기보단 '관계'를 나타내는 상태를 나타내는게 더 적절하다고 판단하게 되었고, 복합 키를 통해 팔로우, 찜 기능을 구현하게 되었습니다.
 
 <br>
 
-- JWT를 이용한 인증, 인가
+- **JWT 토큰을 이용한 인증, 인가** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/tree/develop/src/main/java/com/theocean/fundering/global/jwt)**
   - 로그인 과정에서 세션 방식 대신 JWT 토큰 방식을 이용해서 DB에 의존성을 줄이고자 했습니다. 
 <br>
+
+## 회고 / 느낀점
+
+> 프로젝트 개발 회고 글: [카카오 테크 캠퍼스 프로젝트 회고 글](https://velog.io/@gda05189/%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%8D%BC%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B83%EB%8B%A8%EA%B3%84-%ED%9A%8C%EA%B3%A0)
 
 ## 펀더링 ERD
 
@@ -102,32 +101,8 @@ https://k8188ddddcf83a.user-app.krampoline.com/
 
 ## 카카오 테크 캠퍼스 3단계 진행 보드
 
-</br>
 
-## 배포와 관련하여
-
-```
-
-최종 배포는 크램폴린으로 배포해야 합니다.
-
-하지만 배포 환경의 불편함이 있는 경우를 고려하여 
-
-임의의 배포를 위해 타 배포 환경을 자유롭게 이용해도 됩니다. (단, 금액적인 지원은 어렵습니다.)
-
-아래는 추가적인 설정을 통해 (체험판, 혹은 프리 티어 등)무료로 클라우드 배포가 가능한 서비스입니다.
-
-ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype 
-
-```
 ## Notice
-
-```
-필요 산출물들은 수료 기준에 영향을 주는 것은 아니지만, 
-주차 별 산출물을 기반으로 평가가 이루어 집니다.
-
-주차 별 평가 점수는 추 후 최종 평가에 최종 합산 점수로 포함됩니다.
-```
-
 ![레포지토리 운영-001 (1)](https://github.com/Step3-kakao-tech-campus/practice/assets/138656575/acb0dccd-0441-4200-999a-981865535d5f)
 ![image](https://github.com/Step3-kakao-tech-campus/practice/assets/138656575/b42cbc06-c5e7-4806-8477-63dfa8e807a0)
 
@@ -325,34 +300,4 @@ ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype
 </div>
 </details>
 
----
-
-<br>
-
-## **과제 상세 : 수강생들이 과제를 진행할 때, 유념해야할 것**
-
-
-```
-1. README.md 파일은 동료 개발자에게 프로젝트에 쉽게 랜딩하도록 돕는 중요한 소통 수단입니다.
-해당 프로젝트에 대해 아무런 지식이 없는 동료들에게 설명하는 것처럼 쉽고, 간결하게 작성해주세요.
-
-2. 좋은 개발자는 디자이너, 기획자, 마케터 등 여러 포지션에 있는 분들과 소통을 잘합니다.
-UI 컴포넌트의 명칭과 이를 구현하는 능력은 필수적인 커뮤니케이션 스킬이자 필요사항이니 어떤 상황에서 해당 컴포넌트를 사용하면 좋을지 고민하며 코드를 작성해보세요.
-
-```
-
-</br>
-
-## **코드리뷰 관련: review branch로 PR시, 아래 내용을 포함하여 코멘트 남겨주세요.**
-
-
-**1. PR 제목과 내용을 아래와 같이 작성 해주세요.**
-
-> PR 제목 : 전남대_13조_아이템명_0주차
-> 
-
-</br>
-
-</div>
-
----
+------
