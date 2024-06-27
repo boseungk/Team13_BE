@@ -57,6 +57,9 @@
 ## 회고 / 느낀점
 
 > 프로젝트 개발 회고 글: [카카오 테크 캠퍼스 프로젝트 회고 글](https://velog.io/@gda05189/%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%8D%BC%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B83%EB%8B%A8%EA%B3%84-%ED%9A%8C%EA%B3%A0)
+ 
+<br>
+<br>
 
 ## 펀더링 ERD
 
