@@ -34,14 +34,11 @@
 ## 맡은 역할 및 기능 소개
 
 
-이 프로젝트에서 제가 맡은 역할을 맡은 파트는 크게 3가지로 나눌 수 있습니다.
+이 프로젝트에서 제가 맡은 역할을 맡은 파트는 크게 2가지로 나눌 수 있습니다.
 
-1. 무한 스크롤 기능
-2. 팔로우 기능
-3. JWT 기반 인증, 인가 기능
+1. 팔로우 기능
+2. JWT 기반 인증, 인가 기능
 
-- **무한 스크롤 구현** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/blob/develop/src/main/java/com/theocean/fundering/domain/celebrity/service/CelebService.java)**
-  - Offset 기반의 페이지네이션은 DB에 많은 부하가 걸리기 때문에 효율적인 게시물 목록을 조회를 위해 No Offset 방식의 페이지네이션을 적용하여 무한 스크롤이 가능하도록 구현하였습니다. 로직에 사용되는 동적 쿼리는 QueryDSL을 사용하여 구현하였습니다.
 
 <br>
 
