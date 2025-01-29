@@ -48,7 +48,7 @@
 <br>
 
 - **JWT 토큰을 이용한 인증, 인가** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/tree/develop/src/main/java/com/theocean/fundering/global/jwt)**
-  - 로그인 과정에서 세션 방식 대신 JWT 토큰 방식을 이용해서 DB에 의존성을 줄이고자 했습니다. 
+  - 세션 저장소가 필요한 세선 기반 로그인 방식 대신 JWT 토큰 기반 로그인을 통해 세션 저장소의 의존성을 제거하여 서버 부하를 줄였습니다.
 <br>
 
 ## 회고 / 느낀점
