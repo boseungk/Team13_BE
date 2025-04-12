@@ -28,33 +28,6 @@
 - 담당한 역할
   - 백엔드 팀 리드 담당 
 
-
-<br>
-
-## 맡은 역할 및 기능 소개
-
-
-이 프로젝트에서 제가 맡은 역할을 맡은 파트는 크게 2가지로 나눌 수 있습니다.
-
-1. 팔로우 기능
-2. JWT 기반 인증, 인가 기능
-
-
-<br>
-
-- **복합 키를 이용한 팔로우 기능** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/blob/develop/src/main/java/com/theocean/fundering/domain/celebrity/service/FollowService.java)**
-  - 처음에는 셀럽과 사용자의 관계, 펀딩과 사용자의 관계를 객체의 관점에서 연관 관계를 통해 구현하고자 했습니다. 하지만 팔로우, 찜 기능은 객체라기보단 '관계'를 나타내는 상태를 나타내는게 더 적절하다고 판단하게 되었고, 복합 키를 통해 팔로우, 찜 기능을 구현하게 되었습니다.
-
-<br>
-
-- **JWT 토큰을 이용한 인증, 인가** 📌 **[코드 확인](https://github.com/boseungk/Team13_BE/tree/develop/src/main/java/com/theocean/fundering/global/jwt)**
-  - 세션 저장소가 필요한 세선 기반 로그인 방식 대신 JWT 토큰 기반 로그인을 통해 세션 저장소의 의존성을 제거하여 서버 부하를 줄였습니다.
-<br>
-
-## 회고 / 느낀점
-
-> 프로젝트 개발 회고 글: [카카오 테크 캠퍼스 프로젝트 회고 글](https://velog.io/@gda05189/%EC%B9%B4%EC%B9%B4%EC%98%A4-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%8D%BC%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B83%EB%8B%A8%EA%B3%84-%ED%9A%8C%EA%B3%A0)
- 
 <br>
 <br>
 
